@@ -1,0 +1,201 @@
+#
+# Service DI configuration
+#
+# @license		More in license.md
+# @copyright	https://www.fastybird.com
+# @author		Adam Kadlec <adam.kadlec@fastybird.com>
+# @package		FastyBird:TriggersNode!
+# @subpackage	config
+# @since		0.1.0
+#
+# @date			05.04.20
+
+##############################
+# Node predefined parameters #
+##############################
+
+parameters:
+	origin: com.fastybird.triggers-node
+
+	rabbitmq:
+		queueName: fb.triggers.node.exchange
+
+#########################
+# Used Nette extensions #
+#########################
+
+extensions:
+	contributteEventDispatcher	: Contributte\EventDispatcher\DI\EventDispatcherExtension
+	contributteTranslation		: Contributte\Translation\DI\TranslationExtension
+	ipubDoctrineConsistence		: IPub\DoctrineConsistence\DI\DoctrineConsistenceExtension
+	ipubDoctrineCrud			: IPub\DoctrineCrud\DI\DoctrineCrudExtension
+	ipubDoctrineTimestampable	: IPub\DoctrineTimestampable\DI\DoctrineTimestampableExtension
+	nettrineAnnotations			: Nettrine\Annotations\DI\AnnotationsExtension
+	nettrineCache				: Nettrine\Cache\DI\CacheExtension
+	nettrineDbal				: Nettrine\DBAL\DI\DbalExtension
+	nettrineOrm					: Nettrine\ORM\DI\OrmExtension
+	nettrineOrmAnnotations		: Nettrine\ORM\DI\OrmAnnotationsExtension
+	nettrineOrmConsole			: Nettrine\ORM\DI\OrmConsoleExtension
+	nettrineOrmCache			: Nettrine\ORM\DI\OrmCacheExtension
+	nodeWebServer				: FastyBird\NodeWebServer\DI\NodeWebServerExtension
+
+##################################
+# Nette extensions configuration #
+##################################
+
+# Node web server
+#################
+nodeWebServer:
+	server:
+		address: %server.address%
+		port: %server.port%
+
+# Node translations
+###################
+contributteTranslation:
+	locales:
+		default: en_US
+		fallback: [en_US, en]
+	localeResolvers: []
+	dirs:
+		- %appDir%/src/Translations
+
+# Doctrine DBAL
+###############
+nettrineDbal:
+	connection:
+		serverVersion: %database.version%
+		host: %database.host%
+		port: %database.port%
+		driver: %database.driver%
+		memory: %database.memory%
+		dbname: %database.dbname%
+		user: %database.username%
+		password: %database.password%
+		charset: utf8
+
+		types:
+			uuid_binary:
+				class: Ramsey\Uuid\Doctrine\UuidBinaryType
+				commented: false
+			utcdatetime:
+				class: IPub\DoctrineTimestampable\Types\UTCDateTime
+				commented: false
+
+		typesMapping:
+			uuid_binary: binary
+
+# Doctrine ORM annoations
+#########################
+nettrineAnnotations:
+	debug: %debugMode%
+	ignore:
+		- writable
+		- validator
+		- required
+		- module
+		- author
+		- subpackage
+		- package
+
+# Doctrine ORM
+##############
+nettrineOrm:
+	configuration:
+		proxyDir	: %tempDir%/cache/doctrine.proxies
+
+nettrineOrmAnnotations:
+	paths:
+		- %appDir%/src/Entities
+
+#############################
+# Node services definitions #
+#############################
+
+services:
+	# Http router
+	#############
+
+	- {factory: FastyBird\TriggersNode\Middleware\JsonApiMiddleware, tags: [middleware: {priority: 10}]}
+
+	-
+		factory: FastyBird\TriggersNode\Router\Router
+		setup:
+			- registerRoutes
+
+	# Database repositories
+	#######################
+
+	- {factory: FastyBird\TriggersNode\Models\Triggers\TriggerRepository}
+
+	- {factory: FastyBird\TriggersNode\Models\Actions\ActionRepository}
+
+	- {factory: FastyBird\TriggersNode\Models\Notifications\NotificationRepository}
+
+	- {factory: FastyBird\TriggersNode\Models\Conditions\ConditionRepository}
+
+	# Database managers
+	###################
+
+	- {factory: FastyBird\TriggersNode\Models\Triggers\TriggersManager(@ipubDoctrineCrud.crud::create(FastyBird\TriggersNode\Entities\Triggers\Trigger))}
+
+	- {factory: FastyBird\TriggersNode\Models\Actions\ActionsManager(@ipubDoctrineCrud.crud::create(FastyBird\TriggersNode\Entities\Actions\Action))}
+
+	- {factory: FastyBird\TriggersNode\Models\Notifications\NotificationsManager(@ipubDoctrineCrud.crud::create(FastyBird\TriggersNode\Entities\Notifications\Notification))}
+
+	- {factory: FastyBird\TriggersNode\Models\Conditions\ConditionsManager(@ipubDoctrineCrud.crud::create(FastyBird\TriggersNode\Entities\Conditions\Condition))}
+
+	# API controllers
+	#################
+
+	- {factory: FastyBird\TriggersNode\Controllers\TriggersV1Controller, tags: [nette.inject]}
+
+	- {factory: FastyBird\TriggersNode\Controllers\ActionsV1Controller, tags: [nette.inject]}
+
+	- {factory: FastyBird\TriggersNode\Controllers\NotificationsV1Controller, tags: [nette.inject]}
+
+	- {factory: FastyBird\TriggersNode\Controllers\ConditionsV1Controller, tags: [nette.inject]}
+
+	# API schemas
+	#############
+
+	- {factory: FastyBird\TriggersNode\Schemas\Triggers\AutomaticTriggerSchema}
+
+	- {factory: FastyBird\TriggersNode\Schemas\Triggers\ManualTriggerSchema}
+
+	- {factory: FastyBird\TriggersNode\Schemas\Triggers\ChannelPropertyTriggerSchema}
+
+	- {factory: FastyBird\TriggersNode\Schemas\Actions\ChannelPropertyActionSchema}
+
+	- {factory: FastyBird\TriggersNode\Schemas\Notifications\SmsNotificationSchema}
+
+	- {factory: FastyBird\TriggersNode\Schemas\Notifications\EmailNotificationSchema}
+
+	- {factory: FastyBird\TriggersNode\Schemas\Conditions\DevicePropertyConditionSchema}
+
+	- {factory: FastyBird\TriggersNode\Schemas\Conditions\ChannelPropertyConditionSchema}
+
+	- {factory: FastyBird\TriggersNode\Schemas\Conditions\TimeConditionSchema}
+
+	- {factory: FastyBird\TriggersNode\Schemas\Conditions\DateConditionSchema}
+
+	# API hydrators
+	###############
+
+	- {factory: FastyBird\TriggersNode\Hydrators\Triggers\AutomaticTriggerHydrator}
+
+	- {factory: FastyBird\TriggersNode\Hydrators\Triggers\ManualTriggerHydrator}
+
+	- {factory: FastyBird\TriggersNode\Hydrators\Triggers\ChannelPropertyTriggerHydrator}
+
+	- {factory: FastyBird\TriggersNode\Hydrators\Actions\ChannelPropertyActionHydrator}
+
+	- {factory: FastyBird\TriggersNode\Hydrators\Notifications\SmsNotificationHydrator}
+
+	- {factory: FastyBird\TriggersNode\Hydrators\Notifications\EmailNotificationHydrator}
+
+	- {factory: FastyBird\TriggersNode\Hydrators\Conditions\DevicePropertyConditionHydrator}
+
+	- {factory: FastyBird\TriggersNode\Hydrators\Conditions\ChannelPropertyConditionHydrator}
+
+	- {factory: FastyBird\TriggersNode\Hydrators\Conditions\TimeConditionHydrator}
