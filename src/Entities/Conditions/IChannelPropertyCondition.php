@@ -29,6 +29,11 @@ interface IChannelPropertyCondition extends IPropertyCondition
 	/**
 	 * @return string
 	 */
+	public function getDevice(): string;
+
+	/**
+	 * @return string
+	 */
 	public function getChannel(): string;
 
 	/**

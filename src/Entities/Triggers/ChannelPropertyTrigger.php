@@ -37,6 +37,7 @@ use Throwable;
  *       @ORM\UniqueConstraint(name="trigger_unique", columns={"trigger_channel", "trigger_property", "trigger_operand"})
  *     },
  *     indexes={
+ *       @ORM\Index(name="trigger_device_idx", columns={"trigger_device"}),
  *       @ORM\Index(name="trigger_channel_idx", columns={"trigger_channel"}),
  *       @ORM\Index(name="trigger_property_idx", columns={"trigger_property"})
  *     }
@@ -44,6 +45,13 @@ use Throwable;
  */
 class ChannelPropertyTrigger extends Trigger implements IChannelPropertyTrigger
 {
+
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(type="string", name="trigger_device", length=100, nullable=false)
+	 */
+	private $device;
 
 	/**
 	 * @var string
@@ -76,6 +84,7 @@ class ChannelPropertyTrigger extends Trigger implements IChannelPropertyTrigger
 	private $operand;
 
 	/**
+	 * @param string $device
 	 * @param string $channel
 	 * @param string $property
 	 * @param Types\ConditionOperatorType $operator
@@ -86,6 +95,7 @@ class ChannelPropertyTrigger extends Trigger implements IChannelPropertyTrigger
 	 * @throws Throwable
 	 */
 	public function __construct(
+		string $device,
 		string $channel,
 		string $property,
 		Types\ConditionOperatorType $operator,
@@ -95,11 +105,20 @@ class ChannelPropertyTrigger extends Trigger implements IChannelPropertyTrigger
 	) {
 		parent::__construct($name, $id);
 
+		$this->device = $device;
 		$this->channel = $channel;
 		$this->property = $property;
 
 		$this->operator = $operator;
 		$this->operand = $operand;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getDevice(): string
+	{
+		return $this->device;
 	}
 
 	/**

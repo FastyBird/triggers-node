@@ -29,11 +29,23 @@ use Throwable;
  *       "collate"="utf8mb4_general_ci",
  *       "charset"="utf8mb4",
  *       "comment"="Channels properties conditions"
+ *     },
+ *     indexes={
+ *       @ORM\Index(name="condition_device_idx", columns={"condition_device"}),
+ *       @ORM\Index(name="condition_channel_idx", columns={"condition_channel"}),
+ *       @ORM\Index(name="condition_property_idx", columns={"condition_property"})
  *     }
  * )
  */
 class ChannelPropertyCondition extends PropertyCondition implements IChannelPropertyCondition
 {
+
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(type="string", name="condition_device", length=100, nullable=false)
+	 */
+	private $device;
 
 	/**
 	 * @var string
@@ -50,6 +62,7 @@ class ChannelPropertyCondition extends PropertyCondition implements IChannelProp
 	private $property;
 
 	/**
+	 * @param string $device
 	 * @param string $channel
 	 * @param string $property
 	 * @param Types\ConditionOperatorType $operator
@@ -60,6 +73,7 @@ class ChannelPropertyCondition extends PropertyCondition implements IChannelProp
 	 * @throws Throwable
 	 */
 	public function __construct(
+		string $device,
 		string $channel,
 		string $property,
 		Types\ConditionOperatorType $operator,
@@ -69,8 +83,17 @@ class ChannelPropertyCondition extends PropertyCondition implements IChannelProp
 	) {
 		parent::__construct($operator, $operand, $trigger, $id);
 
+		$this->device = $device;
 		$this->channel = $channel;
 		$this->property = $property;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getDevice(): string
+	{
+		return $this->device;
 	}
 
 	/**

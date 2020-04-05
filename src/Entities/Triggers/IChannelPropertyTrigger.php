@@ -29,6 +29,11 @@ interface IChannelPropertyTrigger extends ITrigger
 {
 
 	/**
+	 * @return string
+	 */
+	public function getDevice(): string;
+
+	/**
 	 * @param Types\ConditionOperatorType $operator
 	 *
 	 * @return void

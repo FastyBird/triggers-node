@@ -29,6 +29,10 @@ use Throwable;
  *       "collate"="utf8mb4_general_ci",
  *       "charset"="utf8mb4",
  *       "comment"="Devices conditions"
+ *     },
+ *     indexes={
+ *       @ORM\Index(name="condition_device_idx", columns={"condition_device"}),
+ *       @ORM\Index(name="condition_channel_idx", columns={"condition_channel"})
  *     }
  * )
  */

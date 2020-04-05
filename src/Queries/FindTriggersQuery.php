@@ -36,10 +36,10 @@ class FindTriggersQuery extends DoctrineOrmQuery\QueryObject
 {
 
 	/** @var Closure[] */
-	private $filter = [];
+	protected $filter = [];
 
 	/** @var Closure[] */
-	private $select = [];
+	protected $select = [];
 
 	/**
 	 * @param Uuid\UuidInterface $id
@@ -126,7 +126,7 @@ class FindTriggersQuery extends DoctrineOrmQuery\QueryObject
 	 *
 	 * @phpstan-param ORM\EntityRepository<T> $repository
 	 */
-	private function createBasicDql(ORM\EntityRepository $repository): ORM\QueryBuilder
+	protected function createBasicDql(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{
 		$qb = $repository->createQueryBuilder('t');
 

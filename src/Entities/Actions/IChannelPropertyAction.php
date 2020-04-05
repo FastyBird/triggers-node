@@ -29,6 +29,11 @@ interface IChannelPropertyAction extends IAction
 	/**
 	 * @return string
 	 */
+	public function getDevice(): string;
+
+	/**
+	 * @return string
+	 */
 	public function getChannel(): string;
 
 	/**

@@ -31,6 +31,7 @@ use Throwable;
  *       "comment"="Channels actions"
  *     },
  *     indexes={
+ *       @ORM\Index(name="action_device_idx", columns={"action_device"}),
  *       @ORM\Index(name="action_channel_idx", columns={"action_channel"}),
  *       @ORM\Index(name="action_property_idx", columns={"action_property"})
  *     }
@@ -38,6 +39,13 @@ use Throwable;
  */
 class ChannelPropertyAction extends Action implements IChannelPropertyAction
 {
+
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(type="string", name="action_device", length=100, nullable=false)
+	 */
+	private $device;
 
 	/**
 	 * @var string
@@ -62,6 +70,7 @@ class ChannelPropertyAction extends Action implements IChannelPropertyAction
 	private $value;
 
 	/**
+	 * @param string $device
 	 * @param string $channel
 	 * @param string $property
 	 * @param string $value
@@ -71,6 +80,7 @@ class ChannelPropertyAction extends Action implements IChannelPropertyAction
 	 * @throws Throwable
 	 */
 	public function __construct(
+		string $device,
 		string $channel,
 		string $property,
 		string $value,
@@ -79,10 +89,19 @@ class ChannelPropertyAction extends Action implements IChannelPropertyAction
 	) {
 		parent::__construct($trigger, $id);
 
+		$this->device = $device;
 		$this->channel = $channel;
 		$this->property = $property;
 
 		$this->value = $value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getDevice(): string
+	{
+		return $this->device;
 	}
 
 	/**
