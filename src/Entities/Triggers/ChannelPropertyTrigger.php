@@ -78,7 +78,6 @@ class ChannelPropertyTrigger extends Trigger implements IChannelPropertyTrigger
 	/**
 	 * @var string
 	 *
-	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="trigger_operand", length=100, nullable=false)
 	 */
 	private $operand;

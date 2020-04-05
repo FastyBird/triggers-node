@@ -39,7 +39,6 @@ abstract class PropertyCondition extends Condition implements IPropertyCondition
 	/**
 	 * @var string
 	 *
-	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="condition_operand", length=20, nullable=false)
 	 */
 	protected $operand;

@@ -59,7 +59,6 @@ abstract class Condition extends Entities\Entity implements ICondition
 	/**
 	 * @var Entities\Triggers\IAutomaticTrigger
 	 *
-	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\ManyToOne(targetEntity="FastyBird\TriggersNode\Entities\Triggers\AutomaticTrigger", inversedBy="conditions")
 	 * @ORM\JoinColumn(name="trigger_id", referencedColumnName="trigger_id", onDelete="CASCADE")
 	 */
