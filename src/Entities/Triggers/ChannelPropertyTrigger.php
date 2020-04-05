@@ -20,7 +20,6 @@ use Doctrine\ORM\Mapping as ORM;
 use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Exceptions;
 use FastyBird\TriggersNode\Types;
-use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use Ramsey\Uuid;
 use Throwable;
 
