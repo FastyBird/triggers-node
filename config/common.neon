@@ -123,6 +123,17 @@ services:
 		setup:
 			- registerRoutes
 
+	# Message bus messages handlers
+	###############################
+
+	- {factory: FastyBird\TriggersNode\Consumers\ChannelMessageHandler}
+
+	- {factory: FastyBird\TriggersNode\Consumers\ChannelPropertyMessageHandler}
+
+	- {factory: FastyBird\TriggersNode\Consumers\DeviceMessageHandler}
+
+	- {factory: FastyBird\TriggersNode\Consumers\DevicePropertyMessageHandler}
+
 	# Database repositories
 	#######################
 
