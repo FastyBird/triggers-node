@@ -50,7 +50,7 @@ return [
 	],
 	'readRelationshipsUnknown'           => [
 		'/v1/triggers/0b48dfbc-fac2-4292-88dc-7981a121602d/relationships/unknown',
-		StatusCodeInterface::STATUS_OK,
+		StatusCodeInterface::STATUS_NOT_FOUND,
 		__DIR__ . '/responses/relation.unknown.json',
 	],
 ];
