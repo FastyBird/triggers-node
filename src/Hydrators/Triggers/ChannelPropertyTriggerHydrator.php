@@ -40,6 +40,9 @@ final class ChannelPropertyTriggerHydrator extends TriggerHydrator
 		'enabled',
 		'operator',
 		'operand',
+		'device',
+		'channel',
+		'property',
 	];
 
 	/** @var string[] */
@@ -77,6 +80,30 @@ final class ChannelPropertyTriggerHydrator extends TriggerHydrator
 		}
 
 		return (string) $attributes->get('channel');
+	}
+
+	/**
+	 * @param JsonAPIDocument\Objects\IStandardObject<mixed> $attributes
+	 *
+	 * @return string
+	 *
+	 * @throws NodeWebServerExceptions\IJsonApiException
+	 */
+	protected function hydrateDeviceAttribute(
+		JsonAPIDocument\Objects\IStandardObject $attributes
+	): string {
+		if (!$attributes->has('device') || $attributes->get('device') === '') {
+			throw new NodeWebServerExceptions\JsonApiErrorException(
+				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+				$this->translator->translate('//node.base.messages.missingRequired.heading'),
+				$this->translator->translate('//node.base.messages.missingRequired.message'),
+				[
+					'pointer' => '/data/attributes/device',
+				]
+			);
+		}
+
+		return (string) $attributes->get('device');
 	}
 
 	/**

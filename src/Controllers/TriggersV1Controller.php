@@ -26,6 +26,7 @@ use FastyBird\TriggersNode\Queries;
 use FastyBird\TriggersNode\Router;
 use FastyBird\TriggersNode\Schemas;
 use Fig\Http\Message\StatusCodeInterface;
+use IPub\DoctrineCrud\Exceptions as DoctrineCrudExceptions;
 use Psr\Http\Message;
 use Throwable;
 
@@ -155,6 +156,19 @@ final class TriggersV1Controller extends BaseV1Controller
 			// Commit all changes into database
 			$this->getOrmConnection()->commit();
 
+		} catch (DoctrineCrudExceptions\EntityCreationException $ex) {
+			// Revert all changes when error occur
+			$this->getOrmConnection()->rollback();
+
+			throw new NodeWebServerExceptions\JsonApiErrorException(
+				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+				$this->translator->translate('//node.base.messages.missingRequired.heading'),
+				$this->translator->translate('//node.base.messages.missingRequired.message'),
+				[
+					'pointer' => 'data/attributes/' . $ex->getField(),
+				]
+			);
+
 		} catch (NodeWebServerExceptions\IJsonApiException $ex) {
 			// Revert all changes when error occur
 			$this->getOrmConnection()->rollback();
@@ -202,7 +216,7 @@ final class TriggersV1Controller extends BaseV1Controller
 		NodeWebServerHttp\Response $response
 	): NodeWebServerHttp\Response {
 		// At first, try to load trigger
-		$trigger = $this->findTrigger($request->getAttribute(Router\Router::URL_TRIGGER_ID));
+		$trigger = $this->findTrigger($request->getAttribute(Router\Router::URL_ITEM_ID));
 
 		$document = $this->createDocument($request);
 
@@ -293,7 +307,7 @@ final class TriggersV1Controller extends BaseV1Controller
 		NodeWebServerHttp\Response $response
 	): NodeWebServerHttp\Response {
 		// At first, try to load trigger
-		$trigger = $this->findTrigger($request->getAttribute(Router\Router::URL_TRIGGER_ID));
+		$trigger = $this->findTrigger($request->getAttribute(Router\Router::URL_ITEM_ID));
 
 		try {
 			// Start transaction connection to the database

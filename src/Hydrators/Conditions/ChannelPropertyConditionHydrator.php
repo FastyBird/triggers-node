@@ -33,6 +33,7 @@ final class ChannelPropertyConditionHydrator extends PropertyConditionHydrator
 
 	/** @var string[] */
 	protected $attributes = [
+		'device',
 		'channel',
 		'property',
 		'operator',

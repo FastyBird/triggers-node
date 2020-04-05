@@ -33,6 +33,7 @@ final class ChannelPropertyActionHydrator extends ActionHydrator
 
 	/** @var string[] */
 	protected $attributes = [
+		'device',
 		'channel',
 		'property',
 		'value',
@@ -44,6 +45,30 @@ final class ChannelPropertyActionHydrator extends ActionHydrator
 	protected function getEntityName(): string
 	{
 		return Entities\Actions\ChannelPropertyAction::class;
+	}
+
+	/**
+	 * @param JsonAPIDocument\Objects\IStandardObject<mixed> $attributes
+	 *
+	 * @return string
+	 *
+	 * @throws NodeWebServerExceptions\IJsonApiException
+	 */
+	protected function hydrateDeviceAttribute(
+		JsonAPIDocument\Objects\IStandardObject $attributes
+	): string {
+		if (!$attributes->has('device') || $attributes->get('device') === '') {
+			throw new NodeWebServerExceptions\JsonApiErrorException(
+				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+				$this->translator->translate('//node.base.messages.missingRequired.heading'),
+				$this->translator->translate('//node.base.messages.missingRequired.message'),
+				[
+					'pointer' => '/data/attributes/device',
+				]
+			);
+		}
+
+		return (string) $attributes->get('device');
 	}
 
 	/**

@@ -42,6 +42,93 @@ final class TriggersV1ControllerTest extends DbTestCase
 		Assert::type(Http\Response::class, $response);
 	}
 
+	/**
+	 * @param string $url
+	 * @param string $body
+	 * @param int $statusCode
+	 * @param string $fixture
+	 *
+	 * @dataProvider ./../../../fixtures/Controllers/triggersCreate.php
+	 */
+	public function testCreate(string $url, string $body, int $statusCode, string $fixture): void
+	{
+		/** @var Router\Router $router */
+		$router = $this->getContainer()->getByType(Router\Router::class);
+
+		$request = new ServerRequest(
+			RequestMethodInterface::METHOD_POST,
+			$url,
+			[],
+			$body
+		);
+
+		$response = $router->handle($request);
+
+		Tools\JsonAssert::assertFixtureMatch(
+			$fixture,
+			(string) $response->getBody()
+		);
+		Assert::same($statusCode, $response->getStatusCode());
+		Assert::type(Http\Response::class, $response);
+	}
+
+	/**
+	 * @param string $url
+	 * @param string $body
+	 * @param int $statusCode
+	 * @param string $fixture
+	 *
+	 * @dataProvider ./../../../fixtures/Controllers/triggersUpdate.php
+	 */
+	public function testUpdate(string $url, string $body, int $statusCode, string $fixture): void
+	{
+		/** @var Router\Router $router */
+		$router = $this->getContainer()->getByType(Router\Router::class);
+
+		$request = new ServerRequest(
+			RequestMethodInterface::METHOD_PATCH,
+			$url,
+			[],
+			$body
+		);
+
+		$response = $router->handle($request);
+
+		Tools\JsonAssert::assertFixtureMatch(
+			$fixture,
+			(string) $response->getBody()
+		);
+		Assert::same($statusCode, $response->getStatusCode());
+		Assert::type(Http\Response::class, $response);
+	}
+
+	/**
+	 * @param string $url
+	 * @param int $statusCode
+	 * @param string $fixture
+	 *
+	 * @dataProvider ./../../../fixtures/Controllers/triggersDelete.php
+	 */
+	public function testDelete(string $url, int $statusCode, string $fixture): void
+	{
+		/** @var Router\Router $router */
+		$router = $this->getContainer()->getByType(Router\Router::class);
+
+		$request = new ServerRequest(
+			RequestMethodInterface::METHOD_DELETE,
+			$url
+		);
+
+		$response = $router->handle($request);
+
+		Tools\JsonAssert::assertFixtureMatch(
+			$fixture,
+			(string) $response->getBody()
+		);
+		Assert::same($statusCode, $response->getStatusCode());
+		Assert::type(Http\Response::class, $response);
+	}
+
 }
 
 $test_case = new TriggersV1ControllerTest();
