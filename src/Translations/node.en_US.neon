@@ -12,3 +12,117 @@
 #
 # @date			05.04.20
 #
+
+base:
+	messages:
+		notValidJson:
+			heading	: "Not valid content"
+			message	: "Provided request content is not valid JSON content"
+		notValidJsonApi:
+			heading	: "Not valid content"
+			message	: "Provided request content is not valid {JSON:API} content"
+		unknownRelation:
+			heading	: "Relation not found"
+			message	: "Requested unknown relation"
+		relationNotFound:
+			heading	: "Relation not found"
+			message	: "Requested relation %relation% was not found"
+		missingRequired:
+			heading	: "Missing required attribute"
+			message	: "Provided request is missing required attribute or relation"
+		invalid:
+			heading	: "Bad request"
+			message	: "Request resource identifier is invalid"
+		identifierInvalid:
+			heading	: "Entity identifier invalid"
+			message	: "Provided entity identifier is not valid"
+		invalidTriggerType:
+			heading	: "Invalid trigger type"
+			message	: "Data for given trigger id could not be loaded"
+		triggerNotFound:
+			heading	: "Trigger not found"
+			message	: "Requested trigger was not found"
+		uniqueConstraint:
+			heading	: "Attribute not unique"
+			message	: "Provided attribute is not unique"
+
+triggers:
+	messages:
+		invalidType:
+			heading	: "Invalid type"
+			message	: "Provided trigger entity type is not valid"
+		notCreated:
+			heading	: "System error"
+			message	: "Something went wrong, trigger could not be created"
+		notUpdated:
+			heading	: "System error"
+			message	: "Something went wrong, trigger could not be updated"
+		notDeleted:
+			heading	: "System error"
+			message	: "Something went wrong, trigger could not be deleted"
+
+actions:
+	messages:
+		invalidType:
+			heading	: "Invalid type"
+			message	: "Provided action entity type is not valid"
+		notCreated:
+			heading	: "System error"
+			message	: "Something went wrong, trigger action could not be created"
+		notFound:
+			heading	: "Not found"
+			message	: "Requested action was not found"
+		notDeleted:
+			heading	: "System error"
+			message	: "Something went wrong, trigger action could not be deleted"
+		propertyNotUnique:
+			heading	: "Property not unique"
+			message	: "Action property have to be unique per trigger"
+
+notifications:
+	messages:
+		invalidType:
+			heading	: "Invalid type"
+			message	: "Provided notification entity type is not valid"
+		notCreated:
+			heading	: "System error"
+			message	: "Something went wrong, trigger notification could not be created"
+		notFound:
+			heading	: "Not found"
+			message	: "Requested notification was not found"
+		notDeleted:
+			heading	: "System error"
+			message	: "Something went wrong, trigger notification could not be deleted"
+		invalidPhone:
+			heading	: "Invalid phone"
+			message	: "Provided phone number is not valid"
+		invalidEmailAddress:
+			heading	: "Invalid address"
+			message	: "Provided email address is not valid"
+		numberNotUnique:
+			heading	: "Phone number not unique"
+			message	: "Provided phone number have to be unique per trigger"
+		emailNotUnique:
+			heading	: "Email not unique"
+			message	: "Provided email address have to be unique per trigger"
+
+conditions:
+	messages:
+		invalidType:
+			heading	: "Invalid type"
+			message	: "Provided condition entity type is not valid"
+		notCreated:
+			heading	: "System error"
+			message	: "Something went wrong, trigger condition could not be created"
+		notFound:
+			heading	: "Not found"
+			message	: "Requested condition was not found"
+		notDeleted:
+			heading	: "System error"
+			message	: "Something went wrong, trigger condition could not be deleted"
+		invalidOperator:
+			heading	: "Invalid operator"
+			message	: "Provided operator is not valid"
+		propertyNotUnique:
+			heading	: "Property not unique"
+			message	: "Condition property have to be unique per trigger"

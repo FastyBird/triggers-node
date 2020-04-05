@@ -90,59 +90,65 @@ class Router extends Routing\Router
 			});
 
 			$group->group('/triggers/{' . self::URL_TRIGGER_ID . '}', function (Routing\RouteCollector $group): void {
-				/**
-				 * TRIGGER ACTIONS
-				 */
-				$route = $group->get('/actions', [$this->actionsV1Controller, 'index']);
-				$route->setName('trigger.actions');
+				$group->group('/actions', function (Routing\RouteCollector $group): void {
+					/**
+					 * TRIGGER ACTIONS
+					 */
+					$route = $group->get('', [$this->actionsV1Controller, 'index']);
+					$route->setName('trigger.actions');
 
-				$route = $group->get('/actions/{' . self::URL_ITEM_ID . '}', [$this->actionsV1Controller, 'read']);
-				$route->setName('trigger.action');
+					$route = $group->get('/{' . self::URL_ITEM_ID . '}', [$this->actionsV1Controller, 'read']);
+					$route->setName('trigger.action');
 
-				$group->post('', [$this->actionsV1Controller, 'create']);
+					$group->post('', [$this->actionsV1Controller, 'create']);
 
-				$group->patch('/{' . self::URL_ITEM_ID . '}', [$this->actionsV1Controller, 'update']);
+					$group->patch('/{' . self::URL_ITEM_ID . '}', [$this->actionsV1Controller, 'update']);
 
-				$group->delete('/{' . self::URL_ITEM_ID . '}', [$this->actionsV1Controller, 'delete']);
+					$group->delete('/{' . self::URL_ITEM_ID . '}', [$this->actionsV1Controller, 'delete']);
 
-				$route = $group->get('/actions/{' . self::URL_ITEM_ID . '}/relationships/{' . self::RELATION_ENTITY . '}', [$this->actionsV1Controller, 'readRelationship']);
-				$route->setName('trigger.action.relationship');
+					$route = $group->get('/{' . self::URL_ITEM_ID . '}/relationships/{' . self::RELATION_ENTITY . '}', [$this->actionsV1Controller, 'readRelationship']);
+					$route->setName('trigger.action.relationship');
+				});
 
-				/**
-				 * TRIGGER NOTIFICATIONS
-				 */
-				$route = $group->get('/notifications', [$this->notificationsV1Controller, 'index']);
-				$route->setName('trigger.notifications');
+				$group->group('/notifications', function (Routing\RouteCollector $group): void {
+					/**
+					 * TRIGGER NOTIFICATIONS
+					 */
+					$route = $group->get('', [$this->notificationsV1Controller, 'index']);
+					$route->setName('trigger.notifications');
 
-				$route = $group->get('/notifications/{' . self::URL_ITEM_ID . '}', [$this->notificationsV1Controller, 'read']);
-				$route->setName('trigger.notification');
+					$route = $group->get('/{' . self::URL_ITEM_ID . '}', [$this->notificationsV1Controller, 'read']);
+					$route->setName('trigger.notification');
 
-				$group->post('', [$this->notificationsV1Controller, 'create']);
+					$group->post('', [$this->notificationsV1Controller, 'create']);
 
-				$group->patch('/{' . self::URL_ITEM_ID . '}', [$this->notificationsV1Controller, 'update']);
+					$group->patch('/{' . self::URL_ITEM_ID . '}', [$this->notificationsV1Controller, 'update']);
 
-				$group->delete('/{' . self::URL_ITEM_ID . '}', [$this->notificationsV1Controller, 'delete']);
+					$group->delete('/{' . self::URL_ITEM_ID . '}', [$this->notificationsV1Controller, 'delete']);
 
-				$route = $group->get('/notifications/{' . self::URL_ITEM_ID . '}/relationships/{' . self::RELATION_ENTITY . '}', [$this->notificationsV1Controller, 'readRelationship']);
-				$route->setName('trigger.notification.relationship');
+					$route = $group->get('/{' . self::URL_ITEM_ID . '}/relationships/{' . self::RELATION_ENTITY . '}', [$this->notificationsV1Controller, 'readRelationship']);
+					$route->setName('trigger.notification.relationship');
+				});
 
-				/**
-				 * TRIGGER CONDITIONS
-				 */
-				$route = $group->get('/conditions', [$this->conditionsV1Controller, 'index']);
-				$route->setName('trigger.conditions');
+				$group->group('/conditions', function (Routing\RouteCollector $group): void {
+					/**
+					 * TRIGGER CONDITIONS
+					 */
+					$route = $group->get('', [$this->conditionsV1Controller, 'index']);
+					$route->setName('trigger.conditions');
 
-				$route = $group->get('/conditions/{' . self::URL_ITEM_ID . '}', [$this->conditionsV1Controller, 'read']);
-				$route->setName('trigger.condition');
+					$route = $group->get('/{' . self::URL_ITEM_ID . '}', [$this->conditionsV1Controller, 'read']);
+					$route->setName('trigger.condition');
 
-				$group->post('', [$this->conditionsV1Controller, 'create']);
+					$group->post('', [$this->conditionsV1Controller, 'create']);
 
-				$group->patch('/{' . self::URL_ITEM_ID . '}', [$this->conditionsV1Controller, 'update']);
+					$group->patch('/{' . self::URL_ITEM_ID . '}', [$this->conditionsV1Controller, 'update']);
 
-				$group->delete('/{' . self::URL_ITEM_ID . '}', [$this->conditionsV1Controller, 'delete']);
+					$group->delete('/{' . self::URL_ITEM_ID . '}', [$this->conditionsV1Controller, 'delete']);
 
-				$route = $group->get('/conditions/{' . self::URL_ITEM_ID . '}/relationships/{' . self::RELATION_ENTITY . '}', [$this->conditionsV1Controller, 'readRelationship']);
-				$route->setName('trigger.condition.relationship');
+					$route = $group->get('/{' . self::URL_ITEM_ID . '}/relationships/{' . self::RELATION_ENTITY . '}', [$this->conditionsV1Controller, 'readRelationship']);
+					$route->setName('trigger.condition.relationship');
+				});
 			});
 		});
 	}

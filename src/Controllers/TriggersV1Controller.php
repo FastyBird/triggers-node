@@ -342,7 +342,7 @@ final class TriggersV1Controller extends BaseV1Controller
 		NodeWebServerHttp\Response $response
 	): NodeWebServerHttp\Response {
 		// At first, try to load trigger
-		$trigger = $this->findTrigger($request->getAttribute(Router\Router::URL_TRIGGER_ID));
+		$trigger = $this->findTrigger($request->getAttribute(Router\Router::URL_ITEM_ID));
 
 		$relationEntity = strtolower($request->getAttribute(Router\Router::RELATION_ENTITY));
 
