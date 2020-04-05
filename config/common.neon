@@ -136,6 +136,15 @@ services:
 
 	- {factory: FastyBird\TriggersNode\Consumers\DevicePropertyMessageHandler}
 
+	# Events subscribers
+	####################
+
+	- {factory: FastyBird\TriggersNode\Subscribers\ActionEntitySubscriber}
+
+	- {factory: FastyBird\TriggersNode\Subscribers\NotificationEntitySubscriber}
+
+	- {factory: FastyBird\TriggersNode\Subscribers\ConditionEntitySubscriber}
+
 	# Database repositories
 	#######################
 
