@@ -146,11 +146,25 @@ final class DeviceMessageHandler implements NodeLibsConsumers\IMessageHandler
 
 		$this->clearActions($findQuery);
 
-		/** @var Queries\FindConditionsQuery<Entities\Conditions\PropertyCondition> $findQuery */
+		/** @var Queries\FindConditionsQuery<Entities\Conditions\DevicePropertyCondition> $findQuery */
 		$findQuery = new Queries\FindConditionsQuery();
 		$findQuery->forDevice($device);
 
-		$this->clearConditions($findQuery);
+		$conditions = $this->conditionRepository->findAllBy($findQuery, Entities\Conditions\DevicePropertyCondition::class);
+
+		foreach ($conditions as $condition) {
+			$this->conditionsManager->delete($condition);
+		}
+
+		/** @var Queries\FindConditionsQuery<Entities\Conditions\ChannelPropertyCondition> $findQuery */
+		$findQuery = new Queries\FindConditionsQuery();
+		$findQuery->forDevice($device);
+
+		$conditions = $this->conditionRepository->findAllBy($findQuery, Entities\Conditions\ChannelPropertyCondition::class);
+
+		foreach ($conditions as $condition) {
+			$this->conditionsManager->delete($condition);
+		}
 
 		$this->logger->info('[CONSUMER] Successfully consumed device entity message');
 	}
@@ -186,23 +200,6 @@ final class DeviceMessageHandler implements NodeLibsConsumers\IMessageHandler
 
 		foreach ($actions as $action) {
 			$this->actionsManager->delete($action);
-		}
-	}
-
-	/**
-	 * @param Queries\FindConditionsQuery $findQuery
-	 *
-	 * @return void
-	 *
-	 * @phpstan-template T of Entities\Conditions\PropertyCondition
-	 * @phpstan-param    Queries\FindConditionsQuery<T> $findQuery
-	 */
-	private function clearConditions(Queries\FindConditionsQuery $findQuery): void
-	{
-		$conditions = $this->conditionRepository->findAllBy($findQuery, Entities\Conditions\PropertyCondition::class);
-
-		foreach ($conditions as $condition) {
-			$this->conditionsManager->delete($condition);
 		}
 	}
 

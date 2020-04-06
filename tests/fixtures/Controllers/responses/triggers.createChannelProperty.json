@@ -3,6 +3,7 @@
     "attributes" : {
       "channel" : "channel-identifier",
       "comment" : null,
+      "device" : "device-identifier",
       "enabled" : true,
       "name" : "This is channel trigger",
       "operand" : "2",

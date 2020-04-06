@@ -4,6 +4,7 @@
       "attributes" : {
         "channel" : "channel-one",
         "comment" : "996213a4-d959-4f6c-b77c-f248ce8f8d84",
+        "device" : "device-one",
         "enabled" : true,
         "name" : "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
         "operand" : "3",
@@ -40,6 +41,7 @@
       "attributes" : {
         "channel" : "channel-two",
         "comment" : "ade714f4-ca9b-40bc-8022-dcb3a4f1b705",
+        "device" : "device-one",
         "enabled" : true,
         "name" : "7c055b2b-60c3-4017-93db-e9478d8aa662",
         "operand" : "1",
@@ -76,6 +78,7 @@
       "attributes" : {
         "channel" : "channel-one",
         "comment" : "996213a4-d959-4f6c-b77c-f248ce8f8d84",
+        "device" : "device-two",
         "enabled" : true,
         "name" : "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
         "operand" : "1",
@@ -124,6 +127,7 @@
       "attributes" : {
         "channel" : "channel-two",
         "comment" : "996213a4-d959-4f6c-b77c-f248ce8f8d84",
+        "device" : "device-two",
         "enabled" : true,
         "name" : "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
         "operand" : "2",

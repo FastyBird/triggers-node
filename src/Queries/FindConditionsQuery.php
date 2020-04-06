@@ -75,7 +75,7 @@ class FindConditionsQuery extends DoctrineOrmQuery\QueryObject
 	public function forDevice(string $device): void
 	{
 		$this->filter[] = function (ORM\QueryBuilder $qb) use ($device): void {
-			$qb->andWhere('c.device = :device')->setParameter('device', $device);
+			$qb->andWhere('cdc.device = :device')->setParameter('device', $device);
 		};
 	}
 
@@ -88,8 +88,8 @@ class FindConditionsQuery extends DoctrineOrmQuery\QueryObject
 	public function forChannel(string $device, string $channel): void
 	{
 		$this->filter[] = function (ORM\QueryBuilder $qb) use ($device, $channel): void {
-			$qb->andWhere('c.device = :device')->setParameter('device', $device);
-			$qb->andWhere('c.channel = :channel')->setParameter('channel', $channel);
+			$qb->andWhere('cdc.device = :device')->setParameter('device', $device);
+			$qb->andWhere('cdc.channel = :channel')->setParameter('channel', $channel);
 		};
 	}
 
@@ -102,8 +102,8 @@ class FindConditionsQuery extends DoctrineOrmQuery\QueryObject
 	public function forDeviceProperty(string $device, string $property): void
 	{
 		$this->filter[] = function (ORM\QueryBuilder $qb) use ($device, $property): void {
-			$qb->andWhere('c.device = :device')->setParameter('device', $device);
-			$qb->andWhere('c.property = :property')->setParameter('property', $property);
+			$qb->andWhere('cdc.device = :device')->setParameter('device', $device);
+			$qb->andWhere('cdc.property = :property')->setParameter('property', $property);
 		};
 	}
 
@@ -117,9 +117,9 @@ class FindConditionsQuery extends DoctrineOrmQuery\QueryObject
 	public function forChannelProperty(string $device, string $channel, string $property): void
 	{
 		$this->filter[] = function (ORM\QueryBuilder $qb) use ($device, $channel, $property): void {
-			$qb->andWhere('c.device = :device')->setParameter('device', $device);
-			$qb->andWhere('c.channel = :channel')->setParameter('channel', $channel);
-			$qb->andWhere('c.property = :property')->setParameter('property', $property);
+			$qb->andWhere('cdc.device = :device')->setParameter('device', $device);
+			$qb->andWhere('cdc.channel = :channel')->setParameter('channel', $channel);
+			$qb->andWhere('cdc.property = :property')->setParameter('property', $property);
 		};
 	}
 
@@ -138,11 +138,11 @@ class FindConditionsQuery extends DoctrineOrmQuery\QueryObject
 		}
 
 		$this->filter[] = function (ORM\QueryBuilder $qb) use ($operator): void {
-			$qb->andWhere('c.operator = :operator')->setParameter('operator', $operator);
+			$qb->andWhere('cdc.operator = :operator')->setParameter('operator', $operator);
 		};
 
 		$this->filter[] = function (ORM\QueryBuilder $qb) use ($value): void {
-			$qb->andWhere('c.operand = :operand')->setParameter('operand', $value);
+			$qb->andWhere('cdc.operand = :operand')->setParameter('operand', $value);
 		};
 	}
 
@@ -158,11 +158,11 @@ class FindConditionsQuery extends DoctrineOrmQuery\QueryObject
 			if ($previousValue !== null) {
 				$qb
 					->andWhere(
-						'(previousValue <= c.operand AND c.operand < :value AND c.operator = :operatorAbove)'
+						'(previousValue <= cdc.operand AND cdc.operand < :value AND cdc.operator = :operatorAbove)'
 						. ' OR '
-						. '(previousValue >= c.operand AND c.operand > :value AND c.operator = :operatorBelow)'
+						. '(previousValue >= cdc.operand AND cdc.operand > :value AND cdc.operator = :operatorBelow)'
 						. ' OR '
-						. '(previousValue <> c.operand AND c.operand = :value AND c.operator = :operatorEqual)'
+						. '(previousValue <> cdc.operand AND cdc.operand = :value AND cdc.operator = :operatorEqual)'
 					)
 					->setParameter('value', $value)
 					->setParameter('previousValue', $previousValue)
@@ -173,11 +173,11 @@ class FindConditionsQuery extends DoctrineOrmQuery\QueryObject
 			} else {
 				$qb
 					->andWhere(
-						'(c.operand < :value AND c.operator = :operatorAbove)'
+						'(cdc.operand < :value AND cdc.operator = :operatorAbove)'
 						. ' OR '
-						. '(c.operand > :value AND c.operator = :operatorBelow)'
+						. '(cdc.operand > :value AND cdc.operator = :operatorBelow)'
 						. ' OR '
-						. '(c.operand = :value AND c.operator = :operatorEqual)'
+						. '(cdc.operand = :value AND cdc.operator = :operatorEqual)'
 					)
 					->setParameter('value', $value)
 					->setParameter('operatorAbove', Types\ConditionOperatorType::STATE_VALUE_ABOVE)
@@ -197,7 +197,7 @@ class FindConditionsQuery extends DoctrineOrmQuery\QueryObject
 	{
 		$this->filter[] = function (ORM\QueryBuilder $qb) use ($value, $previousValue): void {
 			$qb
-				->andWhere('c.operand >= :previousValue AND c.operand < :value AND c.operator = :operator')
+				->andWhere('cdc.operand >= :previousValue AND cdc.operand < :value AND cdc.operator = :operator')
 				->setParameter('value', $value)
 				->setParameter('previousValue', $previousValue)
 				->setParameter('operator', Types\ConditionOperatorType::STATE_VALUE_ABOVE);
@@ -214,7 +214,7 @@ class FindConditionsQuery extends DoctrineOrmQuery\QueryObject
 	{
 		$this->filter[] = function (ORM\QueryBuilder $qb) use ($value, $previousValue): void {
 			$qb
-				->andWhere('c.operand <= :previousValue AND c.operand > :value AND c.operator = :operator')
+				->andWhere('cdc.operand <= :previousValue AND cdc.operand > :value AND cdc.operator = :operator')
 				->setParameter('value', $value)
 				->setParameter('previousValue', $previousValue)
 				->setParameter('operator', Types\ConditionOperatorType::STATE_VALUE_BELOW);
@@ -226,13 +226,8 @@ class FindConditionsQuery extends DoctrineOrmQuery\QueryObject
 	 */
 	public function onlyEnabledTriggers(): void
 	{
-		$this->select[] = function (ORM\QueryBuilder $qb): void {
-			$qb->join(Entities\Conditions\Condition::class, 'ac', ORM\Query\Expr\Join::WITH, 'c = ac');
-			$qb->join('ac.trigger', 'tr');
-		};
-
 		$this->filter[] = function (ORM\QueryBuilder $qb): void {
-			$qb->andWhere('tr.enabled = :enabled')->setParameter('enabled', true);
+			$qb->andWhere('trigger.enabled = :enabled')->setParameter('enabled', true);
 		};
 	}
 
@@ -281,9 +276,23 @@ class FindConditionsQuery extends DoctrineOrmQuery\QueryObject
 	 */
 	private function createBasicDql(ORM\EntityRepository $repository): ORM\QueryBuilder
 	{
-		$qb = $repository->createQueryBuilder('c');
-		$qb->addSelect('trigger');
-		$qb->join('c.trigger', 'trigger');
+		if ($repository->getClassName() === Entities\Conditions\PropertyCondition::class) {
+			$qb = $repository->createQueryBuilder('pc');
+			$qb->join(Entities\Conditions\Condition::class, 'c', ORM\Query\Expr\Join::WITH, 'pc = c');
+
+		} elseif (
+			$repository->getClassName() === Entities\Conditions\ChannelPropertyCondition::class
+			|| $repository->getClassName() === Entities\Conditions\DevicePropertyCondition::class
+		) {
+			$qb = $repository->createQueryBuilder('cdc');
+			$qb->join(Entities\Conditions\Condition::class, 'c', ORM\Query\Expr\Join::WITH, 'cdc = c');
+			$qb->join('c.trigger', 'trigger');
+
+		} else {
+			$qb = $repository->createQueryBuilder('c');
+			$qb->addSelect('trigger');
+			$qb->join('c.trigger', 'trigger');
+		}
 
 		foreach ($this->filter as $modifier) {
 			$modifier($qb);

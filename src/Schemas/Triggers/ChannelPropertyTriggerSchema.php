@@ -63,6 +63,7 @@ final class ChannelPropertyTriggerSchema extends TriggerSchema
 	public function getAttributes($trigger, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
 		return array_merge((array) parent::getAttributes($trigger, $context), [
+			'device'   => $trigger->getDevice(),
 			'channel'  => $trigger->getChannel(),
 			'property' => $trigger->getProperty(),
 			'operator' => $trigger->getOperator()->getValue(),
