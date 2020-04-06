@@ -126,3 +126,6 @@ conditions:
 		propertyNotUnique:
 			heading	: "Property not unique"
 			message	: "Condition property have to be unique per trigger"
+		invalidTime:
+			heading	: "Time is not valid"
+			message	: "Provided time value is not valid ATOM value"

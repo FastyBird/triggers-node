@@ -28,7 +28,7 @@ return [
 		StatusCodeInterface::STATUS_NOT_FOUND,
 		__DIR__ . '/responses/notifications.notFound.json',
 	],
-	'readRelationshipsActions' => [
+	'readRelationshipsTrigger' => [
 		'/v1/triggers/c64ba1c4-0eda-4cab-87a0-4d634f7b67f4/notifications/05f28df9-5f19-4923-b3f8-b9090116dadc/relationships/trigger',
 		StatusCodeInterface::STATUS_OK,
 		__DIR__ . '/responses/notifications.readRelationships.trigger.json',

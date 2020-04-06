@@ -65,7 +65,7 @@ final class TimeConditionSchema extends ConditionSchema
 	{
 		return array_merge((array) parent::getAttributes($condition, $context), [
 			'time' => $condition->getTime()->format(DateTime::ATOM),
-			'days' => $condition->getDays(),
+			'days' => (array) $condition->getDays(),
 		]);
 	}
 

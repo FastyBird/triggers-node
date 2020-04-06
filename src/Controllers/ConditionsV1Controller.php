@@ -61,6 +61,9 @@ final class ConditionsV1Controller extends BaseV1Controller
 	/** @var Hydrators\Conditions\ChannelPropertyConditionHydrator */
 	private $channelPropertyConditionHydrator;
 
+	/** @var Hydrators\Conditions\TimeConditionHydrator */
+	private $timeConditionHydrator;
+
 	/** @var string */
 	protected $translationDomain = 'node.conditions';
 
@@ -69,7 +72,8 @@ final class ConditionsV1Controller extends BaseV1Controller
 		Models\Conditions\IConditionRepository $conditionRepository,
 		Models\Conditions\IConditionsManager $conditionsManager,
 		Hydrators\Conditions\DevicePropertyConditionHydrator $devicePropertyConditionHydrator,
-		Hydrators\Conditions\ChannelPropertyConditionHydrator $channelPropertyConditionHydrator
+		Hydrators\Conditions\ChannelPropertyConditionHydrator $channelPropertyConditionHydrator,
+		Hydrators\Conditions\TimeConditionHydrator $timeConditionHydrator
 	) {
 		$this->triggerRepository = $triggerRepository;
 		$this->conditionRepository = $conditionRepository;
@@ -77,6 +81,7 @@ final class ConditionsV1Controller extends BaseV1Controller
 
 		$this->devicePropertyConditionHydrator = $devicePropertyConditionHydrator;
 		$this->channelPropertyConditionHydrator = $channelPropertyConditionHydrator;
+		$this->timeConditionHydrator = $timeConditionHydrator;
 	}
 
 	/**
@@ -169,6 +174,9 @@ final class ConditionsV1Controller extends BaseV1Controller
 
 				} elseif ($document->getResource()->getType() === Schemas\Conditions\ChannelPropertyConditionSchema::SCHEMA_TYPE) {
 					$condition = $this->conditionsManager->create($this->channelPropertyConditionHydrator->hydrate($document->getResource()));
+
+				} elseif ($document->getResource()->getType() === Schemas\Conditions\TimeConditionSchema::SCHEMA_TYPE) {
+					$condition = $this->conditionsManager->create($this->timeConditionHydrator->hydrate($document->getResource()));
 
 				} else {
 					throw new NodeWebServerExceptions\JsonApiErrorException(
@@ -316,6 +324,12 @@ final class ConditionsV1Controller extends BaseV1Controller
 				$condition = $this->conditionsManager->update(
 					$condition,
 					$this->channelPropertyConditionHydrator->hydrate($document->getResource(), $condition)
+				);
+
+			} elseif ($document->getResource()->getType() === Schemas\Conditions\TimeConditionSchema::SCHEMA_TYPE) {
+				$condition = $this->conditionsManager->update(
+					$condition,
+					$this->timeConditionHydrator->hydrate($document->getResource(), $condition)
 				);
 
 			} else {

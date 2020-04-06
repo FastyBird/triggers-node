@@ -16,6 +16,7 @@
 namespace FastyBird\TriggersNode\Entities\Conditions;
 
 use DateTimeInterface;
+use Nette\Utils;
 
 /**
  * Time condition entity interface
@@ -41,15 +42,15 @@ interface ITimeCondition extends ICondition
 	public function getTime(): DateTimeInterface;
 
 	/**
-	 * @param int[] $days
+	 * @param Utils\ArrayHash<int>|int[]|mixed $days
 	 *
 	 * @return void
 	 */
-	public function setDays(array $days): void;
+	public function setDays($days): void;
 
 	/**
-	 * @return int[]
+	 * @return Utils\ArrayHash<int>
 	 */
-	public function getDays(): array;
+	public function getDays(): Utils\ArrayHash;
 
 }

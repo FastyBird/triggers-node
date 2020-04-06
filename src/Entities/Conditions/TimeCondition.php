@@ -21,6 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
 use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Exceptions;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
+use Nette\Utils;
 use Ramsey\Uuid;
 use Throwable;
 
@@ -56,7 +57,7 @@ class TimeCondition extends Condition implements ITimeCondition
 
 	/**
 	 * @param DateTimeInterface $time
-	 * @param int[] $days
+	 * @param Utils\ArrayHash $days
 	 * @param Entities\Triggers\IAutomaticTrigger $trigger
 	 * @param Uuid\UuidInterface|null $id
 	 *
@@ -64,7 +65,7 @@ class TimeCondition extends Condition implements ITimeCondition
 	 */
 	public function __construct(
 		DateTimeInterface $time,
-		array $days,
+		Utils\ArrayHash $days,
 		Entities\Triggers\IAutomaticTrigger $trigger,
 		?Uuid\UuidInterface $id = null
 	) {
@@ -97,21 +98,25 @@ class TimeCondition extends Condition implements ITimeCondition
 	/**
 	 * {@inheritDoc}
 	 */
-	public function setDays(array $days): void
+	public function setDays($days): void
 	{
+		if (!is_array($days) && !$days instanceof Utils\ArrayHash) {
+			throw new Exceptions\InvalidArgumentException('Provided days have to be valid array.');
+		}
+
 		foreach ($days as $day) {
 			if (!in_array($day, [1, 2, 3, 4, 5, 6, 7], true)) {
 				throw new Exceptions\InvalidArgumentException('Provided days array is not valid.');
 			}
 		}
 
-		$this->days = $days;
+		$this->days = (array) $days;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getDays(): array
+	public function getDays(): Utils\ArrayHash
 	{
 		$days = [];
 
@@ -119,7 +124,7 @@ class TimeCondition extends Condition implements ITimeCondition
 			$days[] = (int) $day;
 		}
 
-		return $days;
+		return Utils\ArrayHash::from($days);
 	}
 
 }
