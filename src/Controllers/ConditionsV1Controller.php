@@ -28,6 +28,7 @@ use FastyBird\TriggersNode\Router;
 use FastyBird\TriggersNode\Schemas;
 use Fig\Http\Message\StatusCodeInterface;
 use IPub\DoctrineCrud\Exceptions as DoctrineCrudExceptions;
+use Nette\Utils;
 use Psr\Http\Message;
 use Ramsey\Uuid;
 use Throwable;
@@ -164,10 +165,10 @@ final class ConditionsV1Controller extends BaseV1Controller
 				$this->getOrmConnection()->beginTransaction();
 
 				if ($document->getResource()->getType() === Schemas\Conditions\DevicePropertyConditionSchema::SCHEMA_TYPE) {
-					$createValues = $this->devicePropertyConditionHydrator->hydrate($document->getResource());
+					$condition = $this->conditionsManager->create($this->devicePropertyConditionHydrator->hydrate($document->getResource()));
 
 				} elseif ($document->getResource()->getType() === Schemas\Conditions\ChannelPropertyConditionSchema::SCHEMA_TYPE) {
-					$createValues = $this->channelPropertyConditionHydrator->hydrate($document->getResource());
+					$condition = $this->conditionsManager->create($this->channelPropertyConditionHydrator->hydrate($document->getResource()));
 
 				} else {
 					throw new NodeWebServerExceptions\JsonApiErrorException(
@@ -179,10 +180,6 @@ final class ConditionsV1Controller extends BaseV1Controller
 						]
 					);
 				}
-
-				$createValues->offsetSet('trigger', $trigger);
-
-				$condition = $this->conditionsManager->create($createValues);
 
 				// Commit all changes into database
 				$this->getOrmConnection()->commit();
@@ -217,6 +214,29 @@ final class ConditionsV1Controller extends BaseV1Controller
 					[
 						'pointer' => '/data/relationships/property',
 					]
+				);
+
+			} catch (Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex) {
+				// Revert all changes when error occur
+				$this->getOrmConnection()->rollback();
+
+				if (preg_match("%key '(?P<key>.+)_unique'%", $ex->getMessage(), $match)) {
+					if (Utils\Strings::startsWith($match['key'], 'device_')) {
+						throw new NodeWebServerExceptions\JsonApiErrorException(
+							StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+							$this->translator->translate('//node.base.messages.uniqueConstraint.heading'),
+							$this->translator->translate('//node.base.messages.uniqueConstraint.message'),
+							[
+								'pointer' => '/data/attributes/' . Utils\Strings::substring($match['key'], 7),
+							]
+						);
+					}
+				}
+
+				throw new NodeWebServerExceptions\JsonApiErrorException(
+					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+					$this->translator->translate('//node.base.messages.uniqueConstraint.heading'),
+					$this->translator->translate('//node.base.messages.uniqueConstraint.message')
 				);
 
 			} catch (Throwable $ex) {

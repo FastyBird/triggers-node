@@ -17,6 +17,7 @@ namespace FastyBird\TriggersNode\Entities\Notifications;
 
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\TriggersNode\Entities;
+use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use Ramsey\Uuid;
 use Throwable;
 
@@ -37,6 +38,7 @@ class EmailNotification extends Notification implements IEmailNotification
 	/**
 	 * @var string
 	 *
+	 * @IPubDoctrine\Crud(is={"required", "writable"})
 	 * @ORM\Column(type="string", name="notification_email", length=150, nullable=false)
 	 */
 	private $email;
@@ -55,6 +57,14 @@ class EmailNotification extends Notification implements IEmailNotification
 	) {
 		parent::__construct($trigger, $id);
 
+		$this->email = $email;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setEmail(string $email): void
+	{
 		$this->email = $email;
 	}
 

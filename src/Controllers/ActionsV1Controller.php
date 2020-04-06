@@ -28,6 +28,7 @@ use FastyBird\TriggersNode\Router;
 use FastyBird\TriggersNode\Schemas;
 use Fig\Http\Message\StatusCodeInterface;
 use IPub\DoctrineCrud\Exceptions as DoctrineCrudExceptions;
+use Nette\Utils;
 use Psr\Http\Message;
 use Ramsey\Uuid;
 use Throwable;
@@ -142,10 +143,7 @@ final class ActionsV1Controller extends BaseV1Controller
 			$this->getOrmConnection()->beginTransaction();
 
 			if ($document->getResource()->getType() === Schemas\Actions\ChannelPropertyActionSchema::SCHEMA_TYPE) {
-				$createValues = $this->channelPropertyActionHydrator->hydrate($document->getResource());
-				$createValues->offsetSet('trigger', $trigger);
-
-				$action = $this->actionsManager->create($createValues);
+				$action = $this->actionsManager->create($this->channelPropertyActionHydrator->hydrate($document->getResource()));
 
 			} else {
 				throw new NodeWebServerExceptions\JsonApiErrorException(
@@ -191,6 +189,29 @@ final class ActionsV1Controller extends BaseV1Controller
 				[
 					'pointer' => '/data/relationships/property',
 				]
+			);
+
+		} catch (Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex) {
+			// Revert all changes when error occur
+			$this->getOrmConnection()->rollback();
+
+			if (preg_match("%key '(?P<key>.+)_unique'%", $ex->getMessage(), $match)) {
+				if (Utils\Strings::startsWith($match['key'], 'device_')) {
+					throw new NodeWebServerExceptions\JsonApiErrorException(
+						StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+						$this->translator->translate('//node.base.messages.uniqueConstraint.heading'),
+						$this->translator->translate('//node.base.messages.uniqueConstraint.message'),
+						[
+							'pointer' => '/data/attributes/' . Utils\Strings::substring($match['key'], 7),
+						]
+					);
+				}
+			}
+
+			throw new NodeWebServerExceptions\JsonApiErrorException(
+				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+				$this->translator->translate('//node.base.messages.uniqueConstraint.heading'),
+				$this->translator->translate('//node.base.messages.uniqueConstraint.message')
 			);
 
 		} catch (Throwable $ex) {

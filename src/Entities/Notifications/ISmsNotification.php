@@ -29,6 +29,13 @@ interface ISmsNotification extends INotification
 {
 
 	/**
+	 * @param Phone\Entities\Phone $phone
+	 *
+	 * @return void
+	 */
+	public function setPhone(Phone\Entities\Phone $phone): void;
+
+	/**
 	 * @return Phone\Entities\Phone
 	 */
 	public function getPhone(): Phone\Entities\Phone;

@@ -18,6 +18,7 @@ namespace FastyBird\TriggersNode\Entities\Conditions;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Types;
+use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use Ramsey\Uuid;
 use Throwable;
 
@@ -43,6 +44,7 @@ class ChannelPropertyCondition extends PropertyCondition implements IChannelProp
 	/**
 	 * @var string
 	 *
+	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="condition_device", length=100, nullable=false)
 	 */
 	private $device;
@@ -50,6 +52,7 @@ class ChannelPropertyCondition extends PropertyCondition implements IChannelProp
 	/**
 	 * @var string
 	 *
+	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="condition_channel", length=100, nullable=false)
 	 */
 	private $channel;
@@ -57,6 +60,7 @@ class ChannelPropertyCondition extends PropertyCondition implements IChannelProp
 	/**
 	 * @var string
 	 *
+	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="condition_property", length=100, nullable=false)
 	 */
 	private $property;

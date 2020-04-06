@@ -61,7 +61,7 @@ abstract class Trigger extends Entities\Entity implements ITrigger
 	/**
 	 * @var string
 	 *
-	 * @IPubDoctrine\Crud(is="writable")
+	 * @IPubDoctrine\Crud(is={"required", "writable"})
 	 * @ORM\Column(type="string", name="trigger_name", length=100, nullable=false)
 	 */
 	protected $name;

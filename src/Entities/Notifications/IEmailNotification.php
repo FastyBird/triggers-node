@@ -27,6 +27,13 @@ interface IEmailNotification extends INotification
 {
 
 	/**
+	 * @param string $email
+	 *
+	 * @return void
+	 */
+	public function setEmail(string $email): void;
+
+	/**
 	 * @return string
 	 */
 	public function getEmail(): string;

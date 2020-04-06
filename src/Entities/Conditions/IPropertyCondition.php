@@ -29,6 +29,13 @@ interface IPropertyCondition extends ICondition
 {
 
 	/**
+	 * @param Types\ConditionOperatorType $operator
+	 *
+	 * @return void
+	 */
+	public function setOperator(Types\ConditionOperatorType $operator): void;
+
+	/**
 	 * @return Types\ConditionOperatorType
 	 */
 	public function getOperator(): Types\ConditionOperatorType;

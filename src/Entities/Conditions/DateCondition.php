@@ -18,6 +18,7 @@ namespace FastyBird\TriggersNode\Entities\Conditions;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\TriggersNode\Entities;
+use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use Ramsey\Uuid;
 use Throwable;
 
@@ -38,6 +39,7 @@ class DateCondition extends Condition implements IDateCondition
 	/**
 	 * @var DateTimeInterface
 	 *
+	 * @IPubDoctrine\Crud(is={"required", "writable"})
 	 * @ORM\Column(type="datetime", name="condition_date", nullable=false)
 	 */
 	private $date;
@@ -56,6 +58,14 @@ class DateCondition extends Condition implements IDateCondition
 	) {
 		parent::__construct($trigger, $id);
 
+		$this->date = $date;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setDate(DateTimeInterface $date): void
+	{
 		$this->date = $date;
 	}
 

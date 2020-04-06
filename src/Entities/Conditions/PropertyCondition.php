@@ -19,6 +19,7 @@ use Consistence\Doctrine\Enum\EnumAnnotation as Enum;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Types;
+use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use Ramsey\Uuid;
 use Throwable;
 
@@ -31,6 +32,7 @@ abstract class PropertyCondition extends Condition implements IPropertyCondition
 	/**
 	 * @var Types\ConditionOperatorType
 	 *
+	 * @IPubDoctrine\Crud(is={"required", "writable"})
 	 * @Enum(class=Types\ConditionOperatorType::class)
 	 * @ORM\Column(type="string_enum", name="condition_operator", length=15, nullable=false)
 	 */
@@ -39,6 +41,7 @@ abstract class PropertyCondition extends Condition implements IPropertyCondition
 	/**
 	 * @var string
 	 *
+	 * @IPubDoctrine\Crud(is={"required", "writable"})
 	 * @ORM\Column(type="string", name="condition_operand", length=20, nullable=false)
 	 */
 	protected $operand;
@@ -61,6 +64,14 @@ abstract class PropertyCondition extends Condition implements IPropertyCondition
 
 		$this->operator = $operator;
 		$this->operand = $operand;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setOperator(Types\ConditionOperatorType $operator): void
+	{
+		$this->operator = $operator;
 	}
 
 	/**

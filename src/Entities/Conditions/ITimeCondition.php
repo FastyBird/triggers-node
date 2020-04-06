@@ -29,6 +29,13 @@ interface ITimeCondition extends ICondition
 {
 
 	/**
+	 * @param DateTimeInterface $time
+	 *
+	 * @return void
+	 */
+	public function setTime(DateTimeInterface $time): void;
+
+	/**
 	 * @return DateTimeInterface
 	 */
 	public function getTime(): DateTimeInterface;

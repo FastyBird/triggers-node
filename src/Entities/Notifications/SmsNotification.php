@@ -17,6 +17,7 @@ namespace FastyBird\TriggersNode\Entities\Notifications;
 
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\TriggersNode\Entities;
+use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\Phone;
 use Ramsey\Uuid;
 use Throwable;
@@ -38,6 +39,7 @@ class SmsNotification extends Notification implements ISmsNotification
 	/**
 	 * @var Phone\Entities\Phone
 	 *
+	 * @IPubDoctrine\Crud(is={"required", "writable"})
 	 * @ORM\Column(type="phone", name="notification_phone", length=150, nullable=false)
 	 */
 	private $phone;
@@ -56,6 +58,14 @@ class SmsNotification extends Notification implements ISmsNotification
 	) {
 		parent::__construct($trigger, $id);
 
+		$this->phone = $phone;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setPhone(Phone\Entities\Phone $phone): void
+	{
 		$this->phone = $phone;
 	}
 

@@ -17,6 +17,7 @@ namespace FastyBird\TriggersNode\Entities\Notifications;
 
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\TriggersNode\Entities;
+use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
 use Ramsey\Uuid;
 use Throwable;
@@ -57,6 +58,7 @@ abstract class Notification extends Entities\Entity implements INotification
 	/**
 	 * @var Entities\Triggers\ITrigger
 	 *
+	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\ManyToOne(targetEntity="FastyBird\TriggersNode\Entities\Triggers\Trigger", inversedBy="actions")
 	 * @ORM\JoinColumn(name="trigger_id", referencedColumnName="trigger_id", onDelete="CASCADE")
 	 */

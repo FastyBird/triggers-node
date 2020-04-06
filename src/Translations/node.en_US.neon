@@ -99,7 +99,7 @@ notifications:
 		invalidEmailAddress:
 			heading	: "Invalid address"
 			message	: "Provided email address is not valid"
-		numberNotUnique:
+		phoneNotUnique:
 			heading	: "Phone number not unique"
 			message	: "Provided phone number have to be unique per trigger"
 		emailNotUnique:

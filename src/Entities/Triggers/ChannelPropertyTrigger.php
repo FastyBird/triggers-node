@@ -20,6 +20,7 @@ use Doctrine\ORM\Mapping as ORM;
 use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Exceptions;
 use FastyBird\TriggersNode\Types;
+use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use Ramsey\Uuid;
 use Throwable;
 
@@ -48,6 +49,7 @@ class ChannelPropertyTrigger extends Trigger implements IChannelPropertyTrigger
 	/**
 	 * @var string
 	 *
+	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="trigger_device", length=100, nullable=false)
 	 */
 	private $device;
@@ -55,6 +57,7 @@ class ChannelPropertyTrigger extends Trigger implements IChannelPropertyTrigger
 	/**
 	 * @var string
 	 *
+	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="trigger_channel", length=100, nullable=false)
 	 */
 	private $channel;
@@ -62,6 +65,7 @@ class ChannelPropertyTrigger extends Trigger implements IChannelPropertyTrigger
 	/**
 	 * @var string
 	 *
+	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="trigger_property", length=100, nullable=false)
 	 */
 	private $property;
@@ -69,6 +73,7 @@ class ChannelPropertyTrigger extends Trigger implements IChannelPropertyTrigger
 	/**
 	 * @var Types\ConditionOperatorType
 	 *
+	 * @IPubDoctrine\Crud(is={"required", "writable"})
 	 * @Enum(class=Types\ConditionOperatorType::class)
 	 * @ORM\Column(type="string_enum", name="trigger_operator", length=15, nullable=false)
 	 */
@@ -77,6 +82,7 @@ class ChannelPropertyTrigger extends Trigger implements IChannelPropertyTrigger
 	/**
 	 * @var string
 	 *
+	 * @IPubDoctrine\Crud(is={"required", "writable"})
 	 * @ORM\Column(type="string", name="trigger_operand", length=100, nullable=false)
 	 */
 	private $operand;

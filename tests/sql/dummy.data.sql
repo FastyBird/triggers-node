@@ -83,3 +83,13 @@ INSERT IGNORE INTO `fb_actions_channel_property` (`action_id`, `action_device`, 
 	(_binary 0xE7496BD77BD64BD89ABB013261B88543, 'device-four', 'channel-three', 'output', 'on'),
 	(_binary 0xEA072FFF125E43B09D764A65738F4B88, 'device-four', 'channel-four', 'output', 'on'),
 	(_binary 0xEE2CDC9CF6A74F64BEBDEB0781A21A70, 'device-five', 'channel-one', 'output', 'on');
+
+INSERT IGNORE INTO `fb_notifications` (`notification_id`, `trigger_id`, `created_at`, `updated_at`, `notification_type`) VALUES
+	(_binary 0x05F28DF95F194923B3F8B9090116DADC, _binary 0xC64BA1C40EDA4CAB87A04D634F7B67F4, '2020-04-06 13:16:17', '2020-04-06 13:16:17', 'email'),
+	(_binary 0x4FE1019CF49E4CBF83E620B394E76317, _binary 0xC64BA1C40EDA4CAB87A04D634F7B67F4, '2020-04-06 13:27:07', '2020-04-06 13:27:07', 'sms');
+
+INSERT IGNORE INTO `fb_notifications_emails` (`notification_id`, `notification_email`) VALUES
+	(_binary 0x05F28DF95F194923B3F8B9090116DADC, 'john.doe@fastybird.com');
+
+INSERT IGNORE INTO `fb_notifications_sms` (`notification_id`, `notification_phone`) VALUES
+	(_binary 0x4FE1019CF49E4CBF83E620B394E76317, '+420778776776');

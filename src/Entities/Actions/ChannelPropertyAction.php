@@ -43,6 +43,7 @@ class ChannelPropertyAction extends Action implements IChannelPropertyAction
 	/**
 	 * @var string
 	 *
+	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="action_device", length=100, nullable=false)
 	 */
 	private $device;
@@ -50,6 +51,7 @@ class ChannelPropertyAction extends Action implements IChannelPropertyAction
 	/**
 	 * @var string
 	 *
+	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="action_channel", length=100, nullable=false)
 	 */
 	private $channel;
@@ -57,6 +59,7 @@ class ChannelPropertyAction extends Action implements IChannelPropertyAction
 	/**
 	 * @var string
 	 *
+	 * @IPubDoctrine\Crud(is="required")
 	 * @ORM\Column(type="string", name="action_property", length=100, nullable=false)
 	 */
 	private $property;
@@ -64,7 +67,7 @@ class ChannelPropertyAction extends Action implements IChannelPropertyAction
 	/**
 	 * @var string
 	 *
-	 * @IPubDoctrine\Crud(is="writable")
+	 * @IPubDoctrine\Crud(is={"required", "writable"})
 	 * @ORM\Column(type="string", name="action_value", length=100, nullable=false)
 	 */
 	private $value;

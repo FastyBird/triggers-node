@@ -20,6 +20,7 @@ use DateTimeZone;
 use Doctrine\ORM\Mapping as ORM;
 use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Exceptions;
+use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use Ramsey\Uuid;
 use Throwable;
 
@@ -40,6 +41,7 @@ class TimeCondition extends Condition implements ITimeCondition
 	/**
 	 * @var DateTimeInterface
 	 *
+	 * @IPubDoctrine\Crud(is={"required", "writable"})
 	 * @ORM\Column(type="time", name="condition_time", nullable=false)
 	 */
 	private $time;
@@ -47,6 +49,7 @@ class TimeCondition extends Condition implements ITimeCondition
 	/**
 	 * @var int[]
 	 *
+	 * @IPubDoctrine\Crud(is={"required", "writable"})
 	 * @ORM\Column(type="simple_array", name="condition_days", nullable=false)
 	 */
 	private $days;
@@ -67,13 +70,20 @@ class TimeCondition extends Condition implements ITimeCondition
 	) {
 		parent::__construct($trigger, $id);
 
+		$this->setTime($time);
+		$this->setDays($days);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function setTime(DateTimeInterface $time): void
+	{
 		if (method_exists($time, 'setTimezone')) {
 			$time->setTimezone(new DateTimeZone('UTC'));
 		}
 
 		$this->time = $time;
-
-		$this->setDays($days);
 	}
 
 	/**
