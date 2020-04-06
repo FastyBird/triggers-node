@@ -27,6 +27,7 @@ use FastyBird\TriggersNode\Queries;
 use FastyBird\TriggersNode\Router;
 use FastyBird\TriggersNode\Schemas;
 use Fig\Http\Message\StatusCodeInterface;
+use IPub\DoctrineCrud\Exceptions as DoctrineCrudExceptions;
 use Psr\Http\Message;
 use Ramsey\Uuid;
 use Throwable;
@@ -164,6 +165,19 @@ final class NotificationsV1Controller extends BaseV1Controller
 
 			// Commit all changes into database
 			$this->getOrmConnection()->commit();
+
+		} catch (DoctrineCrudExceptions\EntityCreationException $ex) {
+			// Revert all changes when error occur
+			$this->getOrmConnection()->rollback();
+
+			throw new NodeWebServerExceptions\JsonApiErrorException(
+				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+				$this->translator->translate('//node.base.messages.missingRequired.heading'),
+				$this->translator->translate('//node.base.messages.missingRequired.message'),
+				[
+					'pointer' => 'data/attributes/' . $ex->getField(),
+				]
+			);
 
 		} catch (NodeWebServerExceptions\IJsonApiException $ex) {
 			// Revert all changes when error occur

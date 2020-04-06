@@ -3,7 +3,7 @@
 use Fig\Http\Message\StatusCodeInterface;
 
 return [
-	'delete' => [
+	'delete'        => [
 		'/v1/triggers/c64ba1c4-0eda-4cab-87a0-4d634f7b67f4',
 		StatusCodeInterface::STATUS_NO_CONTENT,
 		__DIR__ . '/responses/triggers.delete.json',

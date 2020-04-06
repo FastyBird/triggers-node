@@ -63,6 +63,7 @@ final class ChannelPropertyActionSchema extends ActionSchema
 	public function getAttributes($action, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
 		return array_merge((array) parent::getAttributes($action, $context), [
+			'device'   => $action->getDevice(),
 			'channel'  => $action->getChannel(),
 			'property' => $action->getProperty(),
 			'value'    => $action->getValue(),
