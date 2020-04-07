@@ -25,7 +25,6 @@ final class ChannelPropertyMessageHandlerTest extends DbTestCase
 
 		Assert::same([
 			TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_DELETED_ENTITY_ROUTING_KEY,
-			TriggersNode\Constants::RABBIT_MQ_DEVICES_CHANNELS_PROPERTIES_DATA_ROUTING_KEY,
 		], $handler->getRoutingKeys());
 	}
 

@@ -95,10 +95,6 @@ final class ChannelPropertyMessageHandler implements NodeLibsConsumers\IMessageH
 				$message->offsetGet('property')
 			);
 
-		} elseif ($routingKey === TriggersNode\Constants::RABBIT_MQ_DEVICES_CHANNELS_PROPERTIES_DATA_ROUTING_KEY) {
-			// TODO: Handle trigger actions
-			return true;
-
 		} else {
 			throw new Exceptions\InvalidStateException('Unknown routing key');
 		}
@@ -114,9 +110,6 @@ final class ChannelPropertyMessageHandler implements NodeLibsConsumers\IMessageH
 		switch ($routingKey) {
 			case TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_DELETED_ENTITY_ROUTING_KEY:
 				return $this->schemaLoader->load('entity.channel.property.json');
-
-			case TriggersNode\Constants::RABBIT_MQ_DEVICES_CHANNELS_PROPERTIES_DATA_ROUTING_KEY:
-				return $this->schemaLoader->load('data.channel.property.json');
 
 			default:
 				throw new Exceptions\InvalidStateException('Unknown routing key');
@@ -134,8 +127,6 @@ final class ChannelPropertyMessageHandler implements NodeLibsConsumers\IMessageH
 
 		return [
 			TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_DELETED_ENTITY_ROUTING_KEY,
-
-			TriggersNode\Constants::RABBIT_MQ_DEVICES_CHANNELS_PROPERTIES_DATA_ROUTING_KEY,
 		];
 	}
 

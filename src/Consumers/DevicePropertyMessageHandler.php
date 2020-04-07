@@ -74,10 +74,6 @@ final class DevicePropertyMessageHandler implements NodeLibsConsumers\IMessageHa
 				$message->offsetGet('property')
 			);
 
-		} elseif ($routingKey === TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTIES_DATA_ROUTING_KEY) {
-			// TODO: Handle trigger actions
-			return true;
-
 		} else {
 			throw new Exceptions\InvalidStateException('Unknown routing key');
 		}
@@ -93,9 +89,6 @@ final class DevicePropertyMessageHandler implements NodeLibsConsumers\IMessageHa
 		switch ($routingKey) {
 			case TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_DELETED_ENTITY_ROUTING_KEY:
 				return $this->schemaLoader->load('entity.device.property.json');
-
-			case TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTIES_DATA_ROUTING_KEY:
-				return $this->schemaLoader->load('data.device.property.json');
 
 			default:
 				throw new Exceptions\InvalidStateException('Unknown routing key');
@@ -113,8 +106,6 @@ final class DevicePropertyMessageHandler implements NodeLibsConsumers\IMessageHa
 
 		return [
 			TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_DELETED_ENTITY_ROUTING_KEY,
-
-			TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTIES_DATA_ROUTING_KEY,
 		];
 	}
 

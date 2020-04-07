@@ -12,9 +12,43 @@
           },
           {
             "type" : "boolean"
+          },
+          {
+            "type" : "null"
+          }
+        ]
+      },
+      "nullable_datatype" : {
+        "oneOf" : [
+          {
+            "type" : "null"
+          },
+          {
+            "$ref" : "#/definitions/datatype"
+          }
+        ]
+      },
+      "nullable_string" : {
+        "oneOf" : [
+          {
+            "type" : "null"
+          },
+          {
+            "type" : "string"
           }
         ]
       }
+    },
+    "datatype" : {
+      "type" : "string",
+      "enum" : [
+        "integer",
+        "float",
+        "boolean",
+        "string",
+        "enum",
+        "color"
+      ]
     }
   },
   "type" : "object",
@@ -28,6 +62,23 @@
     "property" : {
       "type" : "string"
     },
+    "datatype" : {
+      "$ref" : "#/definitions/types/nullable_datatype",
+      "default" : null
+    },
+    "format" : {
+      "$ref" : "#/definitions/types/nullable_string",
+      "default" : null
+    },
+    "pending" : {
+      "type" : "boolean"
+    },
+    "value" : {
+      "$ref" : "#/definitions/types/string_number_boolean"
+    },
+    "previous_value" : {
+      "$ref" : "#/definitions/types/string_number_boolean"
+    },
     "expected" : {
       "$ref" : "#/definitions/types/string_number_boolean"
     }
@@ -36,6 +87,6 @@
     "device",
     "channel",
     "property",
-    "expected"
+    "value"
   ]
 }

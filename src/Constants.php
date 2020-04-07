@@ -44,15 +44,23 @@ final class Constants
 
 	public const RABBIT_MQ_DEVICES_CHANNELS_PROPERTIES_DATA_ROUTING_KEY = 'fb.bus.node.data.device.channel.property';
 
+	// Data routing keys
+	public const RABBIT_MQ_DATA_DEVICE_PROPERTY_ROUTING_KEY = 'fb.bus.node.data.device.property';
+	public const RABBIT_MQ_DATA_CHANNEL_PROPERTY_ROUTING_KEY = 'fb.bus.node.data.channel.property';
+
+	// Bindings keys
 	public const RABBIT_MQ_DEVICES_ENTITIES_ROUTING_KEY = [
 		'fb.bus.node.entity.*.device',                // Entities
 		'fb.bus.node.entity.*.device.*',              // Entities
-		'fb.bus.node.data.device.*',                  // Data
 	];
 
 	public const RABBIT_MQ_CHANNELS_ENTITIES_ROUTING_KEY = [
 		'fb.bus.node.entity.*.device.channel',        // Entities
 		'fb.bus.node.entity.*.device.channel.*',      // Entities
+	];
+
+	public const RABBIT_MQ_DATA_ROUTING_KEY = [
+		'fb.bus.node.data.device.*',                  // Data
 		'fb.bus.node.data.device.channel.*',          // Data
 	];
 
