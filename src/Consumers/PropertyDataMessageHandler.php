@@ -257,8 +257,6 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 			return;
 		}
 
-		$allMet = true;
-
 		foreach ($trigger->getConditions() as $triggerCondition) {
 			if (!$triggerCondition->getId()->equals($condition->getId())) {
 				// Check if all conditions are passed
@@ -273,9 +271,7 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 					if ($value !== $triggerCondition->getOperand()) {
 						$this->logger->info('[CONSUMER] Trigger do not met all conditions, skipping');
 
-						$allMet = false;
-
-						continue 1;
+						return;
 					}
 
 				} elseif ($triggerCondition instanceof Entities\Conditions\IDevicePropertyCondition) {
@@ -287,17 +283,13 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 					if ($value !== $triggerCondition->getOperand()) {
 						$this->logger->info('[CONSUMER] Trigger do not met all conditions, skipping');
 
-						$allMet = false;
-
-						continue 1;
+						return;
 					}
 				}
 			}
 		}
 
-		if ($allMet) {
-			$this->processTrigger($trigger);
-		}
+		$this->processTrigger($trigger);
 	}
 
 	/**
