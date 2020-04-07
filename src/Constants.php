@@ -64,4 +64,14 @@ final class Constants
 		'fb.bus.node.data.device.channel.*',          // Data
 	];
 
+	/**
+	 * Data types
+	 */
+	public const DATA_TYPE_INTEGER = 'integer';
+	public const DATA_TYPE_FLOAT = 'float';
+	public const DATA_TYPE_BOOLEAN = 'boolean';
+	public const DATA_TYPE_STRING = 'string';
+	public const DATA_TYPE_ENUM = 'enum';
+	public const DATA_TYPE_COLOR = 'color';
+
 }

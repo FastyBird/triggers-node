@@ -270,7 +270,7 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 						$triggerCondition->getProperty()
 					);
 
-					if ((string) $value !== $triggerCondition->getOperand()) {
+					if ($value !== $triggerCondition->getOperand()) {
 						$this->logger->info('[CONSUMER] Trigger do not met all conditions, skipping');
 
 						$allMet = false;
@@ -284,7 +284,7 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 						$triggerCondition->getProperty()
 					);
 
-					if ((string) $value !== $triggerCondition->getOperand()) {
+					if ($value !== $triggerCondition->getOperand()) {
 						$this->logger->info('[CONSUMER] Trigger do not met all conditions, skipping');
 
 						$allMet = false;
@@ -329,14 +329,14 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 	 * @param string $device
 	 * @param string $property
 	 *
-	 * @return string
+	 * @return null
 	 */
 	private function fetchDevicePropertyValue(
 		string $device,
 		string $property
-	): string {
+	) {
 		// TODO: fetch stored value from store
-		return '10';
+		return null;
 	}
 
 	/**
@@ -344,15 +344,15 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 	 * @param string $channel
 	 * @param string $property
 	 *
-	 * @return string
+	 * @return null
 	 */
 	private function fetchChannelPropertyValue(
 		string $device,
 		string $channel,
 		string $property
-	): string {
+	) {
 		// TODO: fetch stored value from store
-		return '10';
+		return null;
 	}
 
 	/**
@@ -360,11 +360,26 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 	 * @param string|null $datatype
 	 * @param string|null $format
 	 *
-	 * @return int|float|string|null
+	 * @return int|float|string|bool|null
 	 */
 	private function formatValue($value, ?string $datatype, ?string $format)
 	{
-		return $value;
+		switch ($datatype) {
+			case TriggersNode\Constants::DATA_TYPE_INTEGER:
+				return (int) $value;
+
+			case TriggersNode\Constants::DATA_TYPE_FLOAT:
+				return (float) $value;
+
+			case TriggersNode\Constants::DATA_TYPE_BOOLEAN:
+				return (bool) $value;
+
+			case TriggersNode\Constants::DATA_TYPE_STRING:
+			case TriggersNode\Constants::DATA_TYPE_ENUM:
+			case TriggersNode\Constants::DATA_TYPE_COLOR:
+			default:
+				return $value;
+		}
 	}
 
 }
