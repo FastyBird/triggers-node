@@ -109,6 +109,7 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 			}
 
 		} else {
+			var_dump($routingKey);
 			throw new Exceptions\InvalidStateException('Unknown routing key');
 		}
 

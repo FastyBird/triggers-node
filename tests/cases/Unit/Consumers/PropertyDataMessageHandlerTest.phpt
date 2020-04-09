@@ -31,7 +31,7 @@ final class PropertyDataMessageHandlerTest extends DbTestCase
 
 	public function testProcessMessageFireAction(): void
 	{
-		$routingKey = TriggersNode\Constants::RABBIT_MQ_DEVICES_CHANNELS_PROPERTIES_DATA_ROUTING_KEY;
+		$routingKey = TriggersNode\Constants::RABBIT_MQ_ENTITY_PHYSICAL_CHANNEL_PROPERTY_UPDATED_ROUTING_KEY;
 
 		$message = Utils\ArrayHash::from([
 			'device'   => 'device-one',
