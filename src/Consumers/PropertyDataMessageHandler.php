@@ -76,8 +76,8 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 		Utils\ArrayHash $message
 	): bool {
 		if (
-			$routingKey === TriggersNode\Constants::RABBIT_MQ_ENTITY_PHYSICAL_DEVICE_PROPERTY_CREATED_ROUTING_KEY
-			|| $routingKey === TriggersNode\Constants::RABBIT_MQ_ENTITY_PHYSICAL_DEVICE_PROPERTY_UPDATED_ROUTING_KEY
+			$routingKey === TriggersNode\Constants::RABBIT_MQ_ENTITY_STORAGE_DEVICE_PROPERTY_CREATED_ROUTING_KEY
+			|| $routingKey === TriggersNode\Constants::RABBIT_MQ_ENTITY_STORAGE_DEVICE_PROPERTY_UPDATED_ROUTING_KEY
 		) {
 			// Only not pending messages will be processed
 			if (!$message->offsetGet('pending')) {
@@ -92,8 +92,8 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 			}
 
 		} elseif (
-			$routingKey === TriggersNode\Constants::RABBIT_MQ_ENTITY_PHYSICAL_CHANNEL_PROPERTY_CREATED_ROUTING_KEY
-			|| $routingKey === TriggersNode\Constants::RABBIT_MQ_ENTITY_PHYSICAL_CHANNEL_PROPERTY_UPDATED_ROUTING_KEY
+			$routingKey === TriggersNode\Constants::RABBIT_MQ_ENTITY_STORAGE_CHANNEL_PROPERTY_CREATED_ROUTING_KEY
+			|| $routingKey === TriggersNode\Constants::RABBIT_MQ_ENTITY_STORAGE_CHANNEL_PROPERTY_UPDATED_ROUTING_KEY
 		) {
 			// Only not pending messages will be processed
 			if (!$message->offsetGet('pending')) {
@@ -122,13 +122,13 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 	public function getSchema(string $routingKey): string
 	{
 		switch ($routingKey) {
-			case TriggersNode\Constants::RABBIT_MQ_ENTITY_PHYSICAL_DEVICE_PROPERTY_CREATED_ROUTING_KEY:
-			case TriggersNode\Constants::RABBIT_MQ_ENTITY_PHYSICAL_DEVICE_PROPERTY_UPDATED_ROUTING_KEY:
-				return $this->schemaLoader->load('entity.device.property.physical.json');
+			case TriggersNode\Constants::RABBIT_MQ_ENTITY_STORAGE_DEVICE_PROPERTY_CREATED_ROUTING_KEY:
+			case TriggersNode\Constants::RABBIT_MQ_ENTITY_STORAGE_DEVICE_PROPERTY_UPDATED_ROUTING_KEY:
+				return $this->schemaLoader->load('entity.device.property.storage.json');
 
-			case TriggersNode\Constants::RABBIT_MQ_ENTITY_PHYSICAL_CHANNEL_PROPERTY_CREATED_ROUTING_KEY:
-			case TriggersNode\Constants::RABBIT_MQ_ENTITY_PHYSICAL_CHANNEL_PROPERTY_UPDATED_ROUTING_KEY:
-				return $this->schemaLoader->load('entity.channel.property.physical.json');
+			case TriggersNode\Constants::RABBIT_MQ_ENTITY_STORAGE_CHANNEL_PROPERTY_CREATED_ROUTING_KEY:
+			case TriggersNode\Constants::RABBIT_MQ_ENTITY_STORAGE_CHANNEL_PROPERTY_UPDATED_ROUTING_KEY:
+				return $this->schemaLoader->load('entity.channel.property.storage.json');
 
 			default:
 				throw new Exceptions\InvalidStateException('Unknown routing key');
@@ -141,15 +141,15 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 	public function getRoutingKeys(bool $binding = false): array
 	{
 		if ($binding) {
-			return TriggersNode\Constants::RABBIT_MQ_PHYSICALS_ENTITIES_ROUTING_KEY;
+			return TriggersNode\Constants::RABBIT_MQ_STORAGE_ENTITIES_ROUTING_KEY;
 		}
 
 		return [
-			TriggersNode\Constants::RABBIT_MQ_ENTITY_PHYSICAL_DEVICE_PROPERTY_CREATED_ROUTING_KEY,
-			TriggersNode\Constants::RABBIT_MQ_ENTITY_PHYSICAL_DEVICE_PROPERTY_UPDATED_ROUTING_KEY,
+			TriggersNode\Constants::RABBIT_MQ_ENTITY_STORAGE_DEVICE_PROPERTY_CREATED_ROUTING_KEY,
+			TriggersNode\Constants::RABBIT_MQ_ENTITY_STORAGE_DEVICE_PROPERTY_UPDATED_ROUTING_KEY,
 
-			TriggersNode\Constants::RABBIT_MQ_ENTITY_PHYSICAL_CHANNEL_PROPERTY_CREATED_ROUTING_KEY,
-			TriggersNode\Constants::RABBIT_MQ_ENTITY_PHYSICAL_CHANNEL_PROPERTY_UPDATED_ROUTING_KEY,
+			TriggersNode\Constants::RABBIT_MQ_ENTITY_STORAGE_CHANNEL_PROPERTY_CREATED_ROUTING_KEY,
+			TriggersNode\Constants::RABBIT_MQ_ENTITY_STORAGE_CHANNEL_PROPERTY_UPDATED_ROUTING_KEY,
 		];
 	}
 

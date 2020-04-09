@@ -54,7 +54,7 @@ Docker image: [fastybird/triggers-node](https://hub.docker.com/r/fastybird/trigg
 ### Use docker hub image
 
 ```bash
-$ docker run -d -it --name mqtt fastybird/triggers-node:latest
+$ docker run -d -it --name triggers fastybird/triggers-node:latest
 ```
 
 ### Generate local image
