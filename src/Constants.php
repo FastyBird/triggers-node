@@ -37,12 +37,20 @@ final class Constants
 
 	public const RABBIT_MQ_DEVICES_PROPERTIES_DATA_ROUTING_KEY = 'fb.bus.node.data.device.property';
 
+	// Devices properties
+	public const RABBIT_MQ_ENTITY_PHYSICAL_DEVICE_PROPERTY_CREATED_ROUTING_KEY = 'fb.bus.node.entity.created.physical.property';
+	public const RABBIT_MQ_ENTITY_PHYSICAL_DEVICE_PROPERTY_UPDATED_ROUTING_KEY = 'fb.bus.node.entity.updated.physical.property';
+
 	// Channels
 	public const RABBIT_MQ_CHANNELS_DELETED_ENTITY_ROUTING_KEY = 'fb.bus.node.entity.deleted.device.channel';
 
 	public const RABBIT_MQ_CHANNELS_PROPERTY_DELETED_ENTITY_ROUTING_KEY = 'fb.bus.node.entity.deleted.device.channel.property';
 
 	public const RABBIT_MQ_DEVICES_CHANNELS_PROPERTIES_DATA_ROUTING_KEY = 'fb.bus.node.data.device.channel.property';
+
+	// Channels properties
+	public const RABBIT_MQ_ENTITY_PHYSICAL_CHANNEL_PROPERTY_CREATED_ROUTING_KEY = 'fb.bus.node.entity.created.physical.channel.property';
+	public const RABBIT_MQ_ENTITY_PHYSICAL_CHANNEL_PROPERTY_UPDATED_ROUTING_KEY = 'fb.bus.node.entity.updated.physical.channel.property';
 
 	// Data routing keys
 	public const RABBIT_MQ_DATA_DEVICE_PROPERTY_ROUTING_KEY = 'fb.bus.node.data.device.property';
@@ -59,9 +67,9 @@ final class Constants
 		'fb.bus.node.entity.*.device.channel.*',      // Entities
 	];
 
-	public const RABBIT_MQ_DATA_ROUTING_KEY = [
-		'fb.bus.node.data.device.*',                  // Data
-		'fb.bus.node.data.device.channel.*',          // Data
+	public const RABBIT_MQ_PHYSICALS_ENTITIES_ROUTING_KEY = [
+		'fb.bus.node.entity.*.physical.*',            // Entities
+		'fb.bus.node.entity.*.physical.channel.*',    // Entities
 	];
 
 	/**

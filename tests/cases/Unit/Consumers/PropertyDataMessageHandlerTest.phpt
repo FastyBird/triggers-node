@@ -19,11 +19,13 @@ final class PropertyDataMessageHandlerTest extends DbTestCase
 	{
 		$handler = $this->getContainer()->getByType(Consumers\PropertyDataMessageHandler::class);
 
-		Assert::same(TriggersNode\Constants::RABBIT_MQ_DATA_ROUTING_KEY, $handler->getRoutingKeys(true));
+		Assert::same(TriggersNode\Constants::RABBIT_MQ_PHYSICALS_ENTITIES_ROUTING_KEY, $handler->getRoutingKeys(true));
 
 		Assert::same([
-			TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTIES_DATA_ROUTING_KEY,
-			TriggersNode\Constants::RABBIT_MQ_DEVICES_CHANNELS_PROPERTIES_DATA_ROUTING_KEY,
+			TriggersNode\Constants::RABBIT_MQ_ENTITY_PHYSICAL_DEVICE_PROPERTY_CREATED_ROUTING_KEY,
+			TriggersNode\Constants::RABBIT_MQ_ENTITY_PHYSICAL_DEVICE_PROPERTY_UPDATED_ROUTING_KEY,
+			TriggersNode\Constants::RABBIT_MQ_ENTITY_PHYSICAL_CHANNEL_PROPERTY_CREATED_ROUTING_KEY,
+			TriggersNode\Constants::RABBIT_MQ_ENTITY_PHYSICAL_CHANNEL_PROPERTY_UPDATED_ROUTING_KEY,
 		], $handler->getRoutingKeys());
 	}
 
@@ -45,7 +47,7 @@ final class PropertyDataMessageHandlerTest extends DbTestCase
 		$rabbitPublisher
 			->shouldReceive('publish')
 			->withArgs(function (string $routingKey, array $data): bool {
-				Assert::same(TriggersNode\Constants::RABBIT_MQ_DATA_CHANNEL_PROPERTY_ROUTING_KEY, $routingKey);
+				Assert::same(TriggersNode\Constants::RABBIT_MQ_ENTITY_PHYSICAL_CHANNEL_PROPERTY_UPDATED_ROUTING_KEY, $routingKey);
 				Assert::same(
 					[
 						'device'   => 'device-two',
