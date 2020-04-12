@@ -2,16 +2,6 @@
   "$schema" : "http://json-schema.org/draft-07/schema#",
   "definitions" : {
     "types" : {
-      "nullable_datatype" : {
-        "oneOf" : [
-          {
-            "type" : "null"
-          },
-          {
-            "$ref" : "#/definitions/datatype"
-          }
-        ]
-      },
       "nullable_string" : {
         "oneOf" : [
           {
@@ -22,17 +12,6 @@
           }
         ]
       }
-    },
-    "datatype" : {
-      "type" : "string",
-      "enum" : [
-        "integer",
-        "float",
-        "boolean",
-        "string",
-        "enum",
-        "color"
-      ]
     }
   },
   "type" : "object",
@@ -42,22 +21,6 @@
     },
     "property" : {
       "type" : "string"
-    },
-    "datatype" : {
-      "$ref" : "#/definitions/types/nullable_datatype",
-      "default" : null
-    },
-    "format" : {
-      "$ref" : "#/definitions/types/nullable_string",
-      "default" : null
-    },
-    "settable" : {
-      "type" : "boolean",
-      "default" : false
-    },
-    "queryable" : {
-      "type" : "boolean",
-      "default" : false
     },
     "parent" : {
       "$ref" : "#/definitions/types/nullable_string",

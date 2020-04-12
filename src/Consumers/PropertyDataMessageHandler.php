@@ -76,8 +76,8 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 		Utils\ArrayHash $message
 	): bool {
 		if (
-			$routingKey === TriggersNode\Constants::RABBIT_MQ_ENTITY_STORAGE_DEVICE_PROPERTY_CREATED_ROUTING_KEY
-			|| $routingKey === TriggersNode\Constants::RABBIT_MQ_ENTITY_STORAGE_DEVICE_PROPERTY_UPDATED_ROUTING_KEY
+			$routingKey === TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_CREATED_ENTITY_ROUTING_KEY
+			|| $routingKey === TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_UPDATED_ENTITY_ROUTING_KEY
 		) {
 			// Only not pending messages will be processed
 			if (!$message->offsetGet('pending')) {
@@ -92,8 +92,8 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 			}
 
 		} elseif (
-			$routingKey === TriggersNode\Constants::RABBIT_MQ_ENTITY_STORAGE_CHANNEL_PROPERTY_CREATED_ROUTING_KEY
-			|| $routingKey === TriggersNode\Constants::RABBIT_MQ_ENTITY_STORAGE_CHANNEL_PROPERTY_UPDATED_ROUTING_KEY
+			$routingKey === TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_CREATED_ENTITY_ROUTING_KEY
+			|| $routingKey === TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_UPDATED_ENTITY_ROUTING_KEY
 		) {
 			// Only not pending messages will be processed
 			if (!$message->offsetGet('pending')) {
@@ -119,15 +119,23 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 	/**
 	 * {@inheritDoc}
 	 */
+	public function getAllowedOrigin(string $routingKey)
+	{
+		return TriggersNode\Constants::NODE_STORAGE_ORIGIN;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getSchema(string $routingKey): string
 	{
 		switch ($routingKey) {
-			case TriggersNode\Constants::RABBIT_MQ_ENTITY_STORAGE_DEVICE_PROPERTY_CREATED_ROUTING_KEY:
-			case TriggersNode\Constants::RABBIT_MQ_ENTITY_STORAGE_DEVICE_PROPERTY_UPDATED_ROUTING_KEY:
+			case TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_CREATED_ENTITY_ROUTING_KEY:
+			case TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_UPDATED_ENTITY_ROUTING_KEY:
 				return $this->schemaLoader->load('entity.device.property.storage.json');
 
-			case TriggersNode\Constants::RABBIT_MQ_ENTITY_STORAGE_CHANNEL_PROPERTY_CREATED_ROUTING_KEY:
-			case TriggersNode\Constants::RABBIT_MQ_ENTITY_STORAGE_CHANNEL_PROPERTY_UPDATED_ROUTING_KEY:
+			case TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_CREATED_ENTITY_ROUTING_KEY:
+			case TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_UPDATED_ENTITY_ROUTING_KEY:
 				return $this->schemaLoader->load('entity.channel.property.storage.json');
 
 			default:
@@ -145,11 +153,11 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 		}
 
 		return [
-			TriggersNode\Constants::RABBIT_MQ_ENTITY_STORAGE_DEVICE_PROPERTY_CREATED_ROUTING_KEY,
-			TriggersNode\Constants::RABBIT_MQ_ENTITY_STORAGE_DEVICE_PROPERTY_UPDATED_ROUTING_KEY,
+			TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_CREATED_ENTITY_ROUTING_KEY,
+			TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_UPDATED_ENTITY_ROUTING_KEY,
 
-			TriggersNode\Constants::RABBIT_MQ_ENTITY_STORAGE_CHANNEL_PROPERTY_CREATED_ROUTING_KEY,
-			TriggersNode\Constants::RABBIT_MQ_ENTITY_STORAGE_CHANNEL_PROPERTY_UPDATED_ROUTING_KEY,
+			TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_CREATED_ENTITY_ROUTING_KEY,
+			TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_UPDATED_ENTITY_ROUTING_KEY,
 		];
 	}
 
@@ -232,7 +240,7 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 		foreach ($conditions as $condition) {
 			if (
 				$condition->getOperator()->equalsValue(Types\ConditionOperatorType::STATE_VALUE_EQUAL)
-				&& $condition->getOperand() === $value
+				&& $condition->getOperand() === (string) $value
 			) {
 				$this->processCondition($condition);
 			}
@@ -247,7 +255,7 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 		foreach ($triggers as $trigger) {
 			if (
 				$trigger->getOperator()->equalsValue(Types\ConditionOperatorType::STATE_VALUE_EQUAL)
-				&& $trigger->getOperand() === $value
+				&& $trigger->getOperand() === (string) $value
 			) {
 				$this->processTrigger($trigger);
 			}
@@ -314,7 +322,7 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 		foreach ($trigger->getActions() as $action) {
 			if ($action instanceof Entities\Actions\ChannelPropertyAction) {
 				$this->rabbitMqPublisher->publish(
-					TriggersNode\Constants::RABBIT_MQ_DATA_CHANNEL_PROPERTY_ROUTING_KEY,
+					TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTIES_DATA_ROUTING_KEY,
 					[
 						'device'   => $action->getDevice(),
 						'channel'  => $action->getChannel(),

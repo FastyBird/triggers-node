@@ -84,6 +84,14 @@ final class DevicePropertyMessageHandler implements NodeLibsConsumers\IMessageHa
 	/**
 	 * {@inheritDoc}
 	 */
+	public function getAllowedOrigin(string $routingKey)
+	{
+		return TriggersNode\Constants::NODE_DEVICES_ORIGIN;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getSchema(string $routingKey): string
 	{
 		switch ($routingKey) {
