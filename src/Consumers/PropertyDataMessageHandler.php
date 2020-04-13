@@ -367,8 +367,8 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 
 	/**
 	 * @param mixed $value
-	 * @param string|string[]|int[]|float[]|null $datatype
-	 * @param string|null $format
+	 * @param string|null $datatype
+	 * @param string|string[]|int[]|float[]|null $format
 	 *
 	 * @return int|float|string|bool|null
 	 */
