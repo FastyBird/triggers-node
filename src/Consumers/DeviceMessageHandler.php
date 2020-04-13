@@ -16,6 +16,7 @@
 namespace FastyBird\TriggersNode\Consumers;
 
 use FastyBird\NodeLibs\Consumers as NodeLibsConsumers;
+use FastyBird\NodeLibs\Exceptions as NodeLibsExceptions;
 use FastyBird\NodeLibs\Helpers as NodeLibsHelpers;
 use FastyBird\TriggersNode;
 use FastyBird\TriggersNode\Entities;
@@ -24,6 +25,7 @@ use FastyBird\TriggersNode\Models;
 use FastyBird\TriggersNode\Queries;
 use Nette\Utils;
 use Psr\Log;
+use Throwable;
 
 /**
  * Device command messages consumer
@@ -83,6 +85,8 @@ final class DeviceMessageHandler implements NodeLibsConsumers\IMessageHandler
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws NodeLibsExceptions\TerminateException
 	 */
 	public function process(
 		string $routingKey,
@@ -140,38 +144,45 @@ final class DeviceMessageHandler implements NodeLibsConsumers\IMessageHandler
 	 * @param string $device
 	 *
 	 * @return void
+	 *
+	 * @throws NodeLibsExceptions\TerminateException
 	 */
 	private function clearDevices(string $device): void
 	{
-		$findQuery = new Queries\FindChannelPropertyTriggersQuery();
-		$findQuery->forDevice($device);
+		try {
+			$findQuery = new Queries\FindChannelPropertyTriggersQuery();
+			$findQuery->forDevice($device);
 
-		$this->clearTriggers($findQuery);
+			$this->clearTriggers($findQuery);
 
-		/** @var Queries\FindActionsQuery<Entities\Actions\ChannelPropertyAction> $findQuery */
-		$findQuery = new Queries\FindActionsQuery();
-		$findQuery->forDevice($device);
+			/** @var Queries\FindActionsQuery<Entities\Actions\ChannelPropertyAction> $findQuery */
+			$findQuery = new Queries\FindActionsQuery();
+			$findQuery->forDevice($device);
 
-		$this->clearActions($findQuery);
+			$this->clearActions($findQuery);
 
-		/** @var Queries\FindConditionsQuery<Entities\Conditions\DevicePropertyCondition> $findQuery */
-		$findQuery = new Queries\FindConditionsQuery();
-		$findQuery->forDevice($device);
+			/** @var Queries\FindConditionsQuery<Entities\Conditions\DevicePropertyCondition> $findQuery */
+			$findQuery = new Queries\FindConditionsQuery();
+			$findQuery->forDevice($device);
 
-		$conditions = $this->conditionRepository->findAllBy($findQuery, Entities\Conditions\DevicePropertyCondition::class);
+			$conditions = $this->conditionRepository->findAllBy($findQuery, Entities\Conditions\DevicePropertyCondition::class);
 
-		foreach ($conditions as $condition) {
-			$this->conditionsManager->delete($condition);
-		}
+			foreach ($conditions as $condition) {
+				$this->conditionsManager->delete($condition);
+			}
 
-		/** @var Queries\FindConditionsQuery<Entities\Conditions\ChannelPropertyCondition> $findQuery */
-		$findQuery = new Queries\FindConditionsQuery();
-		$findQuery->forDevice($device);
+			/** @var Queries\FindConditionsQuery<Entities\Conditions\ChannelPropertyCondition> $findQuery */
+			$findQuery = new Queries\FindConditionsQuery();
+			$findQuery->forDevice($device);
 
-		$conditions = $this->conditionRepository->findAllBy($findQuery, Entities\Conditions\ChannelPropertyCondition::class);
+			$conditions = $this->conditionRepository->findAllBy($findQuery, Entities\Conditions\ChannelPropertyCondition::class);
 
-		foreach ($conditions as $condition) {
-			$this->conditionsManager->delete($condition);
+			foreach ($conditions as $condition) {
+				$this->conditionsManager->delete($condition);
+			}
+
+		} catch (Throwable $ex) {
+			throw new NodeLibsExceptions\TerminateException('An error occurred: ' . $ex->getMessage(), $ex->getCode(), $ex);
 		}
 
 		$this->logger->info('[CONSUMER] Successfully consumed device entity message');

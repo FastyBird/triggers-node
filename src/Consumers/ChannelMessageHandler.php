@@ -16,6 +16,7 @@
 namespace FastyBird\TriggersNode\Consumers;
 
 use FastyBird\NodeLibs\Consumers as NodeLibsConsumers;
+use FastyBird\NodeLibs\Exceptions as NodeLibsExceptions;
 use FastyBird\NodeLibs\Helpers as NodeLibsHelpers;
 use FastyBird\TriggersNode;
 use FastyBird\TriggersNode\Entities;
@@ -24,6 +25,7 @@ use FastyBird\TriggersNode\Models;
 use FastyBird\TriggersNode\Queries;
 use Nette\Utils;
 use Psr\Log;
+use Throwable;
 
 /**
  * Channel command messages consumer
@@ -83,6 +85,8 @@ final class ChannelMessageHandler implements NodeLibsConsumers\IMessageHandler
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws NodeLibsExceptions\TerminateException
 	 */
 	public function process(
 		string $routingKey,
@@ -142,25 +146,32 @@ final class ChannelMessageHandler implements NodeLibsConsumers\IMessageHandler
 	 * @param string $channel
 	 *
 	 * @return void
+	 *
+	 * @throws NodeLibsExceptions\TerminateException
 	 */
 	private function clearChannels(string $device, string $channel): void
 	{
-		$findQuery = new Queries\FindChannelPropertyTriggersQuery();
-		$findQuery->forChannel($device, $channel);
+		try {
+			$findQuery = new Queries\FindChannelPropertyTriggersQuery();
+			$findQuery->forChannel($device, $channel);
 
-		$this->clearTriggers($findQuery);
+			$this->clearTriggers($findQuery);
 
-		/** @var Queries\FindActionsQuery<Entities\Actions\ChannelPropertyAction> $findQuery */
-		$findQuery = new Queries\FindActionsQuery();
-		$findQuery->forChannel($device, $channel);
+			/** @var Queries\FindActionsQuery<Entities\Actions\ChannelPropertyAction> $findQuery */
+			$findQuery = new Queries\FindActionsQuery();
+			$findQuery->forChannel($device, $channel);
 
-		$this->clearActions($findQuery);
+			$this->clearActions($findQuery);
 
-		/** @var Queries\FindConditionsQuery<Entities\Conditions\ChannelPropertyCondition> $findQuery */
-		$findQuery = new Queries\FindConditionsQuery();
-		$findQuery->forChannel($device, $channel);
+			/** @var Queries\FindConditionsQuery<Entities\Conditions\ChannelPropertyCondition> $findQuery */
+			$findQuery = new Queries\FindConditionsQuery();
+			$findQuery->forChannel($device, $channel);
 
-		$this->clearConditions($findQuery);
+			$this->clearConditions($findQuery);
+
+		} catch (Throwable $ex) {
+			throw new NodeLibsExceptions\TerminateException('An error occurred: ' . $ex->getMessage(), $ex->getCode(), $ex);
+		}
 
 		$this->logger->info('[CONSUMER] Successfully consumed channel entity message');
 	}

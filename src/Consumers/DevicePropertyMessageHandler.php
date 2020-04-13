@@ -16,6 +16,7 @@
 namespace FastyBird\TriggersNode\Consumers;
 
 use FastyBird\NodeLibs\Consumers as NodeLibsConsumers;
+use FastyBird\NodeLibs\Exceptions as NodeLibsExceptions;
 use FastyBird\NodeLibs\Helpers as NodeLibsHelpers;
 use FastyBird\TriggersNode;
 use FastyBird\TriggersNode\Entities;
@@ -24,6 +25,7 @@ use FastyBird\TriggersNode\Models;
 use FastyBird\TriggersNode\Queries;
 use Nette\Utils;
 use Psr\Log;
+use Throwable;
 
 /**
  * Device property command messages consumer
@@ -63,6 +65,8 @@ final class DevicePropertyMessageHandler implements NodeLibsConsumers\IMessageHa
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws NodeLibsExceptions\TerminateException
 	 */
 	public function process(
 		string $routingKey,
@@ -122,14 +126,21 @@ final class DevicePropertyMessageHandler implements NodeLibsConsumers\IMessageHa
 	 * @param string $property
 	 *
 	 * @return void
+	 *
+	 * @throws NodeLibsExceptions\TerminateException
 	 */
 	private function clearProperties(string $device, string $property): void
 	{
-		/** @var Queries\FindConditionsQuery<Entities\Conditions\DevicePropertyCondition> $findQuery */
-		$findQuery = new Queries\FindConditionsQuery();
-		$findQuery->forDeviceProperty($device, $property);
+		try {
+			/** @var Queries\FindConditionsQuery<Entities\Conditions\DevicePropertyCondition> $findQuery */
+			$findQuery = new Queries\FindConditionsQuery();
+			$findQuery->forDeviceProperty($device, $property);
 
-		$this->clearConditions($findQuery);
+			$this->clearConditions($findQuery);
+
+		} catch (Throwable $ex) {
+			throw new NodeLibsExceptions\TerminateException('An error occurred: ' . $ex->getMessage(), $ex->getCode(), $ex);
+		}
 
 		$this->logger->info('[CONSUMER] Successfully consumed device property data message');
 	}

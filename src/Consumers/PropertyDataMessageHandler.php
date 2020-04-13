@@ -16,6 +16,7 @@
 namespace FastyBird\TriggersNode\Consumers;
 
 use FastyBird\NodeLibs\Consumers as NodeLibsConsumers;
+use FastyBird\NodeLibs\Exceptions as NodeLibsExceptions;
 use FastyBird\NodeLibs\Helpers as NodeLibsHelpers;
 use FastyBird\NodeLibs\Publishers as NodeLibsPublishers;
 use FastyBird\TriggersNode;
@@ -26,6 +27,7 @@ use FastyBird\TriggersNode\Queries;
 use FastyBird\TriggersNode\Types;
 use Nette\Utils;
 use Psr\Log;
+use Throwable;
 
 /**
  * Device or channel property data command messages consumer
@@ -70,6 +72,8 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @throws NodeLibsExceptions\TerminateException
 	 */
 	public function process(
 		string $routingKey,
@@ -169,6 +173,8 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 	 * @param string|string[]|int[]|float[]|null $format
 	 *
 	 * @return void
+	 *
+	 * @throws NodeLibsExceptions\TerminateException
 	 */
 	private function processDeviceConditions(
 		string $device,
@@ -186,10 +192,15 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 			return;
 		}
 
-		$findQuery = new Queries\FindConditionsQuery();
-		$findQuery->forDeviceProperty($device, $property);
+		try {
+			$findQuery = new Queries\FindConditionsQuery();
+			$findQuery->forDeviceProperty($device, $property);
 
-		$conditions = $this->conditionRepository->findAllBy($findQuery, Entities\Conditions\DevicePropertyCondition::class);
+			$conditions = $this->conditionRepository->findAllBy($findQuery, Entities\Conditions\DevicePropertyCondition::class);
+
+		} catch (Throwable $ex) {
+			throw new NodeLibsExceptions\TerminateException('An error occurred: ' . $ex->getMessage(), $ex->getCode(), $ex);
+		}
 
 		/** @var Entities\Conditions\DevicePropertyCondition $condition */
 		foreach ($conditions as $condition) {
@@ -212,6 +223,8 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 	 * @param string|string[]|int[]|float[]|null $format
 	 *
 	 * @return void
+	 *
+	 * @throws NodeLibsExceptions\TerminateException
 	 */
 	private function processChannelConditions(
 		string $device,
@@ -230,10 +243,15 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 			return;
 		}
 
-		$findQuery = new Queries\FindConditionsQuery();
-		$findQuery->forChannelProperty($device, $channel, $property);
+		try {
+			$findQuery = new Queries\FindConditionsQuery();
+			$findQuery->forChannelProperty($device, $channel, $property);
 
-		$conditions = $this->conditionRepository->findAllBy($findQuery, Entities\Conditions\ChannelPropertyCondition::class);
+			$conditions = $this->conditionRepository->findAllBy($findQuery, Entities\Conditions\ChannelPropertyCondition::class);
+
+		} catch (Throwable $ex) {
+			throw new NodeLibsExceptions\TerminateException('An error occurred: ' . $ex->getMessage(), $ex->getCode(), $ex);
+		}
 
 		/** @var Entities\Conditions\ChannelPropertyCondition $condition */
 		foreach ($conditions as $condition) {
@@ -245,10 +263,15 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 			}
 		}
 
-		$findQuery = new Queries\FindChannelPropertyTriggersQuery();
-		$findQuery->forProperty($device, $channel, $property);
+		try {
+			$findQuery = new Queries\FindChannelPropertyTriggersQuery();
+			$findQuery->forProperty($device, $channel, $property);
 
-		$triggers = $this->triggerRepository->findAllBy($findQuery, Entities\Triggers\ChannelPropertyTrigger::class);
+			$triggers = $this->triggerRepository->findAllBy($findQuery, Entities\Triggers\ChannelPropertyTrigger::class);
+
+		} catch (Throwable $ex) {
+			throw new NodeLibsExceptions\TerminateException('An error occurred: ' . $ex->getMessage(), $ex->getCode(), $ex);
+		}
 
 		/** @var Entities\Triggers\ChannelPropertyTrigger $trigger */
 		foreach ($triggers as $trigger) {
