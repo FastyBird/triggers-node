@@ -109,7 +109,6 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 			}
 
 		} else {
-			var_dump($routingKey);
 			throw new Exceptions\InvalidStateException('Unknown routing key');
 		}
 
@@ -167,7 +166,7 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 	 * @param mixed $value
 	 * @param mixed|null $previousValue
 	 * @param string|null $datatype
-	 * @param string|null $format
+	 * @param string|string[]|int[]|float[]|null $format
 	 *
 	 * @return void
 	 */
@@ -177,7 +176,7 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 		$value,
 		$previousValue = null,
 		?string $datatype = null,
-		?string $format = null
+		$format = null
 	): void {
 		$value = $this->formatValue($value, $datatype, $format);
 		$previousValue = $this->formatValue($previousValue, $datatype, $format);
@@ -210,7 +209,7 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 	 * @param mixed $value
 	 * @param mixed|null $previousValue
 	 * @param string|null $datatype
-	 * @param string|null $format
+	 * @param string|string[]|int[]|float[]|null $format
 	 *
 	 * @return void
 	 */
@@ -221,7 +220,7 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 		$value,
 		$previousValue = null,
 		?string $datatype = null,
-		?string $format = null
+		$format = null
 	): void {
 		$value = $this->formatValue($value, $datatype, $format);
 		$previousValue = $this->formatValue($previousValue, $datatype, $format);
@@ -368,12 +367,12 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 
 	/**
 	 * @param mixed $value
-	 * @param string|null $datatype
+	 * @param string|string[]|int[]|float[]|null $datatype
 	 * @param string|null $format
 	 *
 	 * @return int|float|string|bool|null
 	 */
-	private function formatValue($value, ?string $datatype, ?string $format)
+	private function formatValue($value, ?string $datatype, $format)
 	{
 		switch ($datatype) {
 			case TriggersNode\Constants::DATA_TYPE_INTEGER:
