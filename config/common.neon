@@ -25,7 +25,6 @@ parameters:
 #########################
 
 extensions:
-	contributteEventDispatcher	: Contributte\EventDispatcher\DI\EventDispatcherExtension
 	contributteTranslation		: Contributte\Translation\DI\TranslationExtension
 	ipubPhone					: IPub\Phone\DI\PhoneExtension
 	ipubDoctrineConsistence		: IPub\DoctrineConsistence\DI\DoctrineConsistenceExtension
