@@ -113,6 +113,14 @@ nettrineOrmAnnotations:
 # Node services definitions #
 #############################
 
+decorator:
+	FastyBird\NodeWebServer\Commands\HttpServerCommand:
+		setup:
+			- '$onServerStart[]' = @FastyBird\TriggersNode\Events\ServerStartHandler
+			- '$onRequest[]' = @FastyBird\TriggersNode\Events\RequestHandler
+			- '$onResponse[]' = @FastyBird\TriggersNode\Events\ResponseHandler
+			- '$onAfterConsumeMessage[]' = @FastyBird\TriggersNode\Events\AfterConsumeHandler
+
 services:
 	# Http router
 	#############
@@ -125,6 +133,17 @@ services:
 		factory: FastyBird\TriggersNode\Router\Router
 		setup:
 			- registerRoutes
+
+	# Node events
+	#############
+
+	- {factory: FastyBird\TriggersNode\Events\ServerStartHandler}
+
+	- {factory: FastyBird\TriggersNode\Events\RequestHandler}
+
+	- {factory: FastyBird\TriggersNode\Events\ResponseHandler}
+
+	- {factory: FastyBird\TriggersNode\Events\AfterConsumeHandler}
 
 	# Message bus messages handlers
 	###############################
