@@ -10,7 +10,7 @@
  * @subpackage     Middleware
  * @since          0.1.0
  *
- * @date           04.04.20
+ * @date           21.03.20
  */
 
 namespace FastyBird\TriggersNode\Middleware;
@@ -71,6 +71,10 @@ class JsonApiMiddleware implements MiddlewareInterface
 
 						$response = $response
 							->withAttribute(NodeWebServerHttp\ResponseAttributes::ATTR_TOTAL_COUNT, $data->getTotalCount())
+							->withEntity(NodeWebServerHttp\ScalarEntity::from($data->toArray()));
+
+					} else {
+						$response = $response
 							->withEntity(NodeWebServerHttp\ScalarEntity::from($data->toArray()));
 					}
 				}
