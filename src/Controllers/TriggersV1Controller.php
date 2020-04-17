@@ -82,8 +82,6 @@ final class TriggersV1Controller extends BaseV1Controller
 	 * @param NodeWebServerHttp\Response $response
 	 *
 	 * @return NodeWebServerHttp\Response
-	 *
-	 * @throws NodeWebServerExceptions\IJsonApiException
 	 */
 	public function index(
 		Message\ServerRequestInterface $request,
