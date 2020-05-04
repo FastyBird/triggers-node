@@ -15,9 +15,10 @@
 
 namespace FastyBird\TriggersNode\Consumers;
 
+use FastyBird\JsonSchemas;
+use FastyBird\JsonSchemas\Loaders as JsonSchemasLoaders;
 use FastyBird\NodeLibs\Consumers as NodeLibsConsumers;
 use FastyBird\NodeLibs\Exceptions as NodeLibsExceptions;
-use FastyBird\NodeLibs\Helpers as NodeLibsHelpers;
 use FastyBird\TriggersNode;
 use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Exceptions;
@@ -44,7 +45,7 @@ final class DevicePropertyMessageHandler implements NodeLibsConsumers\IMessageHa
 	/** @var Models\Conditions\IConditionsManager */
 	private $conditionsManager;
 
-	/** @var NodeLibsHelpers\ISchemaLoader */
+	/** @var JsonSchemasLoaders\ISchemaLoader */
 	private $schemaLoader;
 
 	/** @var Log\LoggerInterface */
@@ -53,7 +54,7 @@ final class DevicePropertyMessageHandler implements NodeLibsConsumers\IMessageHa
 	public function __construct(
 		Models\Conditions\IConditionRepository $conditionRepository,
 		Models\Conditions\IConditionsManager $conditionsManager,
-		NodeLibsHelpers\ISchemaLoader $schemaLoader,
+		JsonSchemasLoaders\ISchemaLoader $schemaLoader,
 		Log\LoggerInterface $logger
 	) {
 		$this->conditionRepository = $conditionRepository;
@@ -100,7 +101,7 @@ final class DevicePropertyMessageHandler implements NodeLibsConsumers\IMessageHa
 	{
 		switch ($routingKey) {
 			case TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_DELETED_ENTITY_ROUTING_KEY:
-				return $this->schemaLoader->load('entity.device.property.json');
+				return $this->schemaLoader->load(JsonSchemas\Constants::DEVICES_NODE_FOLDER . DS . 'entity.device.property.json');
 
 			default:
 				throw new Exceptions\InvalidStateException('Unknown routing key');

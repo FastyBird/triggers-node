@@ -15,9 +15,10 @@
 
 namespace FastyBird\TriggersNode\Consumers;
 
+use FastyBird\JsonSchemas;
+use FastyBird\JsonSchemas\Loaders as JsonSchemasLoaders;
 use FastyBird\NodeLibs\Consumers as NodeLibsConsumers;
 use FastyBird\NodeLibs\Exceptions as NodeLibsExceptions;
-use FastyBird\NodeLibs\Helpers as NodeLibsHelpers;
 use FastyBird\NodeLibs\Publishers as NodeLibsPublishers;
 use FastyBird\TriggersNode;
 use FastyBird\TriggersNode\Entities;
@@ -46,7 +47,7 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 	/** @var Models\Conditions\IConditionRepository */
 	private $conditionRepository;
 
-	/** @var NodeLibsHelpers\ISchemaLoader */
+	/** @var JsonSchemasLoaders\ISchemaLoader */
 	private $schemaLoader;
 
 	/** @var NodeLibsPublishers\IRabbitMqPublisher */
@@ -58,7 +59,7 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 	public function __construct(
 		Models\Triggers\ITriggerRepository $triggerRepository,
 		Models\Conditions\IConditionRepository $conditionRepository,
-		NodeLibsHelpers\ISchemaLoader $schemaLoader,
+		JsonSchemasLoaders\ISchemaLoader $schemaLoader,
 		NodeLibsPublishers\IRabbitMqPublisher $rabbitMqPublisher,
 		Log\LoggerInterface $logger
 	) {
@@ -135,11 +136,11 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 		switch ($routingKey) {
 			case TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_CREATED_ENTITY_ROUTING_KEY:
 			case TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_UPDATED_ENTITY_ROUTING_KEY:
-				return $this->schemaLoader->load('entity.device.property.storage.json');
+				return $this->schemaLoader->load(JsonSchemas\Constants::STORAGE_NODE_FOLDER . DS . 'entity.device.property.json');
 
 			case TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_CREATED_ENTITY_ROUTING_KEY:
 			case TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_UPDATED_ENTITY_ROUTING_KEY:
-				return $this->schemaLoader->load('entity.channel.property.storage.json');
+				return $this->schemaLoader->load(JsonSchemas\Constants::STORAGE_NODE_FOLDER . DS . 'entity.channel.property.json');
 
 			default:
 				throw new Exceptions\InvalidStateException('Unknown routing key');
