@@ -81,6 +81,4 @@ final class Constants
 	public const DATA_TYPE_ENUM = 'enum';
 	public const DATA_TYPE_COLOR = 'color';
 
-	public const DUMMY = 'dummy';
-
 }
