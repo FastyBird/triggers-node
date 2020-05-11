@@ -1,7 +1,7 @@
 {
   "name" : "fastybird/triggers-node",
   "type" : "project",
-  "description" : "FastyBird triggers info & basic logic service",
+  "description" : "FastyBird IOT server Triggers node for triggers storage & automation service",
   "keywords" : [
     "fastybird",
     "fb",
