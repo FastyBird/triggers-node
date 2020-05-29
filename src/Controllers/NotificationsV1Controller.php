@@ -148,10 +148,10 @@ final class NotificationsV1Controller extends BaseV1Controller
 			$this->getOrmConnection()->beginTransaction();
 
 			if ($document->getResource()->getType() === Schemas\Notifications\SmsNotificationSchema::SCHEMA_TYPE) {
-				$notification = $this->notificationsManager->create($this->smsNotificationHydrator->hydrate($document->getResource()));
+				$notification = $this->notificationsManager->create($this->smsNotificationHydrator->hydrate($document));
 
 			} elseif ($document->getResource()->getType() === Schemas\Notifications\EmailNotificationSchema::SCHEMA_TYPE) {
-				$notification = $this->notificationsManager->create($this->emailNotificationHydrator->hydrate($document->getResource()));
+				$notification = $this->notificationsManager->create($this->emailNotificationHydrator->hydrate($document));
 
 			} else {
 				throw new NodeWebServerExceptions\JsonApiErrorException(
@@ -169,7 +169,7 @@ final class NotificationsV1Controller extends BaseV1Controller
 
 		} catch (DoctrineCrudExceptions\EntityCreationException $ex) {
 			// Revert all changes when error occur
-			$this->getOrmConnection()->rollback();
+			$this->getOrmConnection()->rollBack();
 
 			throw new NodeWebServerExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
@@ -182,13 +182,13 @@ final class NotificationsV1Controller extends BaseV1Controller
 
 		} catch (NodeWebServerExceptions\IJsonApiException $ex) {
 			// Revert all changes when error occur
-			$this->getOrmConnection()->rollback();
+			$this->getOrmConnection()->rollBack();
 
 			throw $ex;
 
 		} catch (Exceptions\UniqueNotificationNumberConstraint $ex) {
 			// Revert all changes when error occur
-			$this->getOrmConnection()->rollback();
+			$this->getOrmConnection()->rollBack();
 
 			throw new NodeWebServerExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
@@ -201,7 +201,7 @@ final class NotificationsV1Controller extends BaseV1Controller
 
 		} catch (Exceptions\UniqueNotificationEmailConstraint $ex) {
 			// Revert all changes when error occur
-			$this->getOrmConnection()->rollback();
+			$this->getOrmConnection()->rollBack();
 
 			throw new NodeWebServerExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
@@ -214,9 +214,9 @@ final class NotificationsV1Controller extends BaseV1Controller
 
 		} catch (Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex) {
 			// Revert all changes when error occur
-			$this->getOrmConnection()->rollback();
+			$this->getOrmConnection()->rollBack();
 
-			if (preg_match("%key '(?P<key>.+)_unique'%", $ex->getMessage(), $match)) {
+			if (preg_match("%key '(?P<key>.+)_unique'%", $ex->getMessage(), $match) !== false) {
 				if (Utils\Strings::startsWith($match['key'], 'device_')) {
 					throw new NodeWebServerExceptions\JsonApiErrorException(
 						StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
@@ -237,7 +237,7 @@ final class NotificationsV1Controller extends BaseV1Controller
 
 		} catch (Throwable $ex) {
 			// Revert all changes when error occur
-			$this->getOrmConnection()->rollback();
+			$this->getOrmConnection()->rollBack();
 
 			// Log catched exception
 			$this->logger->error('[CONTROLLER] ' . $ex->getMessage(), [
@@ -298,13 +298,13 @@ final class NotificationsV1Controller extends BaseV1Controller
 			if ($document->getResource()->getType() === Schemas\Notifications\SmsNotificationSchema::SCHEMA_TYPE) {
 				$notification = $this->notificationsManager->update(
 					$notification,
-					$this->smsNotificationHydrator->hydrate($document->getResource(), $notification)
+					$this->smsNotificationHydrator->hydrate($document, $notification)
 				);
 
 			} elseif ($document->getResource()->getType() === Schemas\Notifications\EmailNotificationSchema::SCHEMA_TYPE) {
 				$notification = $this->notificationsManager->update(
 					$notification,
-					$this->emailNotificationHydrator->hydrate($document->getResource(), $notification)
+					$this->emailNotificationHydrator->hydrate($document, $notification)
 				);
 
 			} else {
@@ -388,7 +388,7 @@ final class NotificationsV1Controller extends BaseV1Controller
 			]);
 
 			// Revert all changes when error occur
-			$this->getOrmConnection()->rollback();
+			$this->getOrmConnection()->rollBack();
 
 			throw new NodeWebServerExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,

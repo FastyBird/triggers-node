@@ -61,32 +61,29 @@ final class ConditionEntitySubscriber implements Common\EventSubscriber
 			if ($object instanceof Entities\Conditions\IPropertyCondition) {
 				$trigger = $object->getTrigger();
 
-				// This rule is only for automatic trigger
-				if ($trigger instanceof Entities\Triggers\IAutomaticTrigger) {
-					foreach ($trigger->getConditions() as $condition) {
-						if (!$condition->getId()->equals($object->getId())) {
+				foreach ($trigger->getConditions() as $condition) {
+					if (!$condition->getId()->equals($object->getId())) {
+						if (
+							$condition instanceof Entities\Conditions\IDevicePropertyCondition
+							&& $object instanceof Entities\Conditions\IDevicePropertyCondition
+						) {
 							if (
-								$condition instanceof Entities\Conditions\IDevicePropertyCondition
-								&& $object instanceof Entities\Conditions\IDevicePropertyCondition
+								$condition->getDevice() === $object->getDevice()
+								&& $condition->getProperty() === $object->getProperty()
 							) {
-								if (
-									$condition->getDevice() === $object->getDevice()
-									&& $condition->getProperty() === $object->getProperty()
-								) {
-									throw new Exceptions\UniqueConditionConstraint('Not same property in trigger conditions');
-								}
+								throw new Exceptions\UniqueConditionConstraint('Not same property in trigger conditions');
+							}
 
-							} elseif (
-								$condition instanceof Entities\Conditions\IChannelPropertyCondition
-								&& $object instanceof Entities\Conditions\IChannelPropertyCondition
+						} elseif (
+							$condition instanceof Entities\Conditions\IChannelPropertyCondition
+							&& $object instanceof Entities\Conditions\IChannelPropertyCondition
+						) {
+							if (
+								$condition->getDevice() === $object->getDevice()
+								&& $condition->getChannel() === $object->getChannel()
+								&& $condition->getProperty() === $object->getProperty()
 							) {
-								if (
-									$condition->getDevice() === $object->getDevice()
-									&& $condition->getChannel() === $object->getChannel()
-									&& $condition->getProperty() === $object->getProperty()
-								) {
-									throw new Exceptions\UniqueConditionConstraint('Not same property in trigger conditions');
-								}
+								throw new Exceptions\UniqueConditionConstraint('Not same property in trigger conditions');
 							}
 						}
 					}

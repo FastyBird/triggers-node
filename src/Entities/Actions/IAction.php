@@ -15,6 +15,7 @@
 
 namespace FastyBird\TriggersNode\Entities\Actions;
 
+use FastyBird\NodeDatabase\Entities as NodeDatabaseEntities;
 use FastyBird\TriggersNode\Entities;
 use IPub\DoctrineTimestampable;
 
@@ -26,7 +27,7 @@ use IPub\DoctrineTimestampable;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-interface IAction extends Entities\IEntity,
+interface IAction extends NodeDatabaseEntities\IEntity,
 	DoctrineTimestampable\Entities\IEntityCreated, DoctrineTimestampable\Entities\IEntityUpdated
 {
 

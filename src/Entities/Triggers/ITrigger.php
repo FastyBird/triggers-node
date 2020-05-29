@@ -15,6 +15,7 @@
 
 namespace FastyBird\TriggersNode\Entities\Triggers;
 
+use FastyBird\NodeDatabase\Entities as NodeDatabaseEntities;
 use FastyBird\TriggersNode\Entities;
 use IPub\DoctrineTimestampable;
 
@@ -26,8 +27,8 @@ use IPub\DoctrineTimestampable;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-interface ITrigger extends Entities\IEntity,
-	Entities\IEntityParams,
+interface ITrigger extends NodeDatabaseEntities\IEntity,
+	NodeDatabaseEntities\IEntityParams,
 	DoctrineTimestampable\Entities\IEntityCreated, DoctrineTimestampable\Entities\IEntityUpdated
 {
 

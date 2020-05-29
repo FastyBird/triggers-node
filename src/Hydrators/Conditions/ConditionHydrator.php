@@ -17,6 +17,7 @@ namespace FastyBird\TriggersNode\Hydrators\Conditions;
 
 use Contributte\Translation;
 use Doctrine\Common;
+use FastyBird\NodeDatabase\Hydrators as NodeDatabaseHydrators;
 use FastyBird\NodeWebServer\Exceptions as NodeWebServerExceptions;
 use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Hydrators;
@@ -35,7 +36,7 @@ use Ramsey\Uuid;
  *
  * @author          Adam Kadlec <adam.kadlec@fastybird.com>
  */
-abstract class ConditionHydrator extends Hydrators\Hydrator
+abstract class ConditionHydrator extends NodeDatabaseHydrators\Hydrator
 {
 
 	/** @var string */

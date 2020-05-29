@@ -53,7 +53,7 @@ abstract class NotificationSchema extends Schemas\JsonApiSchema
 	 * @param Entities\Notifications\INotification $notification
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
-	 * @return iterable<string, string|string[]|bool|null>
+	 * @return iterable<string, mixed>
 	 *
 	 * @phpstan-param T $notification
 	 *

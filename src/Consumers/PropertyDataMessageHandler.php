@@ -85,7 +85,7 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 			|| $routingKey === TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_UPDATED_ENTITY_ROUTING_KEY
 		) {
 			// Only not pending messages will be processed
-			if (!$message->offsetGet('pending')) {
+			if ($message->offsetGet('pending') === false) {
 				$this->processDeviceConditions(
 					$message->offsetGet('device'),
 					$message->offsetGet('property'),
@@ -101,7 +101,7 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 			|| $routingKey === TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_UPDATED_ENTITY_ROUTING_KEY
 		) {
 			// Only not pending messages will be processed
-			if (!$message->offsetGet('pending')) {
+			if ($message->offsetGet('pending') === false) {
 				$this->processChannelConditions(
 					$message->offsetGet('device'),
 					$message->offsetGet('channel'),
@@ -295,7 +295,7 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 	): void {
 		$trigger = $condition->getTrigger();
 
-		if (!count($trigger->getActions())) {
+		if (count($trigger->getActions()) === 0) {
 			return;
 		}
 

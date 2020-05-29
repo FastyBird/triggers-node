@@ -17,9 +17,9 @@ namespace FastyBird\TriggersNode\Hydrators\Notifications;
 
 use Contributte\Translation;
 use Doctrine\Common;
+use FastyBird\NodeDatabase\Hydrators as NodeDatabaseHydrators;
 use FastyBird\NodeWebServer\Exceptions as NodeWebServerExceptions;
 use FastyBird\TriggersNode\Entities;
-use FastyBird\TriggersNode\Hydrators;
 use FastyBird\TriggersNode\Models;
 use FastyBird\TriggersNode\Queries;
 use FastyBird\TriggersNode\Schemas;
@@ -35,7 +35,7 @@ use Ramsey\Uuid;
  *
  * @author          Adam Kadlec <adam.kadlec@fastybird.com>
  */
-abstract class NotificationHydrator extends Hydrators\Hydrator
+abstract class NotificationHydrator extends NodeDatabaseHydrators\Hydrator
 {
 
 	/** @var string */

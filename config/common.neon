@@ -106,6 +106,8 @@ nettrineOrm:
 		proxyDir	: %tempDir%/cache/doctrine.proxies
 
 nettrineOrmAnnotations:
+	namespaces:
+		- FastyBird\TriggersNode\Entities
 	paths:
 		- %appDir%/src/Entities
 

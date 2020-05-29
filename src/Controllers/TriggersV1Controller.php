@@ -133,13 +133,13 @@ final class TriggersV1Controller extends BaseV1Controller
 			$this->getOrmConnection()->beginTransaction();
 
 			if ($document->getResource()->getType() === Schemas\Triggers\AutomaticTriggerSchema::SCHEMA_TYPE) {
-				$trigger = $this->triggersManager->create($this->automaticTriggerHydrator->hydrate($document->getResource()));
+				$trigger = $this->triggersManager->create($this->automaticTriggerHydrator->hydrate($document));
 
 			} elseif ($document->getResource()->getType() === Schemas\Triggers\ManualTriggerSchema::SCHEMA_TYPE) {
-				$trigger = $this->triggersManager->create($this->manualTriggerHydrator->hydrate($document->getResource()));
+				$trigger = $this->triggersManager->create($this->manualTriggerHydrator->hydrate($document));
 
 			} elseif ($document->getResource()->getType() === Schemas\Triggers\ChannelPropertyTriggerSchema::SCHEMA_TYPE) {
-				$trigger = $this->triggersManager->create($this->channelPropertyTriggerHydrator->hydrate($document->getResource()));
+				$trigger = $this->triggersManager->create($this->channelPropertyTriggerHydrator->hydrate($document));
 
 			} else {
 				throw new NodeWebServerExceptions\JsonApiErrorException(
@@ -157,7 +157,7 @@ final class TriggersV1Controller extends BaseV1Controller
 
 		} catch (DoctrineCrudExceptions\EntityCreationException $ex) {
 			// Revert all changes when error occur
-			$this->getOrmConnection()->rollback();
+			$this->getOrmConnection()->rollBack();
 
 			throw new NodeWebServerExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
@@ -170,15 +170,15 @@ final class TriggersV1Controller extends BaseV1Controller
 
 		} catch (NodeWebServerExceptions\IJsonApiException $ex) {
 			// Revert all changes when error occur
-			$this->getOrmConnection()->rollback();
+			$this->getOrmConnection()->rollBack();
 
 			throw $ex;
 
 		} catch (Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex) {
 			// Revert all changes when error occur
-			$this->getOrmConnection()->rollback();
+			$this->getOrmConnection()->rollBack();
 
-			if (preg_match("%key '(?P<key>.+)_unique'%", $ex->getMessage(), $match)) {
+			if (preg_match("%key '(?P<key>.+)_unique'%", $ex->getMessage(), $match) !== false) {
 				if (Utils\Strings::startsWith($match['key'], 'device_')) {
 					throw new NodeWebServerExceptions\JsonApiErrorException(
 						StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
@@ -199,7 +199,7 @@ final class TriggersV1Controller extends BaseV1Controller
 
 		} catch (Throwable $ex) {
 			// Revert all changes when error occur
-			$this->getOrmConnection()->rollback();
+			$this->getOrmConnection()->rollBack();
 
 			// Log catched exception
 			$this->logger->error('[CONTROLLER] ' . $ex->getMessage(), [
@@ -257,19 +257,19 @@ final class TriggersV1Controller extends BaseV1Controller
 			if ($document->getResource()->getType() === Schemas\Triggers\AutomaticTriggerSchema::SCHEMA_TYPE) {
 				$trigger = $this->triggersManager->update(
 					$trigger,
-					$this->automaticTriggerHydrator->hydrate($document->getResource(), $trigger)
+					$this->automaticTriggerHydrator->hydrate($document, $trigger)
 				);
 
 			} elseif ($document->getResource()->getType() === Schemas\Triggers\ManualTriggerSchema::SCHEMA_TYPE) {
 				$trigger = $this->triggersManager->update(
 					$trigger,
-					$this->manualTriggerHydrator->hydrate($document->getResource(), $trigger)
+					$this->manualTriggerHydrator->hydrate($document, $trigger)
 				);
 
 			} elseif ($document->getResource()->getType() === Schemas\Triggers\ChannelPropertyTriggerSchema::SCHEMA_TYPE) {
 				$trigger = $this->triggersManager->update(
 					$trigger,
-					$this->channelPropertyTriggerHydrator->hydrate($document->getResource(), $trigger)
+					$this->channelPropertyTriggerHydrator->hydrate($document, $trigger)
 				);
 
 			} else {
@@ -350,7 +350,7 @@ final class TriggersV1Controller extends BaseV1Controller
 			]);
 
 			// Revert all changes when error occur
-			$this->getOrmConnection()->rollback();
+			$this->getOrmConnection()->rollBack();
 
 			throw new NodeWebServerExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,

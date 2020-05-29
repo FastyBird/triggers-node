@@ -53,7 +53,7 @@ abstract class ActionSchema extends Schemas\JsonApiSchema
 	 * @param Entities\Actions\IAction $action
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
-	 * @return iterable<string, string|string[]|bool|null>
+	 * @return iterable<string, mixed>
 	 *
 	 * @phpstan-param T $action
 	 *

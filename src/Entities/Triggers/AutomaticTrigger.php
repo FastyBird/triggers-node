@@ -40,7 +40,8 @@ class AutomaticTrigger extends Trigger implements IAutomaticTrigger
 	 * @var Common\Collections\Collection<int, Entities\Conditions\ICondition>
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\OneToMany(targetEntity="FastyBird\TriggersNode\Entities\Conditions\Condition", mappedBy="trigger", cascade={"persist", "remove"}, orphanRemoval=true)
+	 * @ORM\OneToMany(targetEntity="FastyBird\TriggersNode\Entities\Conditions\Condition", mappedBy="trigger", cascade={"persist", "remove"},
+	 *                                                                                     orphanRemoval=true)
 	 */
 	private $conditions;
 
@@ -94,7 +95,7 @@ class AutomaticTrigger extends Trigger implements IAutomaticTrigger
 	public function getCondition(string $id): ?Entities\Conditions\ICondition
 	{
 		$found = $this->conditions
-			->filter(function (Entities\Conditions\ICondition $row) use ($id) {
+			->filter(function (Entities\Conditions\ICondition $row) use ($id): bool {
 				return $id === $row->getPlainId();
 			});
 

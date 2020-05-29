@@ -17,6 +17,7 @@ namespace FastyBird\TriggersNode\Entities\Triggers;
 
 use Doctrine\Common;
 use Doctrine\ORM\Mapping as ORM;
+use FastyBird\NodeDatabase\Entities as NodeDatabaseEntities;
 use FastyBird\TriggersNode\Entities;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
@@ -42,10 +43,10 @@ use Throwable;
  * })
  * @ORM\MappedSuperclass
  */
-abstract class Trigger extends Entities\Entity implements ITrigger
+abstract class Trigger extends NodeDatabaseEntities\Entity implements ITrigger
 {
 
-	use Entities\TEntityParams;
+	use NodeDatabaseEntities\TEntityParams;
 	use DoctrineTimestampable\Entities\TEntityCreated;
 	use DoctrineTimestampable\Entities\TEntityUpdated;
 
@@ -94,7 +95,8 @@ abstract class Trigger extends Entities\Entity implements ITrigger
 	 * @var Common\Collections\Collection<int, Entities\Notifications\INotification>
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\OneToMany(targetEntity="FastyBird\TriggersNode\Entities\Notifications\Notification", mappedBy="trigger", cascade={"persist", "remove"}, orphanRemoval=true)
+	 * @ORM\OneToMany(targetEntity="FastyBird\TriggersNode\Entities\Notifications\Notification", mappedBy="trigger", cascade={"persist", "remove"},
+	 *                                                                                           orphanRemoval=true)
 	 */
 	protected $notifications;
 
@@ -207,7 +209,7 @@ abstract class Trigger extends Entities\Entity implements ITrigger
 	public function getAction(string $id): ?Entities\Actions\IAction
 	{
 		$found = $this->actions
-			->filter(function (Entities\Actions\IAction $row) use ($id) {
+			->filter(function (Entities\Actions\IAction $row) use ($id): bool {
 				return $id === $row->getPlainId();
 			});
 
@@ -269,7 +271,7 @@ abstract class Trigger extends Entities\Entity implements ITrigger
 	public function getNotification(string $id): ?Entities\Notifications\INotification
 	{
 		$found = $this->notifications
-			->filter(function (Entities\Notifications\INotification $row) use ($id) {
+			->filter(function (Entities\Notifications\INotification $row) use ($id): bool {
 				return $id === $row->getPlainId();
 			});
 

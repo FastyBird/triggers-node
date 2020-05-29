@@ -16,6 +16,7 @@
 namespace FastyBird\TriggersNode\Entities\Notifications;
 
 use Doctrine\ORM\Mapping as ORM;
+use FastyBird\NodeDatabase\Entities as NodeDatabaseEntities;
 use FastyBird\TriggersNode\Entities;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
@@ -40,7 +41,7 @@ use Throwable;
  * })
  * @ORM\MappedSuperclass
  */
-abstract class Notification extends Entities\Entity implements INotification
+abstract class Notification extends NodeDatabaseEntities\Entity implements INotification
 {
 
 	use DoctrineTimestampable\Entities\TEntityCreated;

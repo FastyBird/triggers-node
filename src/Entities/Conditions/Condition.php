@@ -16,6 +16,7 @@
 namespace FastyBird\TriggersNode\Entities\Conditions;
 
 use Doctrine\ORM\Mapping as ORM;
+use FastyBird\NodeDatabase\Entities as NodeDatabaseEntities;
 use FastyBird\TriggersNode\Entities;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
 use IPub\DoctrineTimestampable;
@@ -42,7 +43,7 @@ use Throwable;
  * })
  * @ORM\MappedSuperclass
  */
-abstract class Condition extends Entities\Entity implements ICondition
+abstract class Condition extends NodeDatabaseEntities\Entity implements ICondition
 {
 
 	use DoctrineTimestampable\Entities\TEntityCreated;

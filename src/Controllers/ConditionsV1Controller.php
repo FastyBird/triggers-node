@@ -170,13 +170,13 @@ final class ConditionsV1Controller extends BaseV1Controller
 				$this->getOrmConnection()->beginTransaction();
 
 				if ($document->getResource()->getType() === Schemas\Conditions\DevicePropertyConditionSchema::SCHEMA_TYPE) {
-					$condition = $this->conditionsManager->create($this->devicePropertyConditionHydrator->hydrate($document->getResource()));
+					$condition = $this->conditionsManager->create($this->devicePropertyConditionHydrator->hydrate($document));
 
 				} elseif ($document->getResource()->getType() === Schemas\Conditions\ChannelPropertyConditionSchema::SCHEMA_TYPE) {
-					$condition = $this->conditionsManager->create($this->channelPropertyConditionHydrator->hydrate($document->getResource()));
+					$condition = $this->conditionsManager->create($this->channelPropertyConditionHydrator->hydrate($document));
 
 				} elseif ($document->getResource()->getType() === Schemas\Conditions\TimeConditionSchema::SCHEMA_TYPE) {
-					$condition = $this->conditionsManager->create($this->timeConditionHydrator->hydrate($document->getResource()));
+					$condition = $this->conditionsManager->create($this->timeConditionHydrator->hydrate($document));
 
 				} else {
 					throw new NodeWebServerExceptions\JsonApiErrorException(
@@ -194,7 +194,7 @@ final class ConditionsV1Controller extends BaseV1Controller
 
 			} catch (DoctrineCrudExceptions\EntityCreationException $ex) {
 				// Revert all changes when error occur
-				$this->getOrmConnection()->rollback();
+				$this->getOrmConnection()->rollBack();
 
 				throw new NodeWebServerExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
@@ -207,13 +207,13 @@ final class ConditionsV1Controller extends BaseV1Controller
 
 			} catch (NodeWebServerExceptions\IJsonApiException $ex) {
 				// Revert all changes when error occur
-				$this->getOrmConnection()->rollback();
+				$this->getOrmConnection()->rollBack();
 
 				throw $ex;
 
 			} catch (Exceptions\UniqueConditionConstraint $ex) {
 				// Revert all changes when error occur
-				$this->getOrmConnection()->rollback();
+				$this->getOrmConnection()->rollBack();
 
 				throw new NodeWebServerExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
@@ -226,9 +226,9 @@ final class ConditionsV1Controller extends BaseV1Controller
 
 			} catch (Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex) {
 				// Revert all changes when error occur
-				$this->getOrmConnection()->rollback();
+				$this->getOrmConnection()->rollBack();
 
-				if (preg_match("%key '(?P<key>.+)_unique'%", $ex->getMessage(), $match)) {
+				if (preg_match("%key '(?P<key>.+)_unique'%", $ex->getMessage(), $match) !== false) {
 					if (Utils\Strings::startsWith($match['key'], 'device_')) {
 						throw new NodeWebServerExceptions\JsonApiErrorException(
 							StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
@@ -249,7 +249,7 @@ final class ConditionsV1Controller extends BaseV1Controller
 
 			} catch (Throwable $ex) {
 				// Revert all changes when error occur
-				$this->getOrmConnection()->rollback();
+				$this->getOrmConnection()->rollBack();
 
 				// Log catched exception
 				$this->logger->error('[CONTROLLER] ' . $ex->getMessage(), [
@@ -317,19 +317,19 @@ final class ConditionsV1Controller extends BaseV1Controller
 			if ($document->getResource()->getType() === Schemas\Conditions\DevicePropertyConditionSchema::SCHEMA_TYPE) {
 				$condition = $this->conditionsManager->update(
 					$condition,
-					$this->devicePropertyConditionHydrator->hydrate($document->getResource(), $condition)
+					$this->devicePropertyConditionHydrator->hydrate($document, $condition)
 				);
 
 			} elseif ($document->getResource()->getType() === Schemas\Conditions\ChannelPropertyConditionSchema::SCHEMA_TYPE) {
 				$condition = $this->conditionsManager->update(
 					$condition,
-					$this->channelPropertyConditionHydrator->hydrate($document->getResource(), $condition)
+					$this->channelPropertyConditionHydrator->hydrate($document, $condition)
 				);
 
 			} elseif ($document->getResource()->getType() === Schemas\Conditions\TimeConditionSchema::SCHEMA_TYPE) {
 				$condition = $this->conditionsManager->update(
 					$condition,
-					$this->timeConditionHydrator->hydrate($document->getResource(), $condition)
+					$this->timeConditionHydrator->hydrate($document, $condition)
 				);
 
 			} else {
@@ -413,7 +413,7 @@ final class ConditionsV1Controller extends BaseV1Controller
 			]);
 
 			// Revert all changes when error occur
-			$this->getOrmConnection()->rollback();
+			$this->getOrmConnection()->rollBack();
 
 			throw new NodeWebServerExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,

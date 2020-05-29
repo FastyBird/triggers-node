@@ -52,7 +52,7 @@ abstract class TriggerSchema extends Schemas\JsonApiSchema
 	 * @param Entities\Triggers\ITrigger $trigger
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
-	 * @return iterable<string, string|string[]|bool|null>
+	 * @return iterable<string, mixed>
 	 *
 	 * @phpstan-param T $trigger
 	 *
