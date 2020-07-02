@@ -17,7 +17,7 @@ namespace FastyBird\TriggersNode\Hydrators\Notifications;
 
 use Contributte\Translation;
 use Doctrine\Common;
-use FastyBird\NodeWebServer\Exceptions as NodeWebServerExceptions;
+use FastyBird\NodeJsonApi\Exceptions as NodeJsonApiExceptions;
 use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Models;
 use Fig\Http\Message\StatusCodeInterface;
@@ -67,7 +67,7 @@ final class SmsNotificationHydrator extends NotificationHydrator
 	 *
 	 * @return Phone\Entities\Phone
 	 *
-	 * @throws NodeWebServerExceptions\IJsonApiException
+	 * @throws NodeJsonApiExceptions\IJsonApiException
 	 * @throws Phone\Exceptions\NoValidCountryException
 	 * @throws Phone\Exceptions\NoValidPhoneException
 	 * @throws Phone\Exceptions\NoValidTypeException
@@ -77,7 +77,7 @@ final class SmsNotificationHydrator extends NotificationHydrator
 	): Phone\Entities\Phone {
 		// Condition operator have to be set
 		if (!$attributes->has('phone')) {
-			throw new NodeWebServerExceptions\JsonApiErrorException(
+			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 				$this->translator->translate('messages.invalidPhone.heading'),
 				$this->translator->translate('messages.invalidPhone.message'),
@@ -88,7 +88,7 @@ final class SmsNotificationHydrator extends NotificationHydrator
 		}
 
 		if (!$this->phone->isValid((string) $attributes->get('phone'), 'CZ')) {
-			throw new NodeWebServerExceptions\JsonApiErrorException(
+			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 				$this->translator->translate('messages.invalidPhone.heading'),
 				$this->translator->translate('messages.invalidPhone.message'),

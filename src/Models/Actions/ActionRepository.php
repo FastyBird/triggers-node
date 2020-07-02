@@ -16,7 +16,7 @@
 namespace FastyBird\TriggersNode\Models\Actions;
 
 use Doctrine\Common;
-use Doctrine\ORM;
+use Doctrine\Persistence;
 use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Exceptions;
 use FastyBird\TriggersNode\Queries;
@@ -40,7 +40,7 @@ final class ActionRepository implements IActionRepository
 	/** @var Common\Persistence\ManagerRegistry */
 	private $managerRegistry;
 
-	/** @var ORM\EntityRepository<Entities\Actions\Action>[] */
+	/** @var Persistence\ObjectRepository<Entities\Actions\Action>[] */
 	private $repository = [];
 
 	public function __construct(Common\Persistence\ManagerRegistry $managerRegistry)
@@ -96,12 +96,12 @@ final class ActionRepository implements IActionRepository
 	/**
 	 * @param string $type
 	 *
-	 * @return ORM\EntityRepository<Entities\Actions\Action>
+	 * @return Persistence\ObjectRepository<Entities\Actions\Action>
 	 *
 	 * @phpstan-template T of Entities\Actions\Action
 	 * @phpstan-param    class-string<T> $type
 	 */
-	private function getRepository(string $type): ORM\EntityRepository
+	private function getRepository(string $type): Persistence\ObjectRepository
 	{
 		if (!isset($this->repository[$type])) {
 			$this->repository[$type] = $this->managerRegistry->getRepository($type);

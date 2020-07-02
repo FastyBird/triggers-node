@@ -15,6 +15,7 @@
 
 namespace FastyBird\TriggersNode\Schemas\Triggers;
 
+use FastyBird\NodeJsonApi\Schemas as NodeJsonApiSchemas;
 use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Router;
 use FastyBird\TriggersNode\Schemas;
@@ -28,9 +29,9 @@ use Neomerx\JsonApi;
  * @subpackage       Schemas
  *
  * @phpstan-template T of Entities\Triggers\ITrigger
- * @phpstan-extends  Schemas\JsonApiSchema<T>
+ * @phpstan-extends  NodeJsonApiSchemas\JsonApiSchema<T>
  */
-abstract class TriggerSchema extends Schemas\JsonApiSchema
+abstract class TriggerSchema extends NodeJsonApiSchemas\JsonApiSchema
 {
 
 	/**

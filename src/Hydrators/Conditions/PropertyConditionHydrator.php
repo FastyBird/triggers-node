@@ -15,7 +15,7 @@
 
 namespace FastyBird\TriggersNode\Hydrators\Conditions;
 
-use FastyBird\NodeWebServer\Exceptions as NodeWebServerExceptions;
+use FastyBird\NodeJsonApi\Exceptions as NodeJsonApiExceptions;
 use FastyBird\TriggersNode\Types;
 use Fig\Http\Message\StatusCodeInterface;
 use IPub\JsonAPIDocument;
@@ -44,13 +44,13 @@ abstract class PropertyConditionHydrator extends ConditionHydrator
 	 *
 	 * @return string
 	 *
-	 * @throws NodeWebServerExceptions\IJsonApiException
+	 * @throws NodeJsonApiExceptions\IJsonApiException
 	 */
 	protected function hydrateDeviceAttribute(
 		JsonAPIDocument\Objects\IStandardObject $attributes
 	): string {
 		if (!$attributes->has('device') || $attributes->get('device') === '') {
-			throw new NodeWebServerExceptions\JsonApiErrorException(
+			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 				$this->translator->translate('//node.base.messages.missingRequired.heading'),
 				$this->translator->translate('//node.base.messages.missingRequired.message'),
@@ -68,13 +68,13 @@ abstract class PropertyConditionHydrator extends ConditionHydrator
 	 *
 	 * @return string
 	 *
-	 * @throws NodeWebServerExceptions\IJsonApiException
+	 * @throws NodeJsonApiExceptions\IJsonApiException
 	 */
 	protected function hydratePropertyAttribute(
 		JsonAPIDocument\Objects\IStandardObject $attributes
 	): string {
 		if (!$attributes->has('property') || $attributes->get('property') === '') {
-			throw new NodeWebServerExceptions\JsonApiErrorException(
+			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 				$this->translator->translate('//node.base.messages.missingRequired.heading'),
 				$this->translator->translate('//node.base.messages.missingRequired.message'),
@@ -92,14 +92,14 @@ abstract class PropertyConditionHydrator extends ConditionHydrator
 	 *
 	 * @return Types\ConditionOperatorType
 	 *
-	 * @throws NodeWebServerExceptions\IJsonApiException
+	 * @throws NodeJsonApiExceptions\IJsonApiException
 	 */
 	protected function hydrateOperatorAttribute(
 		JsonAPIDocument\Objects\IStandardObject $attributes
 	): Types\ConditionOperatorType {
 		// Condition operator have to be set
 		if (!$attributes->has('operator') || $attributes->get('operator') === '') {
-			throw new NodeWebServerExceptions\JsonApiErrorException(
+			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 				$this->translator->translate('//node.base.messages.missingRequired.heading'),
 				$this->translator->translate('//node.base.messages.missingRequired.message'),
@@ -110,7 +110,7 @@ abstract class PropertyConditionHydrator extends ConditionHydrator
 
 			// ...and have to be valid value
 		} elseif (!Types\ConditionOperatorType::isValidValue($attributes->get('operator'))) {
-			throw new NodeWebServerExceptions\JsonApiErrorException(
+			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 				$this->translator->translate('messages.invalidOperator.heading'),
 				$this->translator->translate('messages.invalidOperator.message'),
@@ -128,13 +128,13 @@ abstract class PropertyConditionHydrator extends ConditionHydrator
 	 *
 	 * @return string
 	 *
-	 * @throws NodeWebServerExceptions\IJsonApiException
+	 * @throws NodeJsonApiExceptions\IJsonApiException
 	 */
 	protected function hydrateOperandAttribute(
 		JsonAPIDocument\Objects\IStandardObject $attributes
 	): string {
 		if (!$attributes->has('operand')) {
-			throw new NodeWebServerExceptions\JsonApiErrorException(
+			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 				$this->translator->translate('//triggers.api.base.messages.missingMandatory.heading'),
 				$this->translator->translate('//triggers.api.base.messages.missingMandatory.message'),

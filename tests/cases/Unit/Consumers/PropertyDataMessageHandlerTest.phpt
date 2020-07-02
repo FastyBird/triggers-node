@@ -15,20 +15,6 @@ require_once __DIR__ . '/../DbTestCase.php';
 final class PropertyDataMessageHandlerTest extends DbTestCase
 {
 
-	public function testRoutingKeys(): void
-	{
-		$handler = $this->getContainer()->getByType(Consumers\PropertyDataMessageHandler::class);
-
-		Assert::same(TriggersNode\Constants::RABBIT_MQ_STORAGE_ENTITIES_ROUTING_KEY, $handler->getRoutingKeys(true));
-
-		Assert::same([
-			TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_CREATED_ENTITY_ROUTING_KEY,
-			TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_UPDATED_ENTITY_ROUTING_KEY,
-			TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_CREATED_ENTITY_ROUTING_KEY,
-			TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_UPDATED_ENTITY_ROUTING_KEY,
-		], $handler->getRoutingKeys());
-	}
-
 	public function testProcessMessageFireAction(): void
 	{
 		$routingKey = TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_UPDATED_ENTITY_ROUTING_KEY;

@@ -28,9 +28,6 @@ final class ServicesTest extends BaseTestCase
 
 		$container = $configurator->createContainer();
 
-		Assert::notNull($container->getByType(Middleware\JsonApiMiddleware::class));
-		Assert::notNull($container->getByType(Middleware\DbErrorMiddleware::class));
-
 		Assert::notNull($container->getByType(Consumers\DeviceMessageHandler::class));
 		Assert::notNull($container->getByType(Consumers\DevicePropertyMessageHandler::class));
 		Assert::notNull($container->getByType(Consumers\ChannelMessageHandler::class));

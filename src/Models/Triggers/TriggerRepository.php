@@ -16,7 +16,7 @@
 namespace FastyBird\TriggersNode\Models\Triggers;
 
 use Doctrine\Common;
-use Doctrine\ORM;
+use Doctrine\Persistence;
 use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Exceptions;
 use FastyBird\TriggersNode\Queries;
@@ -40,7 +40,7 @@ final class TriggerRepository implements ITriggerRepository
 	/** @var Common\Persistence\ManagerRegistry */
 	private $managerRegistry;
 
-	/** @var ORM\EntityRepository<Entities\Triggers\Trigger>[] */
+	/** @var Persistence\ObjectRepository<Entities\Triggers\Trigger>[] */
 	private $repository = [];
 
 	public function __construct(Common\Persistence\ManagerRegistry $managerRegistry)
@@ -96,12 +96,12 @@ final class TriggerRepository implements ITriggerRepository
 	/**
 	 * @param string $type
 	 *
-	 * @return ORM\EntityRepository<Entities\Triggers\Trigger>
+	 * @return Persistence\ObjectRepository<Entities\Triggers\Trigger>
 	 *
 	 * @phpstan-template T of Entities\Triggers\Trigger
 	 * @phpstan-param    class-string<T> $type
 	 */
-	private function getRepository(string $type): ORM\EntityRepository
+	private function getRepository(string $type): Persistence\ObjectRepository
 	{
 		if (!isset($this->repository[$type])) {
 			$this->repository[$type] = $this->managerRegistry->getRepository($type);

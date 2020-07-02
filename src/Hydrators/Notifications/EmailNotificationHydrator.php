@@ -15,7 +15,7 @@
 
 namespace FastyBird\TriggersNode\Hydrators\Notifications;
 
-use FastyBird\NodeWebServer\Exceptions as NodeWebServerExceptions;
+use FastyBird\NodeJsonApi\Exceptions as NodeJsonApiExceptions;
 use FastyBird\TriggersNode\Entities;
 use Fig\Http\Message\StatusCodeInterface;
 use IPub\JsonAPIDocument;
@@ -50,14 +50,14 @@ final class EmailNotificationHydrator extends NotificationHydrator
 	 *
 	 * @return string
 	 *
-	 * @throws NodeWebServerExceptions\IJsonApiException
+	 * @throws NodeJsonApiExceptions\IJsonApiException
 	 */
 	protected function hydrateEmailAttribute(
 		JsonAPIDocument\Objects\IStandardObject $attributes
 	): string {
 		// Condition operator have to be set
 		if (!$attributes->has('email')) {
-			throw new NodeWebServerExceptions\JsonApiErrorException(
+			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 				$this->translator->translate('messages.invalidEmailAddress.heading'),
 				$this->translator->translate('messages.invalidEmailAddress.message'),
@@ -68,7 +68,7 @@ final class EmailNotificationHydrator extends NotificationHydrator
 		}
 
 		if (!Utils\Validators::isEmail((string) $attributes->get('email'))) {
-			throw new NodeWebServerExceptions\JsonApiErrorException(
+			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 				$this->translator->translate('messages.invalidEmailAddress.heading'),
 				$this->translator->translate('messages.invalidEmailAddress.message'),

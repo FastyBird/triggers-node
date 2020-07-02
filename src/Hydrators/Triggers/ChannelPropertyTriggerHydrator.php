@@ -15,7 +15,7 @@
 
 namespace FastyBird\TriggersNode\Hydrators\Triggers;
 
-use FastyBird\NodeWebServer\Exceptions as NodeWebServerExceptions;
+use FastyBird\NodeJsonApi\Exceptions as NodeJsonApiExceptions;
 use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Schemas;
 use FastyBird\TriggersNode\Types;
@@ -63,13 +63,13 @@ final class ChannelPropertyTriggerHydrator extends TriggerHydrator
 	 *
 	 * @return string
 	 *
-	 * @throws NodeWebServerExceptions\IJsonApiException
+	 * @throws NodeJsonApiExceptions\IJsonApiException
 	 */
 	protected function hydrateChannelAttribute(
 		JsonAPIDocument\Objects\IStandardObject $attributes
 	): string {
 		if (!$attributes->has('channel') || $attributes->get('channel') === '') {
-			throw new NodeWebServerExceptions\JsonApiErrorException(
+			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 				$this->translator->translate('//node.base.messages.missingRequired.heading'),
 				$this->translator->translate('//node.base.messages.missingRequired.message'),
@@ -87,13 +87,13 @@ final class ChannelPropertyTriggerHydrator extends TriggerHydrator
 	 *
 	 * @return string
 	 *
-	 * @throws NodeWebServerExceptions\IJsonApiException
+	 * @throws NodeJsonApiExceptions\IJsonApiException
 	 */
 	protected function hydrateDeviceAttribute(
 		JsonAPIDocument\Objects\IStandardObject $attributes
 	): string {
 		if (!$attributes->has('device') || $attributes->get('device') === '') {
-			throw new NodeWebServerExceptions\JsonApiErrorException(
+			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 				$this->translator->translate('//node.base.messages.missingRequired.heading'),
 				$this->translator->translate('//node.base.messages.missingRequired.message'),
@@ -111,13 +111,13 @@ final class ChannelPropertyTriggerHydrator extends TriggerHydrator
 	 *
 	 * @return string
 	 *
-	 * @throws NodeWebServerExceptions\IJsonApiException
+	 * @throws NodeJsonApiExceptions\IJsonApiException
 	 */
 	protected function hydratePropertyAttribute(
 		JsonAPIDocument\Objects\IStandardObject $attributes
 	): string {
 		if (!$attributes->has('property') || $attributes->get('property') === '') {
-			throw new NodeWebServerExceptions\JsonApiErrorException(
+			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 				$this->translator->translate('//node.base.messages.missingRequired.heading'),
 				$this->translator->translate('//node.base.messages.missingRequired.message'),
@@ -135,14 +135,14 @@ final class ChannelPropertyTriggerHydrator extends TriggerHydrator
 	 *
 	 * @return Types\ConditionOperatorType
 	 *
-	 * @throws NodeWebServerExceptions\IJsonApiException
+	 * @throws NodeJsonApiExceptions\IJsonApiException
 	 */
 	protected function hydrateOperatorAttribute(
 		JsonAPIDocument\Objects\IStandardObject $attributes
 	): Types\ConditionOperatorType {
 		// Condition operator have to be set
 		if (!$attributes->has('operator') || $attributes->get('operator') === '') {
-			throw new NodeWebServerExceptions\JsonApiErrorException(
+			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 				$this->translator->translate('//node.base.messages.missingRequired.heading'),
 				$this->translator->translate('//node.base.messages.missingRequired.message'),
@@ -153,7 +153,7 @@ final class ChannelPropertyTriggerHydrator extends TriggerHydrator
 
 			// ...and have to be valid value
 		} elseif (!Types\ConditionOperatorType::isValidValue($attributes->get('operator'))) {
-			throw new NodeWebServerExceptions\JsonApiErrorException(
+			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 				$this->translator->translate('messages.invalidOperator.heading'),
 				$this->translator->translate('messages.invalidOperator.message'),
@@ -171,13 +171,13 @@ final class ChannelPropertyTriggerHydrator extends TriggerHydrator
 	 *
 	 * @return string
 	 *
-	 * @throws NodeWebServerExceptions\IJsonApiException
+	 * @throws NodeJsonApiExceptions\IJsonApiException
 	 */
 	protected function hydrateOperandAttribute(
 		JsonAPIDocument\Objects\IStandardObject $attributes
 	): string {
 		if (!$attributes->has('operand')) {
-			throw new NodeWebServerExceptions\JsonApiErrorException(
+			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 				$this->translator->translate('//triggers.api.base.messages.missingMandatory.heading'),
 				$this->translator->translate('//triggers.api.base.messages.missingMandatory.message'),

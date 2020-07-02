@@ -109,37 +109,16 @@ final class ChannelMessageHandler implements NodeLibsConsumers\IMessageHandler
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getAllowedOrigin(string $routingKey)
+	public function getSchema(string $routingKey, string $origin): ?string
 	{
-		return TriggersNode\Constants::NODE_DEVICES_ORIGIN;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getSchema(string $routingKey): string
-	{
-		switch ($routingKey) {
-			case TriggersNode\Constants::RABBIT_MQ_CHANNELS_DELETED_ENTITY_ROUTING_KEY:
-				return $this->schemaLoader->load(JsonSchemas\Constants::DEVICES_NODE_FOLDER . DS . 'entity.channel.json');
-
-			default:
-				throw new Exceptions\InvalidStateException('Unknown routing key');
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getRoutingKeys(bool $binding = false): array
-	{
-		if ($binding) {
-			return TriggersNode\Constants::RABBIT_MQ_CHANNELS_ENTITIES_ROUTING_KEY;
+		if ($origin === TriggersNode\Constants::NODE_DEVICES_ORIGIN) {
+			switch ($routingKey) {
+				case TriggersNode\Constants::RABBIT_MQ_CHANNELS_DELETED_ENTITY_ROUTING_KEY:
+					return $this->schemaLoader->load(JsonSchemas\Constants::DEVICES_NODE_FOLDER . DS . 'entity.channel.json');
+			}
 		}
 
-		return [
-			TriggersNode\Constants::RABBIT_MQ_CHANNELS_DELETED_ENTITY_ROUTING_KEY,
-		];
+		return null;
 	}
 
 	/**

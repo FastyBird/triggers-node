@@ -16,7 +16,7 @@
 namespace FastyBird\TriggersNode\Models\Conditions;
 
 use Doctrine\Common;
-use Doctrine\ORM;
+use Doctrine\Persistence;
 use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Exceptions;
 use FastyBird\TriggersNode\Queries;
@@ -40,7 +40,7 @@ final class ConditionRepository implements IConditionRepository
 	/** @var Common\Persistence\ManagerRegistry */
 	private $managerRegistry;
 
-	/** @var ORM\EntityRepository<Entities\Conditions\Condition>[] */
+	/** @var Persistence\ObjectRepository<Entities\Conditions\Condition>[] */
 	private $repository = [];
 
 	public function __construct(Common\Persistence\ManagerRegistry $managerRegistry)
@@ -96,12 +96,12 @@ final class ConditionRepository implements IConditionRepository
 	/**
 	 * @param string $type
 	 *
-	 * @return ORM\EntityRepository<Entities\Conditions\Condition>
+	 * @return Persistence\ObjectRepository<Entities\Conditions\Condition>
 	 *
 	 * @phpstan-template T of Entities\Conditions\Condition
 	 * @phpstan-param    class-string<T> $type
 	 */
-	private function getRepository(string $type): ORM\EntityRepository
+	private function getRepository(string $type): Persistence\ObjectRepository
 	{
 		if (!isset($this->repository[$type])) {
 			$this->repository[$type] = $this->managerRegistry->getRepository($type);

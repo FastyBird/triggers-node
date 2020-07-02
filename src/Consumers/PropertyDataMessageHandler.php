@@ -123,46 +123,21 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getAllowedOrigin(string $routingKey)
+	public function getSchema(string $routingKey, string $origin): ?string
 	{
-		return TriggersNode\Constants::NODE_STORAGE_ORIGIN;
-	}
+		if ($origin === TriggersNode\Constants::NODE_STORAGE_ORIGIN) {
+			switch ($routingKey) {
+				case TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_CREATED_ENTITY_ROUTING_KEY:
+				case TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_UPDATED_ENTITY_ROUTING_KEY:
+					return $this->schemaLoader->load(JsonSchemas\Constants::STORAGE_NODE_FOLDER . DS . 'entity.device.property.json');
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getSchema(string $routingKey): string
-	{
-		switch ($routingKey) {
-			case TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_CREATED_ENTITY_ROUTING_KEY:
-			case TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_UPDATED_ENTITY_ROUTING_KEY:
-				return $this->schemaLoader->load(JsonSchemas\Constants::STORAGE_NODE_FOLDER . DS . 'entity.device.property.json');
-
-			case TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_CREATED_ENTITY_ROUTING_KEY:
-			case TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_UPDATED_ENTITY_ROUTING_KEY:
-				return $this->schemaLoader->load(JsonSchemas\Constants::STORAGE_NODE_FOLDER . DS . 'entity.channel.property.json');
-
-			default:
-				throw new Exceptions\InvalidStateException('Unknown routing key');
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getRoutingKeys(bool $binding = false): array
-	{
-		if ($binding) {
-			return TriggersNode\Constants::RABBIT_MQ_STORAGE_ENTITIES_ROUTING_KEY;
+				case TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_CREATED_ENTITY_ROUTING_KEY:
+				case TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_UPDATED_ENTITY_ROUTING_KEY:
+					return $this->schemaLoader->load(JsonSchemas\Constants::STORAGE_NODE_FOLDER . DS . 'entity.channel.property.json');
+			}
 		}
 
-		return [
-			TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_CREATED_ENTITY_ROUTING_KEY,
-			TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_UPDATED_ENTITY_ROUTING_KEY,
-
-			TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_CREATED_ENTITY_ROUTING_KEY,
-			TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_UPDATED_ENTITY_ROUTING_KEY,
-		];
+		return null;
 	}
 
 	/**

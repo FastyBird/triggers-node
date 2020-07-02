@@ -15,6 +15,7 @@
 
 namespace FastyBird\TriggersNode\Schemas\Notifications;
 
+use FastyBird\NodeJsonApi\Schemas as NodeJsonApiSchemas;
 use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Router;
 use FastyBird\TriggersNode\Schemas;
@@ -30,9 +31,9 @@ use Neomerx\JsonApi;
  * @author           Adam Kadlec <adam.kadlec@fastybird.com>
  *
  * @phpstan-template T of Entities\Notifications\INotification
- * @phpstan-extends  Schemas\JsonApiSchema<T>
+ * @phpstan-extends  NodeJsonApiSchemas\JsonApiSchema<T>
  */
-abstract class NotificationSchema extends Schemas\JsonApiSchema
+abstract class NotificationSchema extends NodeJsonApiSchemas\JsonApiSchema
 {
 
 	/**

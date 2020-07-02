@@ -74,7 +74,7 @@ final class AutomaticTriggerSchema extends TriggerSchema
 				self::RELATIONSHIP_LINKS_SELF    => true,
 				self::RELATIONSHIP_LINKS_RELATED => true,
 			],
-		], parent::getRelationships($trigger, $context));
+		], (array) parent::getRelationships($trigger, $context));
 	}
 
 	/**

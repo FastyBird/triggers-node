@@ -15,7 +15,7 @@
 
 namespace FastyBird\TriggersNode\Hydrators\Triggers;
 
-use FastyBird\NodeDatabase\Hydrators as NodeDatabaseHydrators;
+use FastyBird\NodeJsonApi\Hydrators as NodeJsonApiHydrators;
 use FastyBird\TriggersNode\Schemas;
 
 /**
@@ -26,7 +26,7 @@ use FastyBird\TriggersNode\Schemas;
  *
  * @author          Adam Kadlec <adam.kadlec@fastybird.com>
  */
-abstract class TriggerHydrator extends NodeDatabaseHydrators\Hydrator
+abstract class TriggerHydrator extends NodeJsonApiHydrators\Hydrator
 {
 
 	/** @var string */

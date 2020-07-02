@@ -15,7 +15,7 @@
 
 namespace FastyBird\TriggersNode\Controllers\Finders;
 
-use FastyBird\NodeWebServer\Exceptions as NodeWebServerExceptions;
+use FastyBird\NodeJsonApi\Exceptions as NodeJsonApiExceptions;
 use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Models;
 use FastyBird\TriggersNode\Queries;
@@ -35,7 +35,7 @@ trait TTriggerFinder
 	 *
 	 * @return Entities\Triggers\ITrigger
 	 *
-	 * @throws NodeWebServerExceptions\IJsonApiException
+	 * @throws NodeJsonApiExceptions\IJsonApiException
 	 */
 	protected function findTrigger(string $id): Entities\Triggers\ITrigger
 	{
@@ -46,7 +46,7 @@ trait TTriggerFinder
 			$trigger = $this->triggerRepository->findOneBy($findQuery);
 
 			if ($trigger === null) {
-				throw new NodeWebServerExceptions\JsonApiErrorException(
+				throw new NodeJsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_NOT_FOUND,
 					$this->translator->translate('//node.base.messages.triggerNotFound.heading'),
 					$this->translator->translate('//node.base.messages.triggerNotFound.message')
@@ -54,7 +54,7 @@ trait TTriggerFinder
 			}
 
 		} catch (Uuid\Exception\InvalidUuidStringException $ex) {
-			throw new NodeWebServerExceptions\JsonApiErrorException(
+			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,
 				$this->translator->translate('//node.base.messages.triggerNotFound.heading'),
 				$this->translator->translate('//node.base.messages.triggerNotFound.message')

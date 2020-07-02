@@ -17,7 +17,7 @@ namespace FastyBird\TriggersNode\Hydrators\Conditions;
 
 use DateTime;
 use DateTimeInterface;
-use FastyBird\NodeWebServer\Exceptions as NodeWebServerExceptions;
+use FastyBird\NodeJsonApi\Exceptions as NodeJsonApiExceptions;
 use FastyBird\TriggersNode\Entities;
 use Fig\Http\Message\StatusCodeInterface;
 use IPub\JsonAPIDocument;
@@ -53,14 +53,14 @@ final class TimeConditionHydrator extends ConditionHydrator
 	 *
 	 * @return DateTimeInterface
 	 *
-	 * @throws NodeWebServerExceptions\IJsonApiException
+	 * @throws NodeJsonApiExceptions\IJsonApiException
 	 */
 	protected function hydrateTimeAttribute(
 		JsonAPIDocument\Objects\IStandardObject $attributes
 	): DateTimeInterface {
 		// Condition time have to be set
 		if (!$attributes->has('time')) {
-			throw new NodeWebServerExceptions\JsonApiErrorException(
+			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 				$this->translator->translate('//node.base.messages.missingRequired.heading'),
 				$this->translator->translate('//node.base.messages.missingRequired.message'),
@@ -73,7 +73,7 @@ final class TimeConditionHydrator extends ConditionHydrator
 		$date = Utils\DateTime::createFromFormat(DateTime::ATOM, (string) $attributes->get('time'));
 
 		if (!$date instanceof DateTimeInterface || $date->format(DateTime::ATOM) !== $attributes->get('time')) {
-			throw new NodeWebServerExceptions\JsonApiErrorException(
+			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 				$this->translator->translate('messages.invalidTime.heading'),
 				$this->translator->translate('messages.invalidTime.message'),
@@ -91,14 +91,14 @@ final class TimeConditionHydrator extends ConditionHydrator
 	 *
 	 * @return int[]
 	 *
-	 * @throws NodeWebServerExceptions\IJsonApiException
+	 * @throws NodeJsonApiExceptions\IJsonApiException
 	 */
 	protected function hydrateDaysAttribute(
 		JsonAPIDocument\Objects\IStandardObject $attributes
 	): array {
 		// Condition days have to be set
 		if (!$attributes->has('days')) {
-			throw new NodeWebServerExceptions\JsonApiErrorException(
+			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 				$this->translator->translate('//triggers.api.base.messages.missingMandatory.heading'),
 				$this->translator->translate('//triggers.api.base.messages.missingMandatory.message'),
@@ -108,7 +108,7 @@ final class TimeConditionHydrator extends ConditionHydrator
 			);
 
 		} elseif (!is_array($attributes->get('days'))) {
-			throw new NodeWebServerExceptions\JsonApiErrorException(
+			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 				$this->translator->translate('messages.invalidDays.heading'),
 				$this->translator->translate('messages.invalidDays.message'),

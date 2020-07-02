@@ -15,6 +15,7 @@
 
 namespace FastyBird\TriggersNode\Schemas\Actions;
 
+use FastyBird\NodeJsonApi\Schemas as NodeJsonApiSchemas;
 use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Router;
 use FastyBird\TriggersNode\Schemas;
@@ -30,9 +31,9 @@ use Neomerx\JsonApi;
  * @author           Adam Kadlec <adam.kadlec@fastybird.com>
  *
  * @phpstan-template T of Entities\Actions\IAction
- * @phpstan-extends  Schemas\JsonApiSchema<T>
+ * @phpstan-extends  NodeJsonApiSchemas\JsonApiSchema<T>
  */
-abstract class ActionSchema extends Schemas\JsonApiSchema
+abstract class ActionSchema extends NodeJsonApiSchemas\JsonApiSchema
 {
 
 	/**

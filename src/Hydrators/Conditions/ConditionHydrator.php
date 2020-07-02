@@ -17,8 +17,8 @@ namespace FastyBird\TriggersNode\Hydrators\Conditions;
 
 use Contributte\Translation;
 use Doctrine\Common;
-use FastyBird\NodeDatabase\Hydrators as NodeDatabaseHydrators;
-use FastyBird\NodeWebServer\Exceptions as NodeWebServerExceptions;
+use FastyBird\NodeJsonApi\Exceptions as NodeJsonApiExceptions;
+use FastyBird\NodeJsonApi\Hydrators as NodeJsonApiHydrators;
 use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Hydrators;
 use FastyBird\TriggersNode\Models;
@@ -36,7 +36,7 @@ use Ramsey\Uuid;
  *
  * @author          Adam Kadlec <adam.kadlec@fastybird.com>
  */
-abstract class ConditionHydrator extends NodeDatabaseHydrators\Hydrator
+abstract class ConditionHydrator extends NodeJsonApiHydrators\Hydrator
 {
 
 	/** @var string */
@@ -68,7 +68,7 @@ abstract class ConditionHydrator extends NodeDatabaseHydrators\Hydrator
 	 *
 	 * @return Entities\Triggers\ITrigger
 	 *
-	 * @throws NodeWebServerExceptions\IJsonApiException
+	 * @throws NodeJsonApiExceptions\IJsonApiException
 	 */
 	protected function hydrateTriggerRelationship(
 		JsonAPIDocument\Objects\IRelationship $relationship
@@ -78,7 +78,7 @@ abstract class ConditionHydrator extends NodeDatabaseHydrators\Hydrator
 			|| $relationship->getIdentifier() === null
 			|| !Uuid\Uuid::isValid($relationship->getIdentifier()->getId())
 		) {
-			throw new NodeWebServerExceptions\JsonApiErrorException(
+			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,
 				$this->translator->translate('messages.relationNotFound.heading'),
 				$this->translator->translate('messages.relationNotFound.message'),
@@ -94,7 +94,7 @@ abstract class ConditionHydrator extends NodeDatabaseHydrators\Hydrator
 		$trigger = $this->triggerRepository->findOneBy($findQuery);
 
 		if ($trigger === null) {
-			throw new NodeWebServerExceptions\JsonApiErrorException(
+			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,
 				$this->translator->translate('messages.relationNotFound.heading'),
 				$this->translator->translate('messages.relationNotFound.message'),

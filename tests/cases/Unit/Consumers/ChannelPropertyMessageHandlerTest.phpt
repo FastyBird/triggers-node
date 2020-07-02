@@ -17,17 +17,6 @@ require_once __DIR__ . '/../DbTestCase.php';
 final class ChannelPropertyMessageHandlerTest extends DbTestCase
 {
 
-	public function testRoutingKeys(): void
-	{
-		$handler = $this->getContainer()->getByType(Consumers\ChannelPropertyMessageHandler::class);
-
-		Assert::same(TriggersNode\Constants::RABBIT_MQ_CHANNELS_ENTITIES_ROUTING_KEY, $handler->getRoutingKeys(true));
-
-		Assert::same([
-			TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_DELETED_ENTITY_ROUTING_KEY,
-		], $handler->getRoutingKeys());
-	}
-
 	public function testProcessMessageDeleteTrigger(): void
 	{
 		$triggersRepository = $this->getContainer()->getByType(Models\Triggers\TriggerRepository::class);

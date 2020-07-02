@@ -19,6 +19,11 @@ parameters:
 
 	rabbitmq:
 		queueName: fb.triggers.node.exchange
+		routing:
+			- fb.bus.node.entity.*.channel		# Channel entities
+			- fb.bus.node.entity.*.channel.*	# Channel entities
+			- fb.bus.node.entity.*.device.*		# Device entities
+			- fb.bus.node.entity.*.channel.*	# Device entities
 
 #########################
 # Used Nette extensions #
@@ -39,6 +44,8 @@ extensions:
 	nettrineOrmConsole			: Nettrine\ORM\DI\OrmConsoleExtension
 	nettrineOrmCache			: Nettrine\ORM\DI\OrmCacheExtension
 	nodeWebServer				: FastyBird\NodeWebServer\DI\NodeWebServerExtension
+	nodeDatabase				: FastyBird\NodeDatabase\DI\NodeDatabaseExtension
+	nodeJsonApi					: FastyBird\NodeJsonApi\DI\NodeJsonApiExtension
 
 ##################################
 # Nette extensions configuration #
@@ -115,37 +122,14 @@ nettrineOrmAnnotations:
 # Node services definitions #
 #############################
 
-decorator:
-	FastyBird\NodeWebServer\Commands\HttpServerCommand:
-		setup:
-			- '$onServerStart[]' = @FastyBird\TriggersNode\Events\ServerStartHandler
-			- '$onRequest[]' = @FastyBird\TriggersNode\Events\RequestHandler
-			- '$onResponse[]' = @FastyBird\TriggersNode\Events\ResponseHandler
-			- '$onAfterConsumeMessage[]' = @FastyBird\TriggersNode\Events\AfterConsumeHandler
-
 services:
 	# Http router
 	#############
-
-	- {factory: FastyBird\TriggersNode\Middleware\JsonApiMiddleware, tags: [middleware: {priority: 10}]}
-
-	- {factory: FastyBird\TriggersNode\Middleware\DbErrorMiddleware, tags: [middleware: {priority: 50}]}
 
 	-
 		factory: FastyBird\TriggersNode\Router\Router
 		setup:
 			- registerRoutes
-
-	# Node events
-	#############
-
-	- {factory: FastyBird\TriggersNode\Events\ServerStartHandler}
-
-	- {factory: FastyBird\TriggersNode\Events\RequestHandler}
-
-	- {factory: FastyBird\TriggersNode\Events\ResponseHandler}
-
-	- {factory: FastyBird\TriggersNode\Events\AfterConsumeHandler}
 
 	# Message bus messages handlers
 	###############################
