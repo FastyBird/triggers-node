@@ -6,7 +6,6 @@ use FastyBird\NodeLibs\Boot;
 use FastyBird\TriggersNode\Consumers;
 use FastyBird\TriggersNode\Controllers;
 use FastyBird\TriggersNode\Hydrators;
-use FastyBird\TriggersNode\Middleware;
 use FastyBird\TriggersNode\Models;
 use FastyBird\TriggersNode\Schemas;
 use Ninjify\Nunjuck\TestCase\BaseTestCase;
