@@ -57,6 +57,7 @@ nodeWebServer:
 	server:
 		address: %server.address%
 		port: %server.port%
+	routingKeys: %rabbitmq.routing%
 
 # Node translations
 ###################
