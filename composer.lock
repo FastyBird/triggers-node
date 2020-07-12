@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c2a89d745ca8c2efcbc2c9799a8aeb84",
+    "content-hash": "9e6238b990746a3c6176635313e8e995",
     "packages": [
         {
             "name": "bunny/bunny",
@@ -3945,9 +3945,6 @@
             "extra": {
                 "branch-alias": {
                     "dev-master": "3.0-dev"
-                },
-                "patches_applied": {
-                    "Bug: Offset check with null support": "patches/nette.array.offsetCheck.diff"
                 }
             },
             "autoload": {
