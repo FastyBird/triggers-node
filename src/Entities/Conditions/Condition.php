@@ -4,7 +4,7 @@
  * Condition.php
  *
  * @license        More in license.md
- * @copyright      https://www.fastybird.com
+ * @copyright      https://fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:TriggersNode!
  * @subpackage     Entities
@@ -43,9 +43,10 @@ use Throwable;
  * })
  * @ORM\MappedSuperclass
  */
-abstract class Condition extends NodeDatabaseEntities\Entity implements ICondition
+abstract class Condition implements ICondition
 {
 
+	use NodeDatabaseEntities\TEntity;
 	use DoctrineTimestampable\Entities\TEntityCreated;
 	use DoctrineTimestampable\Entities\TEntityUpdated;
 

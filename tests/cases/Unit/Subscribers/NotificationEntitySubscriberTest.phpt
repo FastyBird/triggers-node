@@ -11,6 +11,9 @@ use Tester\Assert;
 
 require_once __DIR__ . '/../../../bootstrap.php';
 
+/**
+ * @testCase
+ */
 final class NotificationEntitySubscriberTest extends BaseMockeryTestCase
 {
 
@@ -65,6 +68,8 @@ final class NotificationEntitySubscriberTest extends BaseMockeryTestCase
 
 		$subscriber = new Subscribers\NotificationEntitySubscriber();
 		$subscriber->onFlush($eventArgs);
+
+		Assert::true(true);
 	}
 
 	/**

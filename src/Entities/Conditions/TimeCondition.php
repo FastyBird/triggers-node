@@ -4,7 +4,7 @@
  * TimeCondition.php
  *
  * @license        More in license.md
- * @copyright      https://www.fastybird.com
+ * @copyright      https://fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:TriggersNode!
  * @subpackage     Entities
@@ -48,7 +48,7 @@ class TimeCondition extends Condition implements ITimeCondition
 	private $time;
 
 	/**
-	 * @var int[]
+	 * @var int[]|mixed[]
 	 *
 	 * @IPubDoctrine\Crud(is={"required", "writable"})
 	 * @ORM\Column(type="simple_array", name="condition_days", nullable=false)

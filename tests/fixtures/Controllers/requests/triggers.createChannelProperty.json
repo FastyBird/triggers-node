@@ -9,8 +9,8 @@
       "device" : "device-identifier",
       "channel" : "channel-identifier",
       "property" : "property-identifier",
-      "operator": "eq",
-      "operand": "2"
+      "operator" : "eq",
+      "operand" : "2"
     }
   }
 }

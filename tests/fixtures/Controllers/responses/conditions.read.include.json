@@ -36,7 +36,7 @@
         "comment" : null,
         "enabled" : true,
         "name" : "Rise n'Shine",
-        "params" : [ ]
+        "params" : []
       },
       "id" : "1b17bcaa-a19e-45f0-98b4-56211cc648ae",
       "links" : {
@@ -82,7 +82,7 @@
           }
         },
         "notifications" : {
-          "data" : [ ],
+          "data" : [],
           "links" : {
             "related" : {
               "href" : "/v1/triggers/1b17bcaa-a19e-45f0-98b4-56211cc648ae/notifications",

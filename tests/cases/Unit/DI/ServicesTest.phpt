@@ -2,7 +2,7 @@
 
 namespace Tests\Cases;
 
-use FastyBird\NodeLibs\Boot;
+use FastyBird\NodeBootstrap\Boot;
 use FastyBird\TriggersNode\Consumers;
 use FastyBird\TriggersNode\Controllers;
 use FastyBird\TriggersNode\Hydrators;
@@ -13,6 +13,9 @@ use Tester\Assert;
 
 require_once __DIR__ . '/../../../bootstrap.php';
 
+/**
+ * @testCase
+ */
 final class ServicesTest extends BaseTestCase
 {
 

@@ -11,7 +11,7 @@
     "service"
   ],
 
-  "homepage" : "https://www.fastybird.com",
+  "homepage" : "https://fastybird.com",
 
   "license" : "Apache-2.0",
 
@@ -19,7 +19,7 @@
     {
       "name" : "FastyBird s.r.o.",
       "email" : "info@fastybird.com",
-      "homepage" : "https://www.fastybird.com/"
+      "homepage" : "https://fastybird.com/"
     },
     {
       "name" : "Adam Kadlec",
@@ -32,24 +32,19 @@
   "minimum-stability" : "dev",
 
   "require" : {
-    "php" : ">=7.2.0",
-    "ext-json" : "*",
+    "php" : ">=7.3.0",
     "contributte/translation" : "^0.6",
     "cweagans/composer-patches" : "^1.6",
-    "fastybird/json-schemas" : "^0.2",
-    "fastybird/node-database" : "^0.2",
+    "fastybird/node-auth" : "^0.1",
+    "fastybird/node-bootstrap" : "^0.1",
+    "fastybird/node-database" : "^0.1",
+    "fastybird/node-exchange" : "^0.1",
     "fastybird/node-json-api" : "^0.1",
-    "fastybird/node-libs" : "^0.6",
-    "fastybird/node-web-server" : "^0.5",
+    "fastybird/node-metadata" : "^0.1",
+    "fastybird/node-web-server" : "^0.1",
     "ipub/doctrine-consistence" : "^0.3",
-    "ipub/doctrine-crud" : "^2.3",
-    "ipub/doctrine-orm-query" : "^0.0.6",
     "ipub/doctrine-phone" : "^1.4",
-    "ipub/doctrine-timestampable" : "^1.4",
-    "ipub/json-api-document" : "^0.1",
-    "ipub/slim-router" : "^0.1",
-    "neomerx/json-api" : "^4.0",
-    "phpdocumentor/reflection-docblock" : "^5.1"
+    "ipub/doctrine-timestampable" : "^1.4"
   },
 
   "require-dev" : {
@@ -62,6 +57,7 @@
     "phpstan/phpstan-deprecation-rules" : "^0.12",
     "phpstan/phpstan-doctrine" : "^0.12",
     "phpstan/phpstan-nette" : "^0.12",
+    "phpstan/phpstan-strict-rules" : "^0.12",
     "tracy/tracy" : "~2.4"
   },
 

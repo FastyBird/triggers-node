@@ -4,7 +4,7 @@
  * ChannelPropertyMessageHandler.php
  *
  * @license        More in license.md
- * @copyright      https://www.fastybird.com
+ * @copyright      https://fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:TriggersNode!
  * @subpackage     Consumers
@@ -15,10 +15,9 @@
 
 namespace FastyBird\TriggersNode\Consumers;
 
-use FastyBird\JsonSchemas;
-use FastyBird\JsonSchemas\Loaders as JsonSchemasLoaders;
-use FastyBird\NodeLibs\Consumers as NodeLibsConsumers;
-use FastyBird\NodeLibs\Exceptions as NodeLibsExceptions;
+use FastyBird\NodeExchange\Consumers as NodeExchangeConsumers;
+use FastyBird\NodeMetadata;
+use FastyBird\NodeMetadata\Loaders as NodeMetadataLoaders;
 use FastyBird\TriggersNode;
 use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Exceptions;
@@ -26,7 +25,6 @@ use FastyBird\TriggersNode\Models;
 use FastyBird\TriggersNode\Queries;
 use Nette\Utils;
 use Psr\Log;
-use Throwable;
 
 /**
  * Channel property command messages consumer
@@ -36,7 +34,7 @@ use Throwable;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class ChannelPropertyMessageHandler implements NodeLibsConsumers\IMessageHandler
+final class ChannelPropertyMessageHandler implements NodeExchangeConsumers\IMessageHandler
 {
 
 	/** @var Models\Triggers\ITriggerRepository */
@@ -57,7 +55,7 @@ final class ChannelPropertyMessageHandler implements NodeLibsConsumers\IMessageH
 	/** @var Models\Conditions\IConditionsManager */
 	private $conditionsManager;
 
-	/** @var JsonSchemasLoaders\ISchemaLoader */
+	/** @var NodeMetadataLoaders\ISchemaLoader */
 	private $schemaLoader;
 
 	/** @var Log\LoggerInterface */
@@ -70,7 +68,7 @@ final class ChannelPropertyMessageHandler implements NodeLibsConsumers\IMessageH
 		Models\Actions\IActionsManager $actionsManager,
 		Models\Conditions\IConditionRepository $conditionRepository,
 		Models\Conditions\IConditionsManager $conditionsManager,
-		JsonSchemasLoaders\ISchemaLoader $schemaLoader,
+		NodeMetadataLoaders\ISchemaLoader $schemaLoader,
 		Log\LoggerInterface $logger
 	) {
 		$this->triggerRepository = $triggerRepository;
@@ -86,8 +84,6 @@ final class ChannelPropertyMessageHandler implements NodeLibsConsumers\IMessageH
 
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @throws NodeLibsExceptions\TerminateException
 	 */
 	public function process(
 		string $routingKey,
@@ -115,7 +111,7 @@ final class ChannelPropertyMessageHandler implements NodeLibsConsumers\IMessageH
 		if ($origin === TriggersNode\Constants::NODE_DEVICES_ORIGIN) {
 			switch ($routingKey) {
 				case TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_DELETED_ENTITY_ROUTING_KEY:
-					return $this->schemaLoader->load(JsonSchemas\Constants::DEVICES_NODE_FOLDER . DS . 'entity.channel.property.json');
+					return $this->schemaLoader->load(NodeMetadata\Constants::RESOURCES_FOLDER . '/schemas/devices-node/entity.channel.property.json');
 			}
 		}
 
@@ -128,32 +124,25 @@ final class ChannelPropertyMessageHandler implements NodeLibsConsumers\IMessageH
 	 * @param string $property
 	 *
 	 * @return void
-	 *
-	 * @throws NodeLibsExceptions\TerminateException
 	 */
 	private function clearProperties(string $device, string $channel, string $property): void
 	{
-		try {
-			$findQuery = new Queries\FindChannelPropertyTriggersQuery();
-			$findQuery->forProperty($device, $channel, $property);
+		$findQuery = new Queries\FindChannelPropertyTriggersQuery();
+		$findQuery->forProperty($device, $channel, $property);
 
-			$this->clearTriggers($findQuery);
+		$this->clearTriggers($findQuery);
 
-			/** @var Queries\FindActionsQuery<Entities\Actions\ChannelPropertyAction> $findQuery */
-			$findQuery = new Queries\FindActionsQuery();
-			$findQuery->forChannelProperty($device, $channel, $property);
+		/** @var Queries\FindActionsQuery<Entities\Actions\ChannelPropertyAction> $findQuery */
+		$findQuery = new Queries\FindActionsQuery();
+		$findQuery->forChannelProperty($device, $channel, $property);
 
-			$this->clearActions($findQuery);
+		$this->clearActions($findQuery);
 
-			/** @var Queries\FindConditionsQuery<Entities\Conditions\ChannelPropertyCondition> $findQuery */
-			$findQuery = new Queries\FindConditionsQuery();
-			$findQuery->forChannelProperty($device, $channel, $property);
+		/** @var Queries\FindConditionsQuery<Entities\Conditions\ChannelPropertyCondition> $findQuery */
+		$findQuery = new Queries\FindConditionsQuery();
+		$findQuery->forChannelProperty($device, $channel, $property);
 
-			$this->clearConditions($findQuery);
-
-		} catch (Throwable $ex) {
-			throw new NodeLibsExceptions\TerminateException('An error occurred: ' . $ex->getMessage(), $ex->getCode(), $ex);
-		}
+		$this->clearConditions($findQuery);
 
 		$this->logger->info('[CONSUMER] Successfully consumed channel property data message');
 	}

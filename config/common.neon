@@ -2,7 +2,7 @@
 # Service DI configuration
 #
 # @license		More in license.md
-# @copyright	https://www.fastybird.com
+# @copyright	https://fastybird.com
 # @author		Adam Kadlec <adam.kadlec@fastybird.com>
 # @package		FastyBird:TriggersNode!
 # @subpackage	config
@@ -31,11 +31,6 @@ parameters:
 
 extensions:
 	contributteTranslation		: Contributte\Translation\DI\TranslationExtension
-	ipubPhone					: IPub\Phone\DI\PhoneExtension
-	ipubDoctrineConsistence		: IPub\DoctrineConsistence\DI\DoctrineConsistenceExtension
-	ipubDoctrineCrud			: IPub\DoctrineCrud\DI\DoctrineCrudExtension
-	ipubDoctrineTimestampable	: IPub\DoctrineTimestampable\DI\DoctrineTimestampableExtension
-	ipubDoctrinePhone			: IPub\DoctrinePhone\DI\DoctrinePhoneExtension
 	nettrineAnnotations			: Nettrine\Annotations\DI\AnnotationsExtension
 	nettrineCache				: Nettrine\Cache\DI\CacheExtension
 	nettrineDbal				: Nettrine\DBAL\DI\DbalExtension
@@ -43,13 +38,51 @@ extensions:
 	nettrineOrmAnnotations		: Nettrine\ORM\DI\OrmAnnotationsExtension
 	nettrineOrmConsole			: Nettrine\ORM\DI\OrmConsoleExtension
 	nettrineOrmCache			: Nettrine\ORM\DI\OrmCacheExtension
-	nodeWebServer				: FastyBird\NodeWebServer\DI\NodeWebServerExtension
+	ipubPhone					: IPub\Phone\DI\PhoneExtension
+	ipubDoctrineConsistence		: IPub\DoctrineConsistence\DI\DoctrineConsistenceExtension
+	ipubDoctrineCrud			: IPub\DoctrineCrud\DI\DoctrineCrudExtension
+	ipubDoctrinePhone			: IPub\DoctrinePhone\DI\DoctrinePhoneExtension
+	ipubDoctrineTimestampable	: IPub\DoctrineTimestampable\DI\DoctrineTimestampableExtension
+	fbDateTimeFactory			: FastyBird\DateTimeFactory\DI\DateTimeFactoryExtension
+	nodeAuth					: FastyBird\NodeAuth\DI\NodeAuthExtension
 	nodeDatabase				: FastyBird\NodeDatabase\DI\NodeDatabaseExtension
+	nodeExchange				: FastyBird\NodeExchange\DI\NodeExchangeExtension
 	nodeJsonApi					: FastyBird\NodeJsonApi\DI\NodeJsonApiExtension
+	nodeMetadata				: FastyBird\NodeMetadata\DI\NodeMetadataExtension
+	nodeWebServer				: FastyBird\NodeWebServer\DI\NodeWebServerExtension
 
 ##################################
 # Nette extensions configuration #
 ##################################
+
+# Node authentication
+#####################
+nodeAuth:
+	token:
+		issuer: %origin%
+		signature: %security.signature%
+	enable:
+		middleware: true
+		doctrine:
+			mapping: true
+	services:
+		identity: true
+
+# Node data exchange
+####################
+nodeExchange:
+	origin: %origin%
+	rabbitMQ:
+		connection:
+			host: %exchange.host%
+			port: %exchange.port%
+			vhost: %exchange.vhost%
+			username: %exchange.username%
+			password: %exchange.password%
+		queue:
+			name: %rabbitmq.queueName%
+		routing:
+			keys: %rabbitmq.routing%
 
 # Node web server
 #################
@@ -57,7 +90,6 @@ nodeWebServer:
 	server:
 		address: %server.address%
 		port: %server.port%
-	routingKeys: %rabbitmq.routing%
 
 # Node translations
 ###################
@@ -116,16 +148,25 @@ nettrineOrm:
 nettrineOrmAnnotations:
 	namespaces:
 		- FastyBird\TriggersNode\Entities
+		- FastyBird\NodeAuth\Entities
 	paths:
 		- %appDir%/src/Entities
+		- %appDir%/vendor/fastybird/node-auth/src/Entities
 
 #############################
 # Node services definitions #
 #############################
 
+decorator:
+	FastyBird\NodeWebServer\Commands\HttpServerCommand:
+		setup:
+			- '$onBeforeServerStart[]' = @FastyBird\TriggersNode\Events\ServerBeforeStartHandler
+
 services:
 	# Http router
 	#############
+
+	- {factory: FastyBird\TriggersNode\Middleware\AccessMiddleware, tags: [middleware: {priority: 50}]}
 
 	-
 		factory: FastyBird\TriggersNode\Router\Router
@@ -144,6 +185,10 @@ services:
 	- {factory: FastyBird\TriggersNode\Consumers\DevicePropertyMessageHandler}
 
 	- {factory: FastyBird\TriggersNode\Consumers\PropertyDataMessageHandler}
+
+	# Node events
+	#############
+	- {factory: FastyBird\TriggersNode\Events\ServerBeforeStartHandler}
 
 	# Events subscribers
 	####################

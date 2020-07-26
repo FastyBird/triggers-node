@@ -2,7 +2,7 @@
 
 namespace Tests\Cases;
 
-use FastyBird\NodeLibs\Publishers as NodeLibsPublishers;
+use FastyBird\NodeExchange\Publishers as NodeExchangePublishers;
 use FastyBird\TriggersNode;
 use FastyBird\TriggersNode\Consumers;
 use Mockery;
@@ -12,6 +12,9 @@ use Tester\Assert;
 require_once __DIR__ . '/../../../bootstrap.php';
 require_once __DIR__ . '/../DbTestCase.php';
 
+/**
+ * @testCase
+ */
 final class PropertyDataMessageHandlerTest extends DbTestCase
 {
 
@@ -29,7 +32,7 @@ final class PropertyDataMessageHandlerTest extends DbTestCase
 			'format'   => null,
 		]);
 
-		$rabbitPublisher = Mockery::mock(NodeLibsPublishers\RabbitMqPublisher::class);
+		$rabbitPublisher = Mockery::mock(NodeExchangePublishers\RabbitMqPublisher::class);
 		$rabbitPublisher
 			->shouldReceive('publish')
 			->withArgs(function (string $routingKey, array $data): bool {
@@ -48,7 +51,7 @@ final class PropertyDataMessageHandlerTest extends DbTestCase
 			});
 
 		$this->mockContainerService(
-			NodeLibsPublishers\IRabbitMqPublisher::class,
+			NodeExchangePublishers\IRabbitMqPublisher::class,
 			$rabbitPublisher
 		);
 

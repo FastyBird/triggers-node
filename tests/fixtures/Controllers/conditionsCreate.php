@@ -9,13 +9,13 @@ return [
 		StatusCodeInterface::STATUS_CREATED,
 		__DIR__ . '/responses/conditions.createChannelProperty.json',
 	],
-	'createDeviceProperty' => [
+	'createDeviceProperty'  => [
 		'/v1/triggers/1b17bcaa-a19e-45f0-98b4-56211cc648ae/conditions',
 		file_get_contents(__DIR__ . '/requests/conditions.createDeviceProperty.json'),
 		StatusCodeInterface::STATUS_CREATED,
 		__DIR__ . '/responses/conditions.createDeviceProperty.json',
 	],
-	'createTime' => [
+	'createTime'            => [
 		'/v1/triggers/1b17bcaa-a19e-45f0-98b4-56211cc648ae/conditions',
 		file_get_contents(__DIR__ . '/requests/conditions.createTime.json'),
 		StatusCodeInterface::STATUS_CREATED,

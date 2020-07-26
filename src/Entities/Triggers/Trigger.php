@@ -4,7 +4,7 @@
  * Trigger.php
  *
  * @license        More in license.md
- * @copyright      https://www.fastybird.com
+ * @copyright      https://fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:TriggersNode!
  * @subpackage     Entities
@@ -43,9 +43,10 @@ use Throwable;
  * })
  * @ORM\MappedSuperclass
  */
-abstract class Trigger extends NodeDatabaseEntities\Entity implements ITrigger
+abstract class Trigger implements ITrigger
 {
 
+	use NodeDatabaseEntities\TEntity;
 	use NodeDatabaseEntities\TEntityParams;
 	use DoctrineTimestampable\Entities\TEntityCreated;
 	use DoctrineTimestampable\Entities\TEntityUpdated;

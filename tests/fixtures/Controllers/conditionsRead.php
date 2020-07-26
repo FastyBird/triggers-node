@@ -43,7 +43,7 @@ return [
 		StatusCodeInterface::STATUS_BAD_REQUEST,
 		__DIR__ . '/responses/conditions.index.invalid.json',
 	],
-	'readInvalid'           => [
+	'readInvalid'              => [
 		'/v1/triggers/c64ba1c4-0eda-4cab-87a0-4d634f7b67f4/conditions/09c453b3-c55f-4050-8f1c-b50f8d5728c2',
 		StatusCodeInterface::STATUS_BAD_REQUEST,
 		__DIR__ . '/responses/conditions.index.invalid.json',

@@ -4,7 +4,7 @@
  * DeviceMessageHandler.php
  *
  * @license        More in license.md
- * @copyright      https://www.fastybird.com
+ * @copyright      https://fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:TriggersNode!
  * @subpackage     Consumers
@@ -15,10 +15,9 @@
 
 namespace FastyBird\TriggersNode\Consumers;
 
-use FastyBird\JsonSchemas;
-use FastyBird\JsonSchemas\Loaders as JsonSchemasLoaders;
-use FastyBird\NodeLibs\Consumers as NodeLibsConsumers;
-use FastyBird\NodeLibs\Exceptions as NodeLibsExceptions;
+use FastyBird\NodeExchange\Consumers as NodeExchangeConsumers;
+use FastyBird\NodeMetadata;
+use FastyBird\NodeMetadata\Loaders as NodeMetadataLoaders;
 use FastyBird\TriggersNode;
 use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Exceptions;
@@ -26,7 +25,6 @@ use FastyBird\TriggersNode\Models;
 use FastyBird\TriggersNode\Queries;
 use Nette\Utils;
 use Psr\Log;
-use Throwable;
 
 /**
  * Device command messages consumer
@@ -36,7 +34,7 @@ use Throwable;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class DeviceMessageHandler implements NodeLibsConsumers\IMessageHandler
+final class DeviceMessageHandler implements NodeExchangeConsumers\IMessageHandler
 {
 
 	/** @var Models\Triggers\ITriggerRepository */
@@ -57,7 +55,7 @@ final class DeviceMessageHandler implements NodeLibsConsumers\IMessageHandler
 	/** @var Models\Conditions\IConditionsManager */
 	private $conditionsManager;
 
-	/** @var JsonSchemasLoaders\ISchemaLoader */
+	/** @var NodeMetadataLoaders\ISchemaLoader */
 	private $schemaLoader;
 
 	/** @var Log\LoggerInterface */
@@ -70,7 +68,7 @@ final class DeviceMessageHandler implements NodeLibsConsumers\IMessageHandler
 		Models\Actions\IActionsManager $actionsManager,
 		Models\Conditions\IConditionRepository $conditionRepository,
 		Models\Conditions\IConditionsManager $conditionsManager,
-		JsonSchemasLoaders\ISchemaLoader $schemaLoader,
+		NodeMetadataLoaders\ISchemaLoader $schemaLoader,
 		Log\LoggerInterface $logger
 	) {
 		$this->triggerRepository = $triggerRepository;
@@ -86,8 +84,6 @@ final class DeviceMessageHandler implements NodeLibsConsumers\IMessageHandler
 
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @throws NodeLibsExceptions\TerminateException
 	 */
 	public function process(
 		string $routingKey,
@@ -113,7 +109,7 @@ final class DeviceMessageHandler implements NodeLibsConsumers\IMessageHandler
 		if ($origin === TriggersNode\Constants::NODE_DEVICES_ORIGIN) {
 			switch ($routingKey) {
 				case TriggersNode\Constants::RABBIT_MQ_DEVICES_DELETED_ENTITY_ROUTING_KEY:
-					return $this->schemaLoader->load(JsonSchemas\Constants::DEVICES_NODE_FOLDER . DS . 'entity.device.json');
+					return $this->schemaLoader->load(NodeMetadata\Constants::RESOURCES_FOLDER . '/schemas/devices-node/entity.device.json');
 			}
 		}
 
@@ -124,45 +120,38 @@ final class DeviceMessageHandler implements NodeLibsConsumers\IMessageHandler
 	 * @param string $device
 	 *
 	 * @return void
-	 *
-	 * @throws NodeLibsExceptions\TerminateException
 	 */
 	private function clearDevices(string $device): void
 	{
-		try {
-			$findQuery = new Queries\FindChannelPropertyTriggersQuery();
-			$findQuery->forDevice($device);
+		$findQuery = new Queries\FindChannelPropertyTriggersQuery();
+		$findQuery->forDevice($device);
 
-			$this->clearTriggers($findQuery);
+		$this->clearTriggers($findQuery);
 
-			/** @var Queries\FindActionsQuery<Entities\Actions\ChannelPropertyAction> $findQuery */
-			$findQuery = new Queries\FindActionsQuery();
-			$findQuery->forDevice($device);
+		/** @var Queries\FindActionsQuery<Entities\Actions\ChannelPropertyAction> $findQuery */
+		$findQuery = new Queries\FindActionsQuery();
+		$findQuery->forDevice($device);
 
-			$this->clearActions($findQuery);
+		$this->clearActions($findQuery);
 
-			/** @var Queries\FindConditionsQuery<Entities\Conditions\DevicePropertyCondition> $findQuery */
-			$findQuery = new Queries\FindConditionsQuery();
-			$findQuery->forDevice($device);
+		/** @var Queries\FindConditionsQuery<Entities\Conditions\DevicePropertyCondition> $findQuery */
+		$findQuery = new Queries\FindConditionsQuery();
+		$findQuery->forDevice($device);
 
-			$conditions = $this->conditionRepository->findAllBy($findQuery, Entities\Conditions\DevicePropertyCondition::class);
+		$conditions = $this->conditionRepository->findAllBy($findQuery, Entities\Conditions\DevicePropertyCondition::class);
 
-			foreach ($conditions as $condition) {
-				$this->conditionsManager->delete($condition);
-			}
+		foreach ($conditions as $condition) {
+			$this->conditionsManager->delete($condition);
+		}
 
-			/** @var Queries\FindConditionsQuery<Entities\Conditions\ChannelPropertyCondition> $findQuery */
-			$findQuery = new Queries\FindConditionsQuery();
-			$findQuery->forDevice($device);
+		/** @var Queries\FindConditionsQuery<Entities\Conditions\ChannelPropertyCondition> $findQuery */
+		$findQuery = new Queries\FindConditionsQuery();
+		$findQuery->forDevice($device);
 
-			$conditions = $this->conditionRepository->findAllBy($findQuery, Entities\Conditions\ChannelPropertyCondition::class);
+		$conditions = $this->conditionRepository->findAllBy($findQuery, Entities\Conditions\ChannelPropertyCondition::class);
 
-			foreach ($conditions as $condition) {
-				$this->conditionsManager->delete($condition);
-			}
-
-		} catch (Throwable $ex) {
-			throw new NodeLibsExceptions\TerminateException('An error occurred: ' . $ex->getMessage(), $ex->getCode(), $ex);
+		foreach ($conditions as $condition) {
+			$this->conditionsManager->delete($condition);
 		}
 
 		$this->logger->info('[CONSUMER] Successfully consumed device entity message');

@@ -4,7 +4,7 @@
  * PropertyDataMessageHandler.php
  *
  * @license        More in license.md
- * @copyright      https://www.fastybird.com
+ * @copyright      https://fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:TriggersNode!
  * @subpackage     Consumers
@@ -15,11 +15,10 @@
 
 namespace FastyBird\TriggersNode\Consumers;
 
-use FastyBird\JsonSchemas;
-use FastyBird\JsonSchemas\Loaders as JsonSchemasLoaders;
-use FastyBird\NodeLibs\Consumers as NodeLibsConsumers;
-use FastyBird\NodeLibs\Exceptions as NodeLibsExceptions;
-use FastyBird\NodeLibs\Publishers as NodeLibsPublishers;
+use FastyBird\NodeExchange\Consumers as NodeExchangeConsumers;
+use FastyBird\NodeExchange\Publishers as NodeExchangePublishers;
+use FastyBird\NodeMetadata;
+use FastyBird\NodeMetadata\Loaders as NodeMetadataLoaders;
 use FastyBird\TriggersNode;
 use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Exceptions;
@@ -28,7 +27,6 @@ use FastyBird\TriggersNode\Queries;
 use FastyBird\TriggersNode\Types;
 use Nette\Utils;
 use Psr\Log;
-use Throwable;
 
 /**
  * Device or channel property data command messages consumer
@@ -38,7 +36,7 @@ use Throwable;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHandler
+final class PropertyDataMessageHandler implements NodeExchangeConsumers\IMessageHandler
 {
 
 	/** @var Models\Triggers\ITriggerRepository */
@@ -47,10 +45,10 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 	/** @var Models\Conditions\IConditionRepository */
 	private $conditionRepository;
 
-	/** @var JsonSchemasLoaders\ISchemaLoader */
+	/** @var NodeMetadataLoaders\ISchemaLoader */
 	private $schemaLoader;
 
-	/** @var NodeLibsPublishers\IRabbitMqPublisher */
+	/** @var NodeExchangePublishers\IRabbitMqPublisher */
 	private $rabbitMqPublisher;
 
 	/** @var Log\LoggerInterface */
@@ -59,8 +57,8 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 	public function __construct(
 		Models\Triggers\ITriggerRepository $triggerRepository,
 		Models\Conditions\IConditionRepository $conditionRepository,
-		JsonSchemasLoaders\ISchemaLoader $schemaLoader,
-		NodeLibsPublishers\IRabbitMqPublisher $rabbitMqPublisher,
+		NodeMetadataLoaders\ISchemaLoader $schemaLoader,
+		NodeExchangePublishers\IRabbitMqPublisher $rabbitMqPublisher,
 		Log\LoggerInterface $logger
 	) {
 		$this->triggerRepository = $triggerRepository;
@@ -73,8 +71,6 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @throws NodeLibsExceptions\TerminateException
 	 */
 	public function process(
 		string $routingKey,
@@ -129,11 +125,11 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 			switch ($routingKey) {
 				case TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_CREATED_ENTITY_ROUTING_KEY:
 				case TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_UPDATED_ENTITY_ROUTING_KEY:
-					return $this->schemaLoader->load(JsonSchemas\Constants::STORAGE_NODE_FOLDER . DS . 'entity.device.property.json');
+					return $this->schemaLoader->load(NodeMetadata\Constants::RESOURCES_FOLDER . '/schemas/storage-node/entity.device.property.json');
 
 				case TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_CREATED_ENTITY_ROUTING_KEY:
 				case TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_UPDATED_ENTITY_ROUTING_KEY:
-					return $this->schemaLoader->load(JsonSchemas\Constants::STORAGE_NODE_FOLDER . DS . 'entity.channel.property.json');
+					return $this->schemaLoader->load(NodeMetadata\Constants::RESOURCES_FOLDER . '/schemas/storage-node/entity.channel.property.json');
 			}
 		}
 
@@ -149,8 +145,6 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 	 * @param string|string[]|int[]|float[]|null $format
 	 *
 	 * @return void
-	 *
-	 * @throws NodeLibsExceptions\TerminateException
 	 */
 	private function processDeviceConditions(
 		string $device,
@@ -168,15 +162,10 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 			return;
 		}
 
-		try {
-			$findQuery = new Queries\FindConditionsQuery();
-			$findQuery->forDeviceProperty($device, $property);
+		$findQuery = new Queries\FindConditionsQuery();
+		$findQuery->forDeviceProperty($device, $property);
 
-			$conditions = $this->conditionRepository->findAllBy($findQuery, Entities\Conditions\DevicePropertyCondition::class);
-
-		} catch (Throwable $ex) {
-			throw new NodeLibsExceptions\TerminateException('An error occurred: ' . $ex->getMessage(), $ex->getCode(), $ex);
-		}
+		$conditions = $this->conditionRepository->findAllBy($findQuery, Entities\Conditions\DevicePropertyCondition::class);
 
 		/** @var Entities\Conditions\DevicePropertyCondition $condition */
 		foreach ($conditions as $condition) {
@@ -199,8 +188,6 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 	 * @param string|string[]|int[]|float[]|null $format
 	 *
 	 * @return void
-	 *
-	 * @throws NodeLibsExceptions\TerminateException
 	 */
 	private function processChannelConditions(
 		string $device,
@@ -219,15 +206,10 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 			return;
 		}
 
-		try {
-			$findQuery = new Queries\FindConditionsQuery();
-			$findQuery->forChannelProperty($device, $channel, $property);
+		$findQuery = new Queries\FindConditionsQuery();
+		$findQuery->forChannelProperty($device, $channel, $property);
 
-			$conditions = $this->conditionRepository->findAllBy($findQuery, Entities\Conditions\ChannelPropertyCondition::class);
-
-		} catch (Throwable $ex) {
-			throw new NodeLibsExceptions\TerminateException('An error occurred: ' . $ex->getMessage(), $ex->getCode(), $ex);
-		}
+		$conditions = $this->conditionRepository->findAllBy($findQuery, Entities\Conditions\ChannelPropertyCondition::class);
 
 		/** @var Entities\Conditions\ChannelPropertyCondition $condition */
 		foreach ($conditions as $condition) {
@@ -239,15 +221,10 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 			}
 		}
 
-		try {
-			$findQuery = new Queries\FindChannelPropertyTriggersQuery();
-			$findQuery->forProperty($device, $channel, $property);
+		$findQuery = new Queries\FindChannelPropertyTriggersQuery();
+		$findQuery->forProperty($device, $channel, $property);
 
-			$triggers = $this->triggerRepository->findAllBy($findQuery, Entities\Triggers\ChannelPropertyTrigger::class);
-
-		} catch (Throwable $ex) {
-			throw new NodeLibsExceptions\TerminateException('An error occurred: ' . $ex->getMessage(), $ex->getCode(), $ex);
-		}
+		$triggers = $this->triggerRepository->findAllBy($findQuery, Entities\Triggers\ChannelPropertyTrigger::class);
 
 		/** @var Entities\Triggers\ChannelPropertyTrigger $trigger */
 		foreach ($triggers as $trigger) {
@@ -338,7 +315,7 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 	 * @param string $device
 	 * @param string $property
 	 *
-	 * @return null
+	 * @return mixed|null
 	 */
 	private function fetchDevicePropertyValue(
 		string $device,
@@ -353,7 +330,7 @@ final class PropertyDataMessageHandler implements NodeLibsConsumers\IMessageHand
 	 * @param string $channel
 	 * @param string $property
 	 *
-	 * @return null
+	 * @return mixed|null
 	 */
 	private function fetchChannelPropertyValue(
 		string $device,
