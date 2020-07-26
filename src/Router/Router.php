@@ -15,6 +15,7 @@
 
 namespace FastyBird\TriggersNode\Router;
 
+use FastyBird\NodeAuth\Middleware as NodeAuthMiddleware;
 use FastyBird\TriggersNode\Controllers;
 use IPub\SlimRouter\Routing;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -48,11 +49,15 @@ class Router extends Routing\Router
 	/** @var Controllers\ConditionsV1Controller */
 	private $conditionsV1Controller;
 
+	/** @var NodeAuthMiddleware\Route\AccessMiddleware */
+	private $accessControlMiddleware;
+
 	public function __construct(
 		Controllers\TriggersV1Controller $triggersV1Controller,
 		Controllers\ActionsV1Controller $actionsV1Controller,
 		Controllers\NotificationsV1Controller $notificationsV1Controller,
 		Controllers\ConditionsV1Controller $conditionsV1Controller,
+		NodeAuthMiddleware\Route\AccessMiddleware $accessControlMiddleware,
 		?ResponseFactoryInterface $responseFactory = null
 	) {
 		parent::__construct($responseFactory, null);
@@ -61,6 +66,8 @@ class Router extends Routing\Router
 		$this->actionsV1Controller = $actionsV1Controller;
 		$this->notificationsV1Controller = $notificationsV1Controller;
 		$this->conditionsV1Controller = $conditionsV1Controller;
+
+		$this->accessControlMiddleware = $accessControlMiddleware;
 	}
 
 	/**
@@ -150,7 +157,8 @@ class Router extends Routing\Router
 					$route->setName('trigger.condition.relationship');
 				});
 			});
-		});
+		})
+			->addMiddleware($this->accessControlMiddleware);
 	}
 
 }
