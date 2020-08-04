@@ -121,15 +121,15 @@ final class PropertyDataMessageHandler implements NodeExchangeConsumers\IMessage
 	 */
 	public function getSchema(string $routingKey, string $origin): ?string
 	{
-		if ($origin === TriggersNode\Constants::NODE_STORAGE_ORIGIN) {
+		if ($origin === TriggersNode\Constants::NODE_DEVICES_ORIGIN) {
 			switch ($routingKey) {
 				case TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_CREATED_ENTITY_ROUTING_KEY:
 				case TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_UPDATED_ENTITY_ROUTING_KEY:
-					return $this->schemaLoader->load(NodeMetadata\Constants::RESOURCES_FOLDER . '/schemas/storage-node/entity.device.property.json');
+					return $this->schemaLoader->load(NodeMetadata\Constants::RESOURCES_FOLDER . '/schemas/devices-node/entity.device.property.json');
 
 				case TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_CREATED_ENTITY_ROUTING_KEY:
 				case TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_UPDATED_ENTITY_ROUTING_KEY:
-					return $this->schemaLoader->load(NodeMetadata\Constants::RESOURCES_FOLDER . '/schemas/storage-node/entity.channel.property.json');
+					return $this->schemaLoader->load(NodeMetadata\Constants::RESOURCES_FOLDER . '/schemas/devices-node/entity.channel.property.json');
 			}
 		}
 

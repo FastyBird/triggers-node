@@ -53,7 +53,6 @@ final class Constants
 	 */
 
 	public const NODE_DEVICES_ORIGIN = 'com.fastybird.devices-node';
-	public const NODE_STORAGE_ORIGIN = 'com.fastybird.storage-node';
 
 	/**
 	 * Data types
