@@ -22,8 +22,8 @@ parameters:
 		routing:
 			- fb.bus.node.entity.*.channel		# Channel entities
 			- fb.bus.node.entity.*.channel.*	# Channel entities
-			- fb.bus.node.entity.*.device.*		# Device entities
-			- fb.bus.node.entity.*.channel.*	# Device entities
+			- fb.bus.node.entity.*.device		# Device entities
+			- fb.bus.node.entity.*.device.* 	# Device entities
 
 #########################
 # Used Nette extensions #
