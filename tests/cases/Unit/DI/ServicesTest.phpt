@@ -34,7 +34,6 @@ final class ServicesTest extends BaseTestCase
 		Assert::notNull($container->getByType(Consumers\DevicePropertyMessageHandler::class));
 		Assert::notNull($container->getByType(Consumers\ChannelMessageHandler::class));
 		Assert::notNull($container->getByType(Consumers\ChannelPropertyMessageHandler::class));
-		Assert::notNull($container->getByType(Consumers\PropertyDataMessageHandler::class));
 
 		Assert::notNull($container->getByType(Models\Triggers\TriggerRepository::class));
 		Assert::notNull($container->getByType(Models\Actions\ActionRepository::class));

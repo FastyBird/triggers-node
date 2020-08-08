@@ -126,13 +126,21 @@ final class DeviceMessageHandler implements NodeExchangeConsumers\IMessageHandle
 		$findQuery = new Queries\FindChannelPropertyTriggersQuery();
 		$findQuery->forDevice($device);
 
-		$this->clearTriggers($findQuery);
+		$triggers = $this->triggerRepository->findAllBy($findQuery, Entities\Triggers\ChannelPropertyTrigger::class);
+
+		foreach ($triggers as $trigger) {
+			$this->triggersManager->delete($trigger);
+		}
 
 		/** @var Queries\FindActionsQuery<Entities\Actions\ChannelPropertyAction> $findQuery */
 		$findQuery = new Queries\FindActionsQuery();
 		$findQuery->forDevice($device);
 
-		$this->clearActions($findQuery);
+		$actions = $this->actionRepository->findAllBy($findQuery, Entities\Actions\ChannelPropertyAction::class);
+
+		foreach ($actions as $action) {
+			$this->actionsManager->delete($action);
+		}
 
 		/** @var Queries\FindConditionsQuery<Entities\Conditions\DevicePropertyCondition> $findQuery */
 		$findQuery = new Queries\FindConditionsQuery();
@@ -155,40 +163,6 @@ final class DeviceMessageHandler implements NodeExchangeConsumers\IMessageHandle
 		}
 
 		$this->logger->info('[CONSUMER] Successfully consumed device entity message');
-	}
-
-	/**
-	 * @param Queries\FindChannelPropertyTriggersQuery $findQuery
-	 *
-	 * @return void
-	 *
-	 * @phpstan-template T of Entities\Triggers\ChannelPropertyTrigger
-	 * @phpstan-param    Queries\FindChannelPropertyTriggersQuery<T> $findQuery
-	 */
-	private function clearTriggers(Queries\FindChannelPropertyTriggersQuery $findQuery): void
-	{
-		$triggers = $this->triggerRepository->findAllBy($findQuery, Entities\Triggers\ChannelPropertyTrigger::class);
-
-		foreach ($triggers as $trigger) {
-			$this->triggersManager->delete($trigger);
-		}
-	}
-
-	/**
-	 * @param Queries\FindActionsQuery $findQuery
-	 *
-	 * @return void
-	 *
-	 * @phpstan-template T of Entities\Actions\ChannelPropertyAction
-	 * @phpstan-param    Queries\FindActionsQuery<T> $findQuery
-	 */
-	private function clearActions(Queries\FindActionsQuery $findQuery): void
-	{
-		$actions = $this->actionRepository->findAllBy($findQuery, Entities\Actions\ChannelPropertyAction::class);
-
-		foreach ($actions as $action) {
-			$this->actionsManager->delete($action);
-		}
 	}
 
 }

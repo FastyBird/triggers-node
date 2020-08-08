@@ -33,14 +33,12 @@ final class Constants
 	// Devices
 	public const RABBIT_MQ_DEVICES_DELETED_ENTITY_ROUTING_KEY = 'fb.bus.node.entity.deleted.device';
 
-	public const RABBIT_MQ_DEVICES_PROPERTY_CREATED_ENTITY_ROUTING_KEY = 'fb.bus.node.entity.created.device.property';
 	public const RABBIT_MQ_DEVICES_PROPERTY_UPDATED_ENTITY_ROUTING_KEY = 'fb.bus.node.entity.updated.device.property';
 	public const RABBIT_MQ_DEVICES_PROPERTY_DELETED_ENTITY_ROUTING_KEY = 'fb.bus.node.entity.deleted.device.property';
 
 	// Channels
 	public const RABBIT_MQ_CHANNELS_DELETED_ENTITY_ROUTING_KEY = 'fb.bus.node.entity.deleted.device.channel';
 
-	public const RABBIT_MQ_CHANNELS_PROPERTY_CREATED_ENTITY_ROUTING_KEY = 'fb.bus.node.entity.created.channel.property';
 	public const RABBIT_MQ_CHANNELS_PROPERTY_UPDATED_ENTITY_ROUTING_KEY = 'fb.bus.node.entity.updated.channel.property';
 	public const RABBIT_MQ_CHANNELS_PROPERTY_DELETED_ENTITY_ROUTING_KEY = 'fb.bus.node.entity.deleted.channel.property';
 

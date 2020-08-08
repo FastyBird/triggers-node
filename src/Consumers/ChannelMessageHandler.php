@@ -128,72 +128,33 @@ final class ChannelMessageHandler implements NodeExchangeConsumers\IMessageHandl
 		$findQuery = new Queries\FindChannelPropertyTriggersQuery();
 		$findQuery->forChannel($device, $channel);
 
-		$this->clearTriggers($findQuery);
-
-		/** @var Queries\FindActionsQuery<Entities\Actions\ChannelPropertyAction> $findQuery */
-		$findQuery = new Queries\FindActionsQuery();
-		$findQuery->forChannel($device, $channel);
-
-		$this->clearActions($findQuery);
-
-		/** @var Queries\FindConditionsQuery<Entities\Conditions\ChannelPropertyCondition> $findQuery */
-		$findQuery = new Queries\FindConditionsQuery();
-		$findQuery->forChannel($device, $channel);
-
-		$this->clearConditions($findQuery);
-
-		$this->logger->info('[CONSUMER] Successfully consumed channel entity message');
-	}
-
-	/**
-	 * @param Queries\FindChannelPropertyTriggersQuery $findQuery
-	 *
-	 * @return void
-	 *
-	 * @phpstan-template T of Entities\Triggers\ChannelPropertyTrigger
-	 * @phpstan-param    Queries\FindChannelPropertyTriggersQuery<T> $findQuery
-	 */
-	private function clearTriggers(Queries\FindChannelPropertyTriggersQuery $findQuery): void
-	{
 		$triggers = $this->triggerRepository->findAllBy($findQuery, Entities\Triggers\ChannelPropertyTrigger::class);
 
 		foreach ($triggers as $trigger) {
 			$this->triggersManager->delete($trigger);
 		}
-	}
 
-	/**
-	 * @param Queries\FindActionsQuery $findQuery
-	 *
-	 * @return void
-	 *
-	 * @phpstan-template T of Entities\Actions\ChannelPropertyAction
-	 * @phpstan-param    Queries\FindActionsQuery<T> $findQuery
-	 */
-	private function clearActions(Queries\FindActionsQuery $findQuery): void
-	{
+		/** @var Queries\FindActionsQuery<Entities\Actions\ChannelPropertyAction> $findQuery */
+		$findQuery = new Queries\FindActionsQuery();
+		$findQuery->forChannel($device, $channel);
+
 		$actions = $this->actionRepository->findAllBy($findQuery, Entities\Actions\ChannelPropertyAction::class);
 
 		foreach ($actions as $action) {
 			$this->actionsManager->delete($action);
 		}
-	}
 
-	/**
-	 * @param Queries\FindConditionsQuery $findQuery
-	 *
-	 * @return void
-	 *
-	 * @phpstan-template T of Entities\Conditions\ChannelPropertyCondition
-	 * @phpstan-param    Queries\FindConditionsQuery<T> $findQuery
-	 */
-	private function clearConditions(Queries\FindConditionsQuery $findQuery): void
-	{
+		/** @var Queries\FindConditionsQuery<Entities\Conditions\ChannelPropertyCondition> $findQuery */
+		$findQuery = new Queries\FindConditionsQuery();
+		$findQuery->forChannel($device, $channel);
+
 		$conditions = $this->conditionRepository->findAllBy($findQuery, Entities\Conditions\ChannelPropertyCondition::class);
 
 		foreach ($conditions as $condition) {
 			$this->conditionsManager->delete($condition);
 		}
+
+		$this->logger->info('[CONSUMER] Successfully consumed channel entity message');
 	}
 
 }

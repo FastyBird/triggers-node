@@ -8,7 +8,6 @@ use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Models;
 use FastyBird\TriggersNode\Queries;
 use Nette\Utils;
-use Ramsey\Uuid;
 use Tester\Assert;
 
 require_once __DIR__ . '/../../../bootstrap.php';
@@ -20,16 +19,24 @@ require_once __DIR__ . '/../DbTestCase.php';
 final class ChannelMessageHandlerTest extends DbTestCase
 {
 
-	public function testProcessMessageDeleteTrigger(): void
+	public function testProcessMessageDelete(): void
 	{
 		$triggersRepository = $this->getContainer()->getByType(Models\Triggers\TriggerRepository::class);
+		$actionRepository = $this->getContainer()->getByType(Models\Actions\ActionRepository::class);
 
 		$findQuery = new Queries\FindChannelPropertyTriggersQuery();
-		$findQuery->byId(Uuid\Uuid::fromString('1c580923-28dd-4b28-8517-bf37f0173b93'));
+		$findQuery->forChannel('device-one', 'channel-one');
 
-		$found = $triggersRepository->findOneBy($findQuery, Entities\Triggers\ChannelPropertyTrigger::class);
+		$found = $triggersRepository->findAllBy($findQuery, Entities\Triggers\ChannelPropertyTrigger::class);
 
-		Assert::true($found !== null);
+		Assert::count(1, $found);
+
+		$findQuery = new Queries\FindActionsQuery();
+		$findQuery->forChannel('device-one', 'channel-one');
+
+		$found = $actionRepository->findAllBy($findQuery, Entities\Actions\ChannelPropertyAction::class);
+
+		Assert::count(1, $found);
 
 		$routingKey = TriggersNode\Constants::RABBIT_MQ_CHANNELS_DELETED_ENTITY_ROUTING_KEY;
 		$message = Utils\ArrayHash::from([
@@ -42,36 +49,19 @@ final class ChannelMessageHandlerTest extends DbTestCase
 
 		$handler->process($routingKey, $message);
 
-		$found = $triggersRepository->findOneBy($findQuery, Entities\Triggers\ChannelPropertyTrigger::class);
+		$findQuery = new Queries\FindChannelPropertyTriggersQuery();
+		$findQuery->forChannel('device-one', 'channel-one');
 
-		Assert::true($found === null);
-	}
+		$found = $triggersRepository->findAllBy($findQuery, Entities\Triggers\ChannelPropertyTrigger::class);
 
-	public function testProcessMessageDeleteAction(): void
-	{
-		$actionRepository = $this->getContainer()->getByType(Models\Actions\ActionRepository::class);
+		Assert::count(0, $found);
 
 		$findQuery = new Queries\FindActionsQuery();
-		$findQuery->byId(Uuid\Uuid::fromString('4aa84028-d8b7-4128-95b2-295763634aa4'));
+		$findQuery->forChannel('device-one', 'channel-one');
 
-		$found = $actionRepository->findOneBy($findQuery, Entities\Actions\ChannelPropertyAction::class);
+		$found = $actionRepository->findAllBy($findQuery, Entities\Actions\ChannelPropertyAction::class);
 
-		Assert::true($found !== null);
-
-		$routingKey = TriggersNode\Constants::RABBIT_MQ_CHANNELS_DELETED_ENTITY_ROUTING_KEY;
-		$message = Utils\ArrayHash::from([
-			'device'  => 'device-one',
-			'channel' => 'channel-four',
-			'name'    => 'Channel one',
-		]);
-
-		$handler = $this->getContainer()->getByType(Consumers\ChannelMessageHandler::class);
-
-		$handler->process($routingKey, $message);
-
-		$found = $actionRepository->findOneBy($findQuery, Entities\Actions\ChannelPropertyAction::class);
-
-		Assert::true($found === null);
+		Assert::count(0, $found);
 	}
 
 }

@@ -2,13 +2,14 @@
 
 namespace Tests\Cases;
 
+use FastyBird\NodeExchange\Publishers as NodeExchangePublishers;
 use FastyBird\TriggersNode;
 use FastyBird\TriggersNode\Consumers;
 use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Models;
 use FastyBird\TriggersNode\Queries;
+use Mockery;
 use Nette\Utils;
-use Ramsey\Uuid;
 use Tester\Assert;
 
 require_once __DIR__ . '/../../../bootstrap.php';
@@ -25,11 +26,11 @@ final class ChannelPropertyMessageHandlerTest extends DbTestCase
 		$triggersRepository = $this->getContainer()->getByType(Models\Triggers\TriggerRepository::class);
 
 		$findQuery = new Queries\FindChannelPropertyTriggersQuery();
-		$findQuery->byId(Uuid\Uuid::fromString('1c580923-28dd-4b28-8517-bf37f0173b93'));
+		$findQuery->forProperty('device-one', 'channel-one', 'button');
 
-		$found = $triggersRepository->findOneBy($findQuery, Entities\Triggers\ChannelPropertyTrigger::class);
+		$found = $triggersRepository->findAllBy($findQuery, Entities\Triggers\ChannelPropertyTrigger::class);
 
-		Assert::true($found !== null);
+		Assert::count(1, $found);
 
 		$routingKey = TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_DELETED_ENTITY_ROUTING_KEY;
 		$message = Utils\ArrayHash::from([
@@ -44,9 +45,12 @@ final class ChannelPropertyMessageHandlerTest extends DbTestCase
 
 		$handler->process($routingKey, $message);
 
-		$found = $triggersRepository->findOneBy($findQuery, Entities\Triggers\ChannelPropertyTrigger::class);
+		$findQuery = new Queries\FindChannelPropertyTriggersQuery();
+		$findQuery->forProperty('device-one', 'channel-one', 'button');
 
-		Assert::true($found === null);
+		$found = $triggersRepository->findAllBy($findQuery, Entities\Triggers\ChannelPropertyTrigger::class);
+
+		Assert::count(0, $found);
 	}
 
 	public function testProcessMessageDeleteAction(): void
@@ -54,11 +58,11 @@ final class ChannelPropertyMessageHandlerTest extends DbTestCase
 		$actionRepository = $this->getContainer()->getByType(Models\Actions\ActionRepository::class);
 
 		$findQuery = new Queries\FindActionsQuery();
-		$findQuery->byId(Uuid\Uuid::fromString('4aa84028-d8b7-4128-95b2-295763634aa4'));
+		$findQuery->forChannelProperty('device-one', 'channel-four', 'switch');
 
-		$found = $actionRepository->findOneBy($findQuery, Entities\Actions\ChannelPropertyAction::class);
+		$found = $actionRepository->findAllBy($findQuery, Entities\Actions\ChannelPropertyAction::class);
 
-		Assert::true($found !== null);
+		Assert::count(1, $found);
 
 		$routingKey = TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_DELETED_ENTITY_ROUTING_KEY;
 		$message = Utils\ArrayHash::from([
@@ -73,9 +77,53 @@ final class ChannelPropertyMessageHandlerTest extends DbTestCase
 
 		$handler->process($routingKey, $message);
 
-		$found = $actionRepository->findOneBy($findQuery, Entities\Actions\ChannelPropertyAction::class);
+		$findQuery = new Queries\FindActionsQuery();
+		$findQuery->forChannelProperty('device-one', 'channel-four', 'switch');
 
-		Assert::true($found === null);
+		$found = $actionRepository->findAllBy($findQuery, Entities\Actions\ChannelPropertyAction::class);
+
+		Assert::count(0, $found);
+	}
+
+	public function testProcessMessageFireAction(): void
+	{
+		$routingKey = TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_UPDATED_ENTITY_ROUTING_KEY;
+		$message = Utils\ArrayHash::from([
+			'device'   => 'device-one',
+			'channel'  => 'channel-one',
+			'property' => 'button',
+			'value'    => '3',
+			'pending'  => false,
+			'datatype' => null,
+			'format'   => null,
+		]);
+
+		$rabbitPublisher = Mockery::mock(NodeExchangePublishers\RabbitMqPublisher::class);
+		$rabbitPublisher
+			->shouldReceive('publish')
+			->withArgs(function (string $routingKey, array $data): bool {
+				Assert::same(TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTIES_DATA_ROUTING_KEY, $routingKey);
+				Assert::same(
+					[
+						'device'   => 'device-two',
+						'channel'  => 'channel-one',
+						'property' => 'switch',
+						'expected' => 'toggle',
+					],
+					$data
+				);
+
+				return true;
+			});
+
+		$this->mockContainerService(
+			NodeExchangePublishers\IRabbitMqPublisher::class,
+			$rabbitPublisher
+		);
+
+		$handler = $this->getContainer()->getByType(Consumers\ChannelPropertyMessageHandler::class);
+
+		$handler->process($routingKey, $message);
 	}
 
 }
