@@ -20,19 +20,27 @@ final class NotificationsV1ControllerTest extends DbTestCase
 
 	/**
 	 * @param string $url
+	 * @param string|null $token
 	 * @param int $statusCode
 	 * @param string $fixture
 	 *
 	 * @dataProvider ./../../../fixtures/Controllers/notificationsRead.php
 	 */
-	public function testRead(string $url, int $statusCode, string $fixture): void
+	public function testRead(string $url, ?string $token, int $statusCode, string $fixture): void
 	{
 		/** @var Router\Router $router */
 		$router = $this->getContainer()->getByType(Router\Router::class);
 
+		$headers = [];
+
+		if ($token !== null) {
+			$headers['authorization'] = $token;
+		}
+
 		$request = new ServerRequest(
 			RequestMethodInterface::METHOD_GET,
-			$url
+			$url,
+			$headers
 		);
 
 		$response = $router->handle($request);
@@ -47,21 +55,28 @@ final class NotificationsV1ControllerTest extends DbTestCase
 
 	/**
 	 * @param string $url
+	 * @param string|null $token
 	 * @param string $body
 	 * @param int $statusCode
 	 * @param string $fixture
 	 *
 	 * @dataProvider ./../../../fixtures/Controllers/notificationsCreate.php
 	 */
-	public function testCreate(string $url, string $body, int $statusCode, string $fixture): void
+	public function testCreate(string $url, ?string $token, string $body, int $statusCode, string $fixture): void
 	{
 		/** @var Router\Router $router */
 		$router = $this->getContainer()->getByType(Router\Router::class);
 
+		$headers = [];
+
+		if ($token !== null) {
+			$headers['authorization'] = $token;
+		}
+
 		$request = new ServerRequest(
 			RequestMethodInterface::METHOD_POST,
 			$url,
-			[],
+			$headers,
 			$body
 		);
 
@@ -77,21 +92,28 @@ final class NotificationsV1ControllerTest extends DbTestCase
 
 	/**
 	 * @param string $url
+	 * @param string|null $token
 	 * @param string $body
 	 * @param int $statusCode
 	 * @param string $fixture
 	 *
 	 * @dataProvider ./../../../fixtures/Controllers/notificationsUpdate.php
 	 */
-	public function testUpdate(string $url, string $body, int $statusCode, string $fixture): void
+	public function testUpdate(string $url, ?string $token, string $body, int $statusCode, string $fixture): void
 	{
 		/** @var Router\Router $router */
 		$router = $this->getContainer()->getByType(Router\Router::class);
 
+		$headers = [];
+
+		if ($token !== null) {
+			$headers['authorization'] = $token;
+		}
+
 		$request = new ServerRequest(
 			RequestMethodInterface::METHOD_PATCH,
 			$url,
-			[],
+			$headers,
 			$body
 		);
 
@@ -107,19 +129,27 @@ final class NotificationsV1ControllerTest extends DbTestCase
 
 	/**
 	 * @param string $url
+	 * @param string|null $token
 	 * @param int $statusCode
 	 * @param string $fixture
 	 *
 	 * @dataProvider ./../../../fixtures/Controllers/notificationsDelete.php
 	 */
-	public function testDelete(string $url, int $statusCode, string $fixture): void
+	public function testDelete(string $url, ?string $token, int $statusCode, string $fixture): void
 	{
 		/** @var Router\Router $router */
 		$router = $this->getContainer()->getByType(Router\Router::class);
 
+		$headers = [];
+
+		if ($token !== null) {
+			$headers['authorization'] = $token;
+		}
+
 		$request = new ServerRequest(
 			RequestMethodInterface::METHOD_DELETE,
-			$url
+			$url,
+			$headers
 		);
 
 		$response = $router->handle($request);
