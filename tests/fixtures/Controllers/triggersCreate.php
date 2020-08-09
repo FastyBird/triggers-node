@@ -8,6 +8,8 @@ const INVALID_TOKEN = 'eyJqdGkiOiI5YWY1NjI0Mi01ZDg3LTQzNjQtYmIxZS1kOWZjODI4NmIzZ
 const VALID_TOKEN_USER = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI3YzVkNzdhZC1kOTNlLTRjMmMtOThlNS05ZTFhZmM0NDQ2MTUiLCJpc3MiOiJjb20uZmFzdHliaXJkLmF1dGgtbm9kZSIsImlhdCI6MTU4NTc0MjQwMCwiZXhwIjoxNTg1NzQ5NjAwLCJ1c2VyIjoiZWZiZmJkZWYtYmZiZC02OGVmLWJmYmQtNzcwYjQwZWZiZmJkIiwicm9sZXMiOlsidXNlciJdfQ.cbatWCuGX-K8XbF9MMN7DqxV9hriWmUSGcDGGmnxXX0';
 
 return [
+	// Valid responses
+	//////////////////
 	'createManual'          => [
 		'/v1/triggers',
 		'Bearer ' . VALID_TOKEN,
@@ -22,6 +24,16 @@ return [
 		StatusCodeInterface::STATUS_CREATED,
 		__DIR__ . '/responses/triggers.createChannelProperty.json',
 	],
+
+	// Invalid responses
+	////////////////////
+	'notAllowed'            => [
+		'/v1/triggers',
+		'Bearer ' . VALID_TOKEN_USER,
+		file_get_contents(__DIR__ . '/requests/triggers.createManual.json'),
+		StatusCodeInterface::STATUS_FORBIDDEN,
+		__DIR__ . '/responses/forbidden.json',
+	],
 	'missingRequired'       => [
 		'/v1/triggers',
 		'Bearer ' . VALID_TOKEN,
@@ -35,5 +47,33 @@ return [
 		file_get_contents(__DIR__ . '/requests/triggers.create.invalidType.json'),
 		StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 		__DIR__ . '/responses/triggers.create.invalidType.json',
+	],
+	'missingToken'          => [
+		'/v1/triggers',
+		null,
+		file_get_contents(__DIR__ . '/requests/triggers.createManual.json'),
+		StatusCodeInterface::STATUS_FORBIDDEN,
+		__DIR__ . '/responses/forbidden.json',
+	],
+	'emptyToken'            => [
+		'/v1/triggers',
+		'',
+		file_get_contents(__DIR__ . '/requests/triggers.createManual.json'),
+		StatusCodeInterface::STATUS_FORBIDDEN,
+		__DIR__ . '/responses/forbidden.json',
+	],
+	'invalidToken'          => [
+		'/v1/triggers',
+		'Bearer ' . INVALID_TOKEN,
+		file_get_contents(__DIR__ . '/requests/triggers.createManual.json'),
+		StatusCodeInterface::STATUS_UNAUTHORIZED,
+		__DIR__ . '/responses/unauthorized.json',
+	],
+	'expiredToken'          => [
+		'/v1/triggers',
+		'Bearer ' . EXPIRED_TOKEN,
+		file_get_contents(__DIR__ . '/requests/triggers.createManual.json'),
+		StatusCodeInterface::STATUS_UNAUTHORIZED,
+		__DIR__ . '/responses/unauthorized.json',
 	],
 ];
