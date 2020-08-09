@@ -3,6 +3,7 @@
 namespace Tests\Cases;
 
 use FastyBird\NodeBootstrap\Boot;
+use FastyBird\TriggersNode\Commands;
 use FastyBird\TriggersNode\Consumers;
 use FastyBird\TriggersNode\Controllers;
 use FastyBird\TriggersNode\Hydrators;
@@ -29,6 +30,8 @@ final class ServicesTest extends BaseTestCase
 		]);
 
 		$container = $configurator->createContainer();
+
+		Assert::notNull($container->getByType(Commands\InitializeCommand::class));
 
 		Assert::notNull($container->getByType(Consumers\DeviceMessageHandler::class));
 		Assert::notNull($container->getByType(Consumers\DevicePropertyMessageHandler::class));

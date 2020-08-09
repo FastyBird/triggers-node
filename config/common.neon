@@ -173,6 +173,11 @@ services:
 		setup:
 			- registerRoutes
 
+	# Console commands
+	##################
+
+	- {factory: FastyBird\TriggersNode\Commands\InitializeCommand}
+
 	# Message bus messages handlers
 	###############################
 
@@ -186,6 +191,7 @@ services:
 
 	# Node events
 	#############
+
 	- {factory: FastyBird\TriggersNode\Events\ServerBeforeStartHandler}
 
 	# Events subscribers
