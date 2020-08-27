@@ -89,4 +89,16 @@ abstract class Notification implements INotification
 		return $this->trigger;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		return [
+			'id'      => $this->getPlainId(),
+			'trigger' => $this->getTrigger()->getPlainId(),
+			'owner'   => $this->getTrigger()->getOwnerId(),
+		];
+	}
+
 }

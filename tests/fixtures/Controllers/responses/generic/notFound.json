@@ -1,10 +1,10 @@
 {
   "errors" : [
     {
-      "code" : "404",
       "status" : "404",
+      "code" : "404",
       "title" : "Not found",
-      "detail" : "Requested notification was not found"
+      "detail" : "Requested entity was not found"
     }
   ],
   "jsonapi" : {

@@ -15,18 +15,9 @@
 
 namespace FastyBird\TriggersNode\Hydrators\Actions;
 
-use Contributte\Translation;
-use Doctrine\Common;
-use FastyBird\NodeJsonApi\Exceptions as NodeJsonApiExceptions;
 use FastyBird\NodeJsonApi\Hydrators as NodeJsonApiHydrators;
-use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Hydrators;
-use FastyBird\TriggersNode\Models;
-use FastyBird\TriggersNode\Queries;
 use FastyBird\TriggersNode\Schemas;
-use Fig\Http\Message\StatusCodeInterface;
-use IPub\JsonAPIDocument;
-use Ramsey\Uuid;
 
 /**
  * Action entity hydrator
@@ -49,62 +40,5 @@ abstract class ActionHydrator extends NodeJsonApiHydrators\Hydrator
 
 	/** @var string */
 	protected $translationDomain = 'node.actions';
-
-	/** @var Models\Triggers\ITriggerRepository */
-	protected $triggerRepository;
-
-	public function __construct(
-		Models\Triggers\ITriggerRepository $triggerRepository,
-		Common\Persistence\ManagerRegistry $managerRegistry,
-		Translation\Translator $translator
-	) {
-		parent::__construct($managerRegistry, $translator);
-
-		$this->triggerRepository = $triggerRepository;
-	}
-
-	/**
-	 * @param JsonAPIDocument\Objects\IRelationship<mixed> $relationship
-	 *
-	 * @return Entities\Triggers\ITrigger
-	 *
-	 * @throws NodeJsonApiExceptions\IJsonApiException
-	 */
-	protected function hydrateTriggerRelationship(
-		JsonAPIDocument\Objects\IRelationship $relationship
-	): Entities\Triggers\ITrigger {
-		if (
-			!$relationship->isHasOne()
-			|| $relationship->getIdentifier() === null
-			|| !Uuid\Uuid::isValid($relationship->getIdentifier()->getId())
-		) {
-			throw new NodeJsonApiExceptions\JsonApiErrorException(
-				StatusCodeInterface::STATUS_NOT_FOUND,
-				$this->translator->translate('messages.relationNotFound.heading'),
-				$this->translator->translate('messages.relationNotFound.message'),
-				[
-					'pointer' => '/data/relationships/trigger/data/id',
-				]
-			);
-		}
-
-		$findQuery = new Queries\FindTriggersQuery();
-		$findQuery->byId(Uuid\Uuid::fromString($relationship->getIdentifier()->getId()));
-
-		$trigger = $this->triggerRepository->findOneBy($findQuery);
-
-		if ($trigger === null) {
-			throw new NodeJsonApiExceptions\JsonApiErrorException(
-				StatusCodeInterface::STATUS_NOT_FOUND,
-				$this->translator->translate('messages.relationNotFound.heading'),
-				$this->translator->translate('messages.relationNotFound.message'),
-				[
-					'pointer' => '/data/relationships/trigger/data/id',
-				]
-			);
-		}
-
-		return $trigger;
-	}
 
 }

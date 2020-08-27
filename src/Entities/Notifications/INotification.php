@@ -36,4 +36,9 @@ interface INotification extends NodeDatabaseEntities\IEntity,
 	 */
 	public function getTrigger(): Entities\Triggers\ITrigger;
 
+	/**
+	 * @return mixed[]
+	 */
+	public function toArray(): array;
+
 }

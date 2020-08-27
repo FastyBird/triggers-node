@@ -52,8 +52,8 @@ abstract class PropertyConditionHydrator extends ConditionHydrator
 		if (!$attributes->has('device') || $attributes->get('device') === '') {
 			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('//node.base.messages.missingRequired.heading'),
-				$this->translator->translate('//node.base.messages.missingRequired.message'),
+				$this->translator->translate('//node.base.messages.missingAttribute.heading'),
+				$this->translator->translate('//node.base.messages.missingAttribute.message'),
 				[
 					'pointer' => '/data/attributes/device',
 				]
@@ -76,8 +76,8 @@ abstract class PropertyConditionHydrator extends ConditionHydrator
 		if (!$attributes->has('property') || $attributes->get('property') === '') {
 			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('//node.base.messages.missingRequired.heading'),
-				$this->translator->translate('//node.base.messages.missingRequired.message'),
+				$this->translator->translate('//node.base.messages.missingAttribute.heading'),
+				$this->translator->translate('//node.base.messages.missingAttribute.message'),
 				[
 					'pointer' => '/data/attributes/property',
 				]
@@ -101,8 +101,8 @@ abstract class PropertyConditionHydrator extends ConditionHydrator
 		if (!$attributes->has('operator') || $attributes->get('operator') === '') {
 			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('//node.base.messages.missingRequired.heading'),
-				$this->translator->translate('//node.base.messages.missingRequired.message'),
+				$this->translator->translate('//node.base.messages.missingAttribute.heading'),
+				$this->translator->translate('//node.base.messages.missingAttribute.message'),
 				[
 					'pointer' => '/data/attributes/operator',
 				]

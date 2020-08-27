@@ -96,4 +96,15 @@ class DevicePropertyCondition extends PropertyCondition implements IDeviceProper
 		return $this->property;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		return array_merge(parent::toArray(), [
+			'device'   => $this->getDevice(),
+			'property' => $this->getProperty(),
+		]);
+	}
+
 }

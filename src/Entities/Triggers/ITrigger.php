@@ -15,6 +15,7 @@
 
 namespace FastyBird\TriggersNode\Entities\Triggers;
 
+use FastyBird\NodeAuth\Entities as NodeAuthEntities;
 use FastyBird\NodeDatabase\Entities as NodeDatabaseEntities;
 use FastyBird\TriggersNode\Entities;
 use IPub\DoctrineTimestampable;
@@ -29,6 +30,7 @@ use IPub\DoctrineTimestampable;
  */
 interface ITrigger extends NodeDatabaseEntities\IEntity,
 	NodeDatabaseEntities\IEntityParams,
+	NodeAuthEntities\IEntityOwner,
 	DoctrineTimestampable\Entities\IEntityCreated, DoctrineTimestampable\Entities\IEntityUpdated
 {
 
@@ -131,5 +133,10 @@ interface ITrigger extends NodeDatabaseEntities\IEntity,
 	 * @return void
 	 */
 	public function removeNotification(Entities\Notifications\INotification $notification): void;
+
+	/**
+	 * @return mixed[]
+	 */
+	public function toArray(): array;
 
 }

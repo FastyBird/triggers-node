@@ -17,6 +17,7 @@ namespace FastyBird\TriggersNode\Entities\Triggers;
 
 use Doctrine\Common;
 use Doctrine\ORM\Mapping as ORM;
+use FastyBird\NodeAuth\Entities as NodeAuthEntities;
 use FastyBird\NodeDatabase\Entities as NodeDatabaseEntities;
 use FastyBird\TriggersNode\Entities;
 use IPub\DoctrineCrud\Mapping\Annotation as IPubDoctrine;
@@ -48,6 +49,7 @@ abstract class Trigger implements ITrigger
 
 	use NodeDatabaseEntities\TEntity;
 	use NodeDatabaseEntities\TEntityParams;
+	use NodeAuthEntities\TEntityOwner;
 	use DoctrineTimestampable\Entities\TEntityCreated;
 	use DoctrineTimestampable\Entities\TEntityUpdated;
 
@@ -96,8 +98,7 @@ abstract class Trigger implements ITrigger
 	 * @var Common\Collections\Collection<int, Entities\Notifications\INotification>
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\OneToMany(targetEntity="FastyBird\TriggersNode\Entities\Notifications\Notification", mappedBy="trigger", cascade={"persist", "remove"},
-	 *                                                                                           orphanRemoval=true)
+	 * @ORM\OneToMany(targetEntity="FastyBird\TriggersNode\Entities\Notifications\Notification", mappedBy="trigger", cascade={"persist", "remove"}, orphanRemoval=true)
 	 */
 	protected $notifications;
 
@@ -289,6 +290,20 @@ abstract class Trigger implements ITrigger
 			// ...and remove it from collection
 			$this->notifications->removeElement($notification);
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		return [
+			'id'         => $this->getPlainId(),
+			'name'       => $this->getName(),
+			'comment'    => $this->getComment(),
+			'is_enabled' => $this->isEnabled(),
+			'owner'      => $this->getOwnerId(),
+		];
 	}
 
 }

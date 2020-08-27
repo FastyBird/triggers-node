@@ -40,8 +40,7 @@ class AutomaticTrigger extends Trigger implements IAutomaticTrigger
 	 * @var Common\Collections\Collection<int, Entities\Conditions\ICondition>
 	 *
 	 * @IPubDoctrine\Crud(is="writable")
-	 * @ORM\OneToMany(targetEntity="FastyBird\TriggersNode\Entities\Conditions\Condition", mappedBy="trigger", cascade={"persist", "remove"},
-	 *                                                                                     orphanRemoval=true)
+	 * @ORM\OneToMany(targetEntity="FastyBird\TriggersNode\Entities\Conditions\Condition", mappedBy="trigger", cascade={"persist", "remove"}, orphanRemoval=true)
 	 */
 	private $conditions;
 

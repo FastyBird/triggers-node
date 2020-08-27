@@ -77,4 +77,14 @@ class SmsNotification extends Notification implements ISmsNotification
 		return $this->phone;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		return array_merge(parent::toArray(), [
+			'phone' => $this->getPhone()->getInternationalNumber(),
+		]);
+	}
+
 }

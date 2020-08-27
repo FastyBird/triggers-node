@@ -60,8 +60,8 @@ final class ChannelPropertyActionHydrator extends ActionHydrator
 		if (!$attributes->has('device') || $attributes->get('device') === '') {
 			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('//node.base.messages.missingRequired.heading'),
-				$this->translator->translate('//node.base.messages.missingRequired.message'),
+				$this->translator->translate('//node.base.messages.missingAttribute.heading'),
+				$this->translator->translate('//node.base.messages.missingAttribute.message'),
 				[
 					'pointer' => '/data/attributes/device',
 				]
@@ -84,8 +84,8 @@ final class ChannelPropertyActionHydrator extends ActionHydrator
 		if (!$attributes->has('channel') || $attributes->get('channel') === '') {
 			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('//node.base.messages.missingRequired.heading'),
-				$this->translator->translate('//node.base.messages.missingRequired.message'),
+				$this->translator->translate('//node.base.messages.missingAttribute.heading'),
+				$this->translator->translate('//node.base.messages.missingAttribute.message'),
 				[
 					'pointer' => '/data/attributes/channel',
 				]
@@ -108,8 +108,8 @@ final class ChannelPropertyActionHydrator extends ActionHydrator
 		if (!$attributes->has('property') || $attributes->get('property') === '') {
 			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('//node.base.messages.missingRequired.heading'),
-				$this->translator->translate('//node.base.messages.missingRequired.message'),
+				$this->translator->translate('//node.base.messages.missingAttribute.heading'),
+				$this->translator->translate('//node.base.messages.missingAttribute.message'),
 				[
 					'pointer' => '/data/attributes/property',
 				]

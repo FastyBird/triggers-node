@@ -21,84 +21,66 @@ base:
 		notValidJsonApi:
 			heading	: "Not valid content"
 			message	: "Provided request content is not valid {JSON:API} content"
+		failed:
+			heading	: "Request failed"
+			message	: "Provided request failed and can't be finished"
+		forbidden:
+			heading	: "Not allowed"
+			message	: "You are not allowed to perform this action"
+		unauthorized:
+			heading	: "Not authorized"
+			message	: "You are not authorized to perform this action"
+		notFound:
+			heading	: "Not found"
+			message	: "Requested entity was not found"
+		notCreated:
+			heading	: "System error"
+			message	: "Something went wrong, entity could not be created"
+		notUpdated:
+			heading	: "System error"
+			message	: "Something went wrong, entity could not be updated"
+		notDeleted:
+			heading	: "System error"
+			message	: "Something went wrong, entity could not be deleted"
+		invalidIdentifier:
+			heading	: "Invalid identifier"
+			message	: "Provided entity identifier is not valid"
+		invalidType:
+			heading	: "Invalid type"
+			message	: "Provided entity type is not valid"
+		invalidAttribute:
+			heading	: "Invalid attribute"
+			message	: "Provided entity attribute is not valid"
+		invalidRelation:
+			heading	: "Invalid relation"
+			message	: "Provided relation is not valid"
 		unknownRelation:
 			heading	: "Relation not found"
 			message	: "Requested unknown relation"
 		relationNotFound:
 			heading	: "Relation not found"
 			message	: "Requested relation %relation% was not found"
-		missingRequired:
-			heading	: "Missing required attribute"
-			message	: "Provided request is missing required attribute or relation"
-		invalid:
-			heading	: "Bad request"
-			message	: "Request resource identifier is invalid"
-		identifierInvalid:
-			heading	: "Entity identifier invalid"
-			message	: "Provided entity identifier is not valid"
-		invalidTriggerType:
-			heading	: "Invalid trigger type"
-			message	: "Data for given trigger id could not be loaded"
-		triggerNotFound:
-			heading	: "Trigger not found"
-			message	: "Requested trigger was not found"
-		uniqueConstraint:
+		missingAttribute:
+			heading	: "Missing attribute"
+			message	: "Provided request is missing required attribute"
+		missingRelation:
+			heading	: "Missing required relation"
+			message	: "Provided request is missing required relation"
+		uniqueIdentifier:
+			heading	: "Identifier not unique"
+			message	: "Provided identifier is not unique"
+		uniqueAttribute:
 			heading	: "Attribute not unique"
 			message	: "Provided attribute is not unique"
-		notAuthorized:
-			heading	: "Not authorized"
-			message	: "You are not authorized to perform this action"
-		forbidden:
-			heading	: "Not allowed"
-			message	: "You are not allowed to perform this action"
-
-triggers:
-	messages:
-		invalidType:
-			heading	: "Invalid type"
-			message	: "Provided trigger entity type is not valid"
-		notCreated:
-			heading	: "System error"
-			message	: "Something went wrong, trigger could not be created"
-		notUpdated:
-			heading	: "System error"
-			message	: "Something went wrong, trigger could not be updated"
-		notDeleted:
-			heading	: "System error"
-			message	: "Something went wrong, trigger could not be deleted"
 
 actions:
 	messages:
-		invalidType:
-			heading	: "Invalid type"
-			message	: "Provided action entity type is not valid"
-		notCreated:
-			heading	: "System error"
-			message	: "Something went wrong, trigger action could not be created"
-		notFound:
-			heading	: "Not found"
-			message	: "Requested action was not found"
-		notDeleted:
-			heading	: "System error"
-			message	: "Something went wrong, trigger action could not be deleted"
 		propertyNotUnique:
 			heading	: "Property not unique"
 			message	: "Action property have to be unique per trigger"
 
 notifications:
 	messages:
-		invalidType:
-			heading	: "Invalid type"
-			message	: "Provided notification entity type is not valid"
-		notCreated:
-			heading	: "System error"
-			message	: "Something went wrong, trigger notification could not be created"
-		notFound:
-			heading	: "Not found"
-			message	: "Requested notification was not found"
-		notDeleted:
-			heading	: "System error"
-			message	: "Something went wrong, trigger notification could not be deleted"
 		invalidPhone:
 			heading	: "Invalid phone"
 			message	: "Provided phone number is not valid"
@@ -114,24 +96,12 @@ notifications:
 
 conditions:
 	messages:
-		invalidType:
-			heading	: "Invalid type"
-			message	: "Provided condition entity type is not valid"
-		notCreated:
-			heading	: "System error"
-			message	: "Something went wrong, trigger condition could not be created"
-		notFound:
-			heading	: "Not found"
-			message	: "Requested condition was not found"
-		notDeleted:
-			heading	: "System error"
-			message	: "Something went wrong, trigger condition could not be deleted"
 		invalidOperator:
 			heading	: "Invalid operator"
 			message	: "Provided operator is not valid"
-		propertyNotUnique:
-			heading	: "Property not unique"
-			message	: "Condition property have to be unique per trigger"
 		invalidTime:
 			heading	: "Time is not valid"
 			message	: "Provided time value is not valid ATOM value"
+		propertyNotUnique:
+			heading	: "Property not unique"
+			message	: "Condition property have to be unique per trigger"

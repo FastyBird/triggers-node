@@ -162,8 +162,8 @@ final class NotificationsV1Controller extends BaseV1Controller
 			} else {
 				throw new NodeJsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-					$this->translator->translate('messages.invalidType.heading'),
-					$this->translator->translate('messages.invalidType.message'),
+					$this->translator->translate('//node.base.messages.invalidType.heading'),
+					$this->translator->translate('//node.base.messages.invalidType.message'),
 					[
 						'pointer' => '/data/type',
 					]
@@ -173,29 +173,20 @@ final class NotificationsV1Controller extends BaseV1Controller
 			// Commit all changes into database
 			$this->getOrmConnection()->commit();
 
-		} catch (DoctrineCrudExceptions\EntityCreationException $ex) {
-			// Revert all changes when error occur
-			$this->getOrmConnection()->rollBack();
+		} catch (NodeJsonApiExceptions\IJsonApiException $ex) {
+			throw $ex;
 
+		} catch (DoctrineCrudExceptions\EntityCreationException $ex) {
 			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('//node.base.messages.missingRequired.heading'),
-				$this->translator->translate('//node.base.messages.missingRequired.message'),
+				$this->translator->translate('//node.base.messages.missingAttribute.heading'),
+				$this->translator->translate('//node.base.messages.missingAttribute.message'),
 				[
 					'pointer' => 'data/attributes/' . $ex->getField(),
 				]
 			);
 
-		} catch (NodeJsonApiExceptions\IJsonApiException $ex) {
-			// Revert all changes when error occur
-			$this->getOrmConnection()->rollBack();
-
-			throw $ex;
-
 		} catch (Exceptions\UniqueNotificationNumberConstraint $ex) {
-			// Revert all changes when error occur
-			$this->getOrmConnection()->rollBack();
-
 			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 				$this->translator->translate('messages.phoneNotUnique.heading'),
@@ -206,9 +197,6 @@ final class NotificationsV1Controller extends BaseV1Controller
 			);
 
 		} catch (Exceptions\UniqueNotificationEmailConstraint $ex) {
-			// Revert all changes when error occur
-			$this->getOrmConnection()->rollBack();
-
 			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
 				$this->translator->translate('messages.emailNotUnique.heading'),
@@ -219,20 +207,27 @@ final class NotificationsV1Controller extends BaseV1Controller
 			);
 
 		} catch (Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex) {
-			// Revert all changes when error occur
-			$this->getOrmConnection()->rollBack();
+			if (preg_match("%PRIMARY'%", $ex->getMessage(), $match) === 1) {
+				throw new NodeJsonApiExceptions\JsonApiErrorException(
+					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
+					$this->translator->translate('//node.base.messages.uniqueIdentifier.heading'),
+					$this->translator->translate('//node.base.messages.uniqueIdentifier.message'),
+					[
+						'pointer' => '/data/id',
+					]
+				);
 
-			if (preg_match("%key '(?P<key>.+)_unique'%", $ex->getMessage(), $match) !== false) {
+			} elseif (preg_match("%key '(?P<key>.+)_unique'%", $ex->getMessage(), $match) === 1) {
 				$columnParts = explode('.', $match['key']);
 				$columnKey = end($columnParts);
 
-				if (is_string($columnKey) && Utils\Strings::startsWith($columnKey, 'device_')) {
+				if (is_string($columnKey) && Utils\Strings::startsWith($columnKey, 'notification_')) {
 					throw new NodeJsonApiExceptions\JsonApiErrorException(
 						StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-						$this->translator->translate('//node.base.messages.uniqueConstraint.heading'),
-						$this->translator->translate('//node.base.messages.uniqueConstraint.message'),
+						$this->translator->translate('//node.base.messages.uniqueAttribute.heading'),
+						$this->translator->translate('//node.base.messages.uniqueAttribute.message'),
 						[
-							'pointer' => '/data/attributes/' . Utils\Strings::substring($columnKey, 7),
+							'pointer' => '/data/attributes/' . Utils\Strings::substring($columnKey, 13),
 						]
 					);
 				}
@@ -240,14 +235,11 @@ final class NotificationsV1Controller extends BaseV1Controller
 
 			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('//node.base.messages.uniqueConstraint.heading'),
-				$this->translator->translate('//node.base.messages.uniqueConstraint.message')
+				$this->translator->translate('//node.base.messages.uniqueAttribute.heading'),
+				$this->translator->translate('//node.base.messages.uniqueAttribute.message')
 			);
 
 		} catch (Throwable $ex) {
-			// Revert all changes when error occur
-			$this->getOrmConnection()->rollBack();
-
 			// Log catched exception
 			$this->logger->error('[CONTROLLER] ' . $ex->getMessage(), [
 				'exception' => [
@@ -258,9 +250,15 @@ final class NotificationsV1Controller extends BaseV1Controller
 
 			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('messages.notCreated.heading'),
-				$this->translator->translate('messages.notCreated.message')
+				$this->translator->translate('//node.base.messages.notCreated.heading'),
+				$this->translator->translate('//node.base.messages.notCreated.message')
 			);
+
+		} finally {
+			// Revert all changes when error occur
+			if ($this->getOrmConnection()->isTransactionActive()) {
+				$this->getOrmConnection()->rollBack();
+			}
 		}
 
 		/** @var NodeWebServerHttp\Response $response */
@@ -295,13 +293,7 @@ final class NotificationsV1Controller extends BaseV1Controller
 
 		$document = $this->createDocument($request);
 
-		if ($request->getAttribute(Router\Router::URL_ITEM_ID) !== $document->getResource()->getIdentifier()->getId()) {
-			throw new NodeJsonApiExceptions\JsonApiErrorException(
-				StatusCodeInterface::STATUS_BAD_REQUEST,
-				$this->translator->translate('//node.base.messages.invalid.heading'),
-				$this->translator->translate('//node.base.messages.invalid.message')
-			);
-		}
+		$this->validateIdentifier($request, $document);
 
 		try {
 			// Start transaction connection to the database
@@ -322,8 +314,8 @@ final class NotificationsV1Controller extends BaseV1Controller
 			} else {
 				throw new NodeJsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-					$this->translator->translate('messages.invalidType.heading'),
-					$this->translator->translate('messages.invalidType.message'),
+					$this->translator->translate('//node.base.messages.invalidType.heading'),
+					$this->translator->translate('//node.base.messages.invalidType.message'),
 					[
 						'pointer' => '/data/type',
 					]
@@ -334,15 +326,9 @@ final class NotificationsV1Controller extends BaseV1Controller
 			$this->getOrmConnection()->commit();
 
 		} catch (NodeJsonApiExceptions\IJsonApiException $ex) {
-			// Revert all changes when error occur
-			$this->getOrmConnection()->rollBack();
-
 			throw $ex;
 
 		} catch (Throwable $ex) {
-			// Revert all changes when error occur
-			$this->getOrmConnection()->rollBack();
-
 			// Log catched exception
 			$this->logger->error('[CONTROLLER] ' . $ex->getMessage(), [
 				'exception' => [
@@ -353,9 +339,15 @@ final class NotificationsV1Controller extends BaseV1Controller
 
 			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('messages.notUpdated.heading'),
-				$this->translator->translate('messages.notUpdated.message')
+				$this->translator->translate('//node.base.messages.notUpdated.heading'),
+				$this->translator->translate('//node.base.messages.notUpdated.message')
 			);
+
+		} finally {
+			// Revert all changes when error occur
+			if ($this->getOrmConnection()->isTransactionActive()) {
+				$this->getOrmConnection()->rollBack();
+			}
 		}
 
 		return $response
@@ -402,14 +394,17 @@ final class NotificationsV1Controller extends BaseV1Controller
 				],
 			]);
 
-			// Revert all changes when error occur
-			$this->getOrmConnection()->rollBack();
-
 			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY,
-				$this->translator->translate('messages.notDeleted.heading'),
-				$this->translator->translate('messages.notDeleted.message')
+				$this->translator->translate('//node.base.messages.notUpdated.heading'),
+				$this->translator->translate('//node.base.messages.notDeleted.message')
 			);
+
+		} finally {
+			// Revert all changes when error occur
+			if ($this->getOrmConnection()->isTransactionActive()) {
+				$this->getOrmConnection()->rollBack();
+			}
 		}
 
 		/** @var NodeWebServerHttp\Response $response */
@@ -443,9 +438,7 @@ final class NotificationsV1Controller extends BaseV1Controller
 				->withEntity(NodeWebServerHttp\ScalarEntity::from($notification->getTrigger()));
 		}
 
-		$this->throwUnknownRelation($relationEntity);
-
-		return $response;
+		return parent::readRelationship($request, $response);
 	}
 
 	/**
@@ -470,16 +463,16 @@ final class NotificationsV1Controller extends BaseV1Controller
 			if ($notification === null) {
 				throw new NodeJsonApiExceptions\JsonApiErrorException(
 					StatusCodeInterface::STATUS_NOT_FOUND,
-					$this->translator->translate('messages.notFound.heading'),
-					$this->translator->translate('messages.notFound.message')
+					$this->translator->translate('//node.base.messages.notFound.heading'),
+					$this->translator->translate('//node.base.messages.notFound.message')
 				);
 			}
 
 		} catch (Uuid\Exception\InvalidUuidStringException $ex) {
 			throw new NodeJsonApiExceptions\JsonApiErrorException(
 				StatusCodeInterface::STATUS_NOT_FOUND,
-				$this->translator->translate('messages.notFound.heading'),
-				$this->translator->translate('messages.notFound.message')
+				$this->translator->translate('//node.base.messages.notFound.heading'),
+				$this->translator->translate('//node.base.messages.notFound.message')
 			);
 		}
 

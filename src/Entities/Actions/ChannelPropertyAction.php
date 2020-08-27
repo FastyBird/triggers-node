@@ -131,4 +131,17 @@ class ChannelPropertyAction extends Action implements IChannelPropertyAction
 		return $this->value;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		return array_merge(parent::toArray(), [
+			'device'   => $this->getDevice(),
+			'channel'  => $this->getChannel(),
+			'property' => $this->getProperty(),
+			'value'    => $this->getValue(),
+		]);
+	}
+
 }

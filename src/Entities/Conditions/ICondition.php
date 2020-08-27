@@ -36,4 +36,9 @@ interface ICondition extends NodeDatabaseEntities\IEntity,
 	 */
 	public function getTrigger(): Entities\Triggers\IAutomaticTrigger;
 
+	/**
+	 * @return mixed[]
+	 */
+	public function toArray(): array;
+
 }

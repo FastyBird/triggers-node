@@ -99,7 +99,7 @@ class Router extends Routing\Router
 			$group->group('/triggers/{' . self::URL_TRIGGER_ID . '}', function (Routing\RouteCollector $group): void {
 				$group->group('/actions', function (Routing\RouteCollector $group): void {
 					/**
-					 * TRIGGER ACTIONS
+					 * ACTIONS
 					 */
 					$route = $group->get('', [$this->actionsV1Controller, 'index']);
 					$route->setName('trigger.actions');
@@ -119,7 +119,7 @@ class Router extends Routing\Router
 
 				$group->group('/notifications', function (Routing\RouteCollector $group): void {
 					/**
-					 * TRIGGER NOTIFICATIONS
+					 * NOTIFICATIONS
 					 */
 					$route = $group->get('', [$this->notificationsV1Controller, 'index']);
 					$route->setName('trigger.notifications');
@@ -139,7 +139,7 @@ class Router extends Routing\Router
 
 				$group->group('/conditions', function (Routing\RouteCollector $group): void {
 					/**
-					 * TRIGGER CONDITIONS
+					 * CONDITIONS
 					 */
 					$route = $group->get('', [$this->conditionsV1Controller, 'index']);
 					$route->setName('trigger.conditions');

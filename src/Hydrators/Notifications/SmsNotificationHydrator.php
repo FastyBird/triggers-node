@@ -19,7 +19,6 @@ use Contributte\Translation;
 use Doctrine\Common;
 use FastyBird\NodeJsonApi\Exceptions as NodeJsonApiExceptions;
 use FastyBird\TriggersNode\Entities;
-use FastyBird\TriggersNode\Models;
 use Fig\Http\Message\StatusCodeInterface;
 use IPub\JsonAPIDocument;
 use IPub\Phone;
@@ -45,11 +44,10 @@ final class SmsNotificationHydrator extends NotificationHydrator
 
 	public function __construct(
 		Phone\Phone $phone,
-		Models\Triggers\ITriggerRepository $triggerRepository,
 		Common\Persistence\ManagerRegistry $managerRegistry,
 		Translation\Translator $translator
 	) {
-		parent::__construct($triggerRepository, $managerRegistry, $translator);
+		parent::__construct($managerRegistry, $translator);
 
 		$this->phone = $phone;
 	}

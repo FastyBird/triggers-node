@@ -213,4 +213,18 @@ class ChannelPropertyTrigger extends Trigger implements IChannelPropertyTrigger
 		throw new Exceptions\InvalidStateException('Not supported by this type of trigger.');
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		return array_merge(parent::toArray(), [
+			'device'   => $this->getDevice(),
+			'channel'  => $this->getChannel(),
+			'property' => $this->getProperty(),
+			'operand'  => $this->getOperand(),
+			'operator' => $this->getOperator()->getValue(),
+		]);
+	}
+
 }

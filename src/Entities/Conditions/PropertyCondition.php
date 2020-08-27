@@ -98,4 +98,15 @@ abstract class PropertyCondition extends Condition implements IPropertyCondition
 		return $this->operand;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		return array_merge(parent::toArray(), [
+			'operator' => $this->getOperator()->getValue(),
+			'operand'  => $this->getOperand(),
+		]);
+	}
+
 }

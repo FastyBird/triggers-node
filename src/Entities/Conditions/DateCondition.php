@@ -77,4 +77,14 @@ class DateCondition extends Condition implements IDateCondition
 		return $this->date;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		return array_merge(parent::toArray(), [
+			'date' => $this->getDate()->format(DATE_ATOM),
+		]);
+	}
+
 }

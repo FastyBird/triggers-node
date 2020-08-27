@@ -127,4 +127,15 @@ class TimeCondition extends Condition implements ITimeCondition
 		return Utils\ArrayHash::from($days);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		return array_merge(parent::toArray(), [
+			'time' => $this->getTime()->format(DATE_ATOM),
+			'days' => $this->getDays(),
+		]);
+	}
+
 }

@@ -116,4 +116,16 @@ class ChannelPropertyCondition extends PropertyCondition implements IChannelProp
 		return $this->property;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		return array_merge(parent::toArray(), [
+			'device'   => $this->getDevice(),
+			'channel'  => $this->getChannel(),
+			'property' => $this->getProperty(),
+		]);
+	}
+
 }
