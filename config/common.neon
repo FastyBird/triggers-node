@@ -203,6 +203,8 @@ services:
 
 	- {factory: FastyBird\TriggersNode\Subscribers\ConditionEntitySubscriber}
 
+	- {factory: FastyBird\TriggersNode\Subscribers\EntitiesSubscriber}
+
 	# Database repositories
 	#######################
 

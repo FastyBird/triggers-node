@@ -15,6 +15,8 @@
 
 namespace FastyBird\TriggersNode;
 
+use FastyBird\TriggersNode\Entities as TriggersNodeEntities;
+
 /**
  * Service constants
  *
@@ -25,6 +27,26 @@ namespace FastyBird\TriggersNode;
  */
 final class Constants
 {
+
+	/**
+	 * Node routing
+	 */
+
+	public const ROUTE_NAME_TRIGGERS = 'triggers';
+	public const ROUTE_NAME_TRIGGER = 'trigger';
+	public const ROUTE_NAME_TRIGGER_RELATIONSHIP = 'trigger.relationship';
+
+	/**
+	 * Message bus routing keys mapping
+	 */
+	public const RABBIT_MQ_ENTITIES_ROUTING_KEYS_MAPPING = [
+		TriggersNodeEntities\Triggers\Trigger::class           => 'fb.bus.node.entity.[ACTION].trigger',
+		TriggersNodeEntities\Actions\Action::class             => 'fb.bus.node.entity.[ACTION].trigger.action',
+		TriggersNodeEntities\Notifications\Notification::class => 'fb.bus.node.entity.[ACTION].trigger.notification',
+		TriggersNodeEntities\Conditions\Condition::class       => 'fb.bus.node.entity.[ACTION].trigger.condition',
+	];
+
+	public const RABBIT_MQ_ENTITIES_ROUTING_KEY_ACTION_REPLACE_STRING = '[ACTION]';
 
 	/**
 	 * Message bus routing key for devices properties messages

@@ -2,9 +2,11 @@
 
 namespace Tests\Cases;
 
+use FastyBird\NodeExchange\Publishers as NodeExchangePublishers;
 use FastyBird\NodeWebServer\Http;
 use FastyBird\TriggersNode\Router;
 use Fig\Http\Message\RequestMethodInterface;
+use Mockery;
 use React\Http\Io\ServerRequest;
 use Tester\Assert;
 use Tests\Tools;
@@ -80,6 +82,21 @@ final class ConditionsV1ControllerTest extends DbTestCase
 			$body
 		);
 
+		$rabbitPublisher = Mockery::mock(NodeExchangePublishers\RabbitMqPublisher::class);
+		$rabbitPublisher
+			->shouldReceive('publish')
+			->withArgs(function (string $routingKey, array $data): bool {
+				Assert::same('fb.bus.node.entity.created.trigger.condition', $routingKey);
+				Assert::false($data === []);
+
+				return true;
+			});
+
+		$this->mockContainerService(
+			NodeExchangePublishers\IRabbitMqPublisher::class,
+			$rabbitPublisher
+		);
+
 		$response = $router->handle($request);
 
 		Tools\JsonAssert::assertFixtureMatch(
@@ -117,6 +134,21 @@ final class ConditionsV1ControllerTest extends DbTestCase
 			$body
 		);
 
+		$rabbitPublisher = Mockery::mock(NodeExchangePublishers\RabbitMqPublisher::class);
+		$rabbitPublisher
+			->shouldReceive('publish')
+			->withArgs(function (string $routingKey, array $data): bool {
+				Assert::same('fb.bus.node.entity.updated.trigger.condition', $routingKey);
+				Assert::false($data === []);
+
+				return true;
+			});
+
+		$this->mockContainerService(
+			NodeExchangePublishers\IRabbitMqPublisher::class,
+			$rabbitPublisher
+		);
+
 		$response = $router->handle($request);
 
 		Tools\JsonAssert::assertFixtureMatch(
@@ -150,6 +182,21 @@ final class ConditionsV1ControllerTest extends DbTestCase
 			RequestMethodInterface::METHOD_DELETE,
 			$url,
 			$headers
+		);
+
+		$rabbitPublisher = Mockery::mock(NodeExchangePublishers\RabbitMqPublisher::class);
+		$rabbitPublisher
+			->shouldReceive('publish')
+			->withArgs(function (string $routingKey, array $data): bool {
+				Assert::same('fb.bus.node.entity.deleted.trigger.condition', $routingKey);
+				Assert::false($data === []);
+
+				return true;
+			});
+
+		$this->mockContainerService(
+			NodeExchangePublishers\IRabbitMqPublisher::class,
+			$rabbitPublisher
 		);
 
 		$response = $router->handle($request);

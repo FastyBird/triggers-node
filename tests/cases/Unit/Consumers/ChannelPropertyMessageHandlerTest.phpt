@@ -21,8 +21,24 @@ require_once __DIR__ . '/../DbTestCase.php';
 final class ChannelPropertyMessageHandlerTest extends DbTestCase
 {
 
-	public function testProcessMessageDeleteTrigger(): void
-	{
+	/**
+	 * @param string $routingKey
+	 * @param Utils\ArrayHash $message
+	 * @param int $publishCallCount
+	 * @param mixed[] $fixture
+	 * @param int $totalTriggersBefore
+	 * @param int $totalTriggersAfter
+	 *
+	 * @dataProvider ./../../../fixtures/Consumers/channelPropertyDeleteMessage.php
+	 */
+	public function testProcessMessageDeleteTrigger(
+		string $routingKey,
+		Utils\ArrayHash $message,
+		int $publishCallCount,
+		array $fixture,
+		int $totalTriggersBefore,
+		int $totalTriggersAfter
+	): void {
 		$triggersRepository = $this->getContainer()->getByType(Models\Triggers\TriggerRepository::class);
 
 		$findQuery = new Queries\FindChannelPropertyTriggersQuery();
@@ -30,15 +46,34 @@ final class ChannelPropertyMessageHandlerTest extends DbTestCase
 
 		$found = $triggersRepository->findAllBy($findQuery, Entities\Triggers\ChannelPropertyTrigger::class);
 
-		Assert::count(1, $found);
+		Assert::count($totalTriggersBefore, $found);
 
-		$routingKey = TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_DELETED_ENTITY_ROUTING_KEY;
-		$message = Utils\ArrayHash::from([
-			'device'   => 'device-one',
-			'channel'  => 'channel-one',
-			'property' => 'button',
-			'name'     => 'button',
-		]);
+		$rabbitPublisher = Mockery::mock(NodeExchangePublishers\RabbitMqPublisher::class);
+		$rabbitPublisher
+			->shouldReceive('publish')
+			->withArgs(function (string $routingKey, array $data) use ($fixture): bool {
+				if (Utils\Strings::contains($routingKey, 'created')) {
+					unset($data['id']);
+				}
+
+				Assert::false($data === []);
+				Assert::true(isset($fixture[$routingKey]));
+
+				if (isset($fixture[$routingKey]['primaryKey'])) {
+					Assert::equal($fixture[$routingKey][$data[$fixture[$routingKey]['primaryKey']]], $data);
+
+				} else {
+					Assert::equal($fixture[$routingKey], $data);
+				}
+
+				return true;
+			})
+			->times($publishCallCount);
+
+		$this->mockContainerService(
+			NodeExchangePublishers\IRabbitMqPublisher::class,
+			$rabbitPublisher
+		);
 
 		/** @var Consumers\ChannelPropertyMessageHandler $handler */
 		$handler = $this->getContainer()->getByType(Consumers\ChannelPropertyMessageHandler::class);
@@ -50,11 +85,31 @@ final class ChannelPropertyMessageHandlerTest extends DbTestCase
 
 		$found = $triggersRepository->findAllBy($findQuery, Entities\Triggers\ChannelPropertyTrigger::class);
 
-		Assert::count(0, $found);
+		Assert::count($totalTriggersAfter, $found);
 	}
 
-	public function testProcessMessageDeleteAction(): void
-	{
+	/**
+	 * @param string $routingKey
+	 * @param Utils\ArrayHash $message
+	 * @param int $publishCallCount
+	 * @param mixed[] $fixture
+	 * @param int $totalTriggersBefore
+	 * @param int $totalTriggersAfter
+	 * @param int $totalActionsBefore
+	 * @param int $totalActionsAfter
+	 *
+	 * @dataProvider ./../../../fixtures/Consumers/channelPropertyDeleteMessage.php
+	 */
+	public function testProcessMessageDeleteAction(
+		string $routingKey,
+		Utils\ArrayHash $message,
+		int $publishCallCount,
+		array $fixture,
+		int $totalTriggersBefore,
+		int $totalTriggersAfter,
+		int $totalActionsBefore,
+		int $totalActionsAfter
+	): void {
 		$actionRepository = $this->getContainer()->getByType(Models\Actions\ActionRepository::class);
 
 		$findQuery = new Queries\FindActionsQuery();
@@ -62,15 +117,34 @@ final class ChannelPropertyMessageHandlerTest extends DbTestCase
 
 		$found = $actionRepository->findAllBy($findQuery, Entities\Actions\ChannelPropertyAction::class);
 
-		Assert::count(1, $found);
+		Assert::count($totalActionsBefore, $found);
 
-		$routingKey = TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_DELETED_ENTITY_ROUTING_KEY;
-		$message = Utils\ArrayHash::from([
-			'device'   => 'device-one',
-			'channel'  => 'channel-four',
-			'property' => 'switch',
-			'name'     => 'switch',
-		]);
+		$rabbitPublisher = Mockery::mock(NodeExchangePublishers\RabbitMqPublisher::class);
+		$rabbitPublisher
+			->shouldReceive('publish')
+			->withArgs(function (string $routingKey, array $data) use ($fixture): bool {
+				if (Utils\Strings::contains($routingKey, 'created')) {
+					unset($data['id']);
+				}
+
+				Assert::false($data === []);
+				Assert::true(isset($fixture[$routingKey]));
+
+				if (isset($fixture[$routingKey]['primaryKey'])) {
+					Assert::equal($fixture[$routingKey][$data[$fixture[$routingKey]['primaryKey']]], $data);
+
+				} else {
+					Assert::equal($fixture[$routingKey], $data);
+				}
+
+				return true;
+			})
+			->times($publishCallCount);
+
+		$this->mockContainerService(
+			NodeExchangePublishers\IRabbitMqPublisher::class,
+			$rabbitPublisher
+		);
 
 		/** @var Consumers\ChannelPropertyMessageHandler $handler */
 		$handler = $this->getContainer()->getByType(Consumers\ChannelPropertyMessageHandler::class);
@@ -82,7 +156,7 @@ final class ChannelPropertyMessageHandlerTest extends DbTestCase
 
 		$found = $actionRepository->findAllBy($findQuery, Entities\Actions\ChannelPropertyAction::class);
 
-		Assert::count(0, $found);
+		Assert::count($totalActionsAfter, $found);
 	}
 
 	public function testProcessMessageFireAction(): void

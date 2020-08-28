@@ -9,6 +9,7 @@ use FastyBird\TriggersNode\Controllers;
 use FastyBird\TriggersNode\Hydrators;
 use FastyBird\TriggersNode\Models;
 use FastyBird\TriggersNode\Schemas;
+use FastyBird\TriggersNode\Subscribers;
 use Ninjify\Nunjuck\TestCase\BaseTestCase;
 use Tester\Assert;
 
@@ -52,6 +53,11 @@ final class ServicesTest extends BaseTestCase
 		Assert::notNull($container->getByType(Controllers\ActionsV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\NotificationsV1Controller::class));
 		Assert::notNull($container->getByType(Controllers\ConditionsV1Controller::class));
+
+		Assert::notNull($container->getByType(Subscribers\EntitiesSubscriber::class));
+		Assert::notNull($container->getByType(Subscribers\ActionEntitySubscriber::class));
+		Assert::notNull($container->getByType(Subscribers\ConditionEntitySubscriber::class));
+		Assert::notNull($container->getByType(Subscribers\NotificationEntitySubscriber::class));
 
 		Assert::notNull($container->getByType(Schemas\Triggers\AutomaticTriggerSchema::class));
 		Assert::notNull($container->getByType(Schemas\Triggers\ManualTriggerSchema::class));
