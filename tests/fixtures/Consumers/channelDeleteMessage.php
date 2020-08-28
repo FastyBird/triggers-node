@@ -44,7 +44,7 @@ return [
 					'channel'  => 'channel-one',
 					'property' => 'switch',
 					'value'    => 'toggle',
-				]
+				],
 			],
 		],
 	],
