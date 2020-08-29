@@ -2,7 +2,7 @@
 
 namespace Tests\Cases;
 
-use FastyBird\DevicesNode\Types;
+use FastyBird\TriggersNode\Types;
 use Ninjify\Nunjuck\TestCase\BaseTestCase;
 use Tester\Assert;
 
@@ -11,34 +11,22 @@ require_once __DIR__ . '/../../../bootstrap.php';
 /**
  * @testCase
  */
-final class DatatypeTypeTest extends BaseTestCase
+final class ConditionOperatorTypeTest extends BaseTestCase
 {
 
 	public function testCreateDatatype(): void
 	{
-		$datatype = Types\DatatypeType::get(Types\DatatypeType::DATA_TYPE_INTEGER);
+		$datatype = Types\ConditionOperatorType::get(Types\ConditionOperatorType::STATE_VALUE_EQUAL);
 
-		Assert::type(Types\DatatypeType::class, $datatype);
+		Assert::type(Types\ConditionOperatorType::class, $datatype);
 
-		$datatype = Types\DatatypeType::get(Types\DatatypeType::DATA_TYPE_FLOAT);
+		$datatype = Types\ConditionOperatorType::get(Types\ConditionOperatorType::STATE_VALUE_ABOVE);
 
-		Assert::type(Types\DatatypeType::class, $datatype);
+		Assert::type(Types\ConditionOperatorType::class, $datatype);
 
-		$datatype = Types\DatatypeType::get(Types\DatatypeType::DATA_TYPE_BOOLEAN);
+		$datatype = Types\ConditionOperatorType::get(Types\ConditionOperatorType::STATE_VALUE_BELOW);
 
-		Assert::type(Types\DatatypeType::class, $datatype);
-
-		$datatype = Types\DatatypeType::get(Types\DatatypeType::DATA_TYPE_STRING);
-
-		Assert::type(Types\DatatypeType::class, $datatype);
-
-		$datatype = Types\DatatypeType::get(Types\DatatypeType::DATA_TYPE_ENUM);
-
-		Assert::type(Types\DatatypeType::class, $datatype);
-
-		$datatype = Types\DatatypeType::get(Types\DatatypeType::DATA_TYPE_COLOR);
-
-		Assert::type(Types\DatatypeType::class, $datatype);
+		Assert::type(Types\ConditionOperatorType::class, $datatype);
 	}
 
 	/**
@@ -46,10 +34,10 @@ final class DatatypeTypeTest extends BaseTestCase
 	 */
 	public function testInvalidDatatype(): void
 	{
-		$datatype = Types\DatatypeType::get('invalidtype');
+		$datatype = Types\ConditionOperatorType::get('invalidtype');
 	}
 
 }
 
-$test_case = new DatatypeTypeTest();
+$test_case = new ConditionOperatorTypeTest();
 $test_case->run();
