@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 return [
-	'one'   => [
+	'one' => [
 		[
 			'id'       => '37f72ccd-e495-4bd0-a4f1-1527466e96f6',
 			'property' => 'button',

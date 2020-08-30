@@ -137,6 +137,7 @@ class ChannelPropertyAction extends Action implements IChannelPropertyAction
 	public function toArray(): array
 	{
 		return array_merge(parent::toArray(), [
+			'type'     => 'channel-property',
 			'device'   => $this->getDevice(),
 			'channel'  => $this->getChannel(),
 			'property' => $this->getProperty(),

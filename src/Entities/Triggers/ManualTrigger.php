@@ -31,4 +31,14 @@ use Doctrine\ORM\Mapping as ORM;
 class ManualTrigger extends Trigger implements IManualTrigger
 {
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toArray(): array
+	{
+		return array_merge(parent::toArray(), [
+			'type' => 'manual',
+		]);
+	}
+
 }

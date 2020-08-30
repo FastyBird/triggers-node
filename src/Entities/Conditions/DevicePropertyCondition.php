@@ -102,6 +102,7 @@ class DevicePropertyCondition extends PropertyCondition implements IDeviceProper
 	public function toArray(): array
 	{
 		return array_merge(parent::toArray(), [
+			'type'     => 'device-property',
 			'device'   => $this->getDevice(),
 			'property' => $this->getProperty(),
 		]);

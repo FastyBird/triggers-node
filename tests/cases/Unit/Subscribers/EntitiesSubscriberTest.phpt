@@ -43,15 +43,16 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 				Assert::same('fb.bus.node.entity.created.trigger', $key);
 				Assert::equal([
-					'name'       => 'Trigger name',
-					'comment'    => null,
-					'is_enabled' => true,
-					'owner'      => null,
-					'device'     => 'device-name',
-					'channel'    => 'channel-name',
-					'property'   => 'property-name',
-					'operand'    => '10',
-					'operator'   => 'eq',
+					'name'     => 'Trigger name',
+					'comment'  => null,
+					'enabled'  => true,
+					'owner'    => null,
+					'type'     => 'channel-property',
+					'device'   => 'device-name',
+					'channel'  => 'channel-name',
+					'property' => 'property-name',
+					'operand'  => '10',
+					'operator' => 'eq',
 				], $data);
 
 				return true;
@@ -94,15 +95,16 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 				Assert::same('fb.bus.node.entity.updated.trigger', $key);
 				Assert::equal([
-					'name'       => 'Trigger name',
-					'comment'    => null,
-					'is_enabled' => true,
-					'owner'      => null,
-					'device'     => 'device-name',
-					'channel'    => 'channel-name',
-					'property'   => 'property-name',
-					'operand'    => '10',
-					'operator'   => 'eq',
+					'name'     => 'Trigger name',
+					'comment'  => null,
+					'enabled'  => true,
+					'owner'    => null,
+					'type'     => 'channel-property',
+					'device'   => 'device-name',
+					'channel'  => 'channel-name',
+					'property' => 'property-name',
+					'operand'  => '10',
+					'operator' => 'eq',
 				], $data);
 
 				return true;
@@ -144,15 +146,16 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 				Assert::same('fb.bus.node.entity.deleted.trigger', $key);
 				Assert::equal([
-					'name'       => 'Trigger name',
-					'comment'    => null,
-					'is_enabled' => true,
-					'owner'      => null,
-					'device'     => 'device-name',
-					'channel'    => 'channel-name',
-					'property'   => 'property-name',
-					'operand'    => '10',
-					'operator'   => 'eq',
+					'name'     => 'Trigger name',
+					'comment'  => null,
+					'enabled'  => true,
+					'owner'    => null,
+					'type'     => 'channel-property',
+					'device'   => 'device-name',
+					'channel'  => 'channel-name',
+					'property' => 'property-name',
+					'operand'  => '10',
+					'operator' => 'eq',
 				], $data);
 
 				return true;

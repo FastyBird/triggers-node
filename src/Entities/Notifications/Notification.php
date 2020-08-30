@@ -58,6 +58,14 @@ abstract class Notification implements INotification
 	protected $id;
 
 	/**
+	 * @var bool
+	 *
+	 * @IPubDoctrine\Crud(is="writable")
+	 * @ORM\Column(type="boolean", name="notification_enabled", length=1, nullable=false, options={"default": true})
+	 */
+	protected $enabled = true;
+
+	/**
 	 * @var Entities\Triggers\ITrigger
 	 *
 	 * @IPubDoctrine\Crud(is="required")
@@ -84,6 +92,22 @@ abstract class Notification implements INotification
 	/**
 	 * {@inheritDoc}
 	 */
+	public function setEnabled(bool $enabled): void
+	{
+		$this->enabled = $enabled;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isEnabled(): bool
+	{
+		return $this->enabled;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getTrigger(): Entities\Triggers\ITrigger
 	{
 		return $this->trigger;
@@ -96,6 +120,7 @@ abstract class Notification implements INotification
 	{
 		return [
 			'id'      => $this->getPlainId(),
+			'enabled' => $this->isEnabled(),
 			'trigger' => $this->getTrigger()->getPlainId(),
 			'owner'   => $this->getTrigger()->getOwnerId(),
 		];

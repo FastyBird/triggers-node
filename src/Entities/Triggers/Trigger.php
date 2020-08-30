@@ -153,7 +153,7 @@ abstract class Trigger implements ITrigger
 	}
 
 	/**
-	 * @param bool $enabled
+	 * {@inheritDoc}
 	 */
 	public function setEnabled(bool $enabled): void
 	{
@@ -161,7 +161,7 @@ abstract class Trigger implements ITrigger
 	}
 
 	/**
-	 * @return bool
+	 * {@inheritDoc}
 	 */
 	public function isEnabled(): bool
 	{
@@ -298,11 +298,11 @@ abstract class Trigger implements ITrigger
 	public function toArray(): array
 	{
 		return [
-			'id'         => $this->getPlainId(),
-			'name'       => $this->getName(),
-			'comment'    => $this->getComment(),
-			'is_enabled' => $this->isEnabled(),
-			'owner'      => $this->getOwnerId(),
+			'id'      => $this->getPlainId(),
+			'name'    => $this->getName(),
+			'comment' => $this->getComment(),
+			'enabled' => $this->isEnabled(),
+			'owner'   => $this->getOwnerId(),
 		];
 	}
 

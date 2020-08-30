@@ -32,6 +32,18 @@ interface IAction extends NodeDatabaseEntities\IEntity,
 {
 
 	/**
+	 * @param bool $enabled
+	 *
+	 * @return void
+	 */
+	public function setEnabled(bool $enabled): void;
+
+	/**
+	 * @return bool
+	 */
+	public function isEnabled(): bool;
+
+	/**
 	 * @return Entities\Triggers\ITrigger
 	 */
 	public function getTrigger(): Entities\Triggers\ITrigger;

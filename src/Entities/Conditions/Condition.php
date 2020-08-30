@@ -60,6 +60,14 @@ abstract class Condition implements ICondition
 	protected $id;
 
 	/**
+	 * @var bool
+	 *
+	 * @IPubDoctrine\Crud(is="writable")
+	 * @ORM\Column(type="boolean", name="condition_enabled", length=1, nullable=false, options={"default": true})
+	 */
+	protected $enabled = true;
+
+	/**
 	 * @var Entities\Triggers\IAutomaticTrigger
 	 *
 	 * @IPubDoctrine\Crud(is="required")
@@ -86,6 +94,22 @@ abstract class Condition implements ICondition
 	/**
 	 * {@inheritDoc}
 	 */
+	public function setEnabled(bool $enabled): void
+	{
+		$this->enabled = $enabled;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isEnabled(): bool
+	{
+		return $this->enabled;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public function getTrigger(): Entities\Triggers\IAutomaticTrigger
 	{
 		return $this->trigger;
@@ -98,6 +122,7 @@ abstract class Condition implements ICondition
 	{
 		return [
 			'id'      => $this->getPlainId(),
+			'enabled' => $this->isEnabled(),
 			'trigger' => $this->getTrigger()->getPlainId(),
 			'owner'   => $this->getTrigger()->getOwnerId(),
 		];

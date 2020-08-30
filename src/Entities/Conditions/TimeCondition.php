@@ -133,6 +133,7 @@ class TimeCondition extends Condition implements ITimeCondition
 	public function toArray(): array
 	{
 		return array_merge(parent::toArray(), [
+			'type' => 'time',
 			'time' => $this->getTime()->format(DATE_ATOM),
 			'days' => $this->getDays(),
 		]);

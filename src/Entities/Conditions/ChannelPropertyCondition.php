@@ -122,6 +122,7 @@ class ChannelPropertyCondition extends PropertyCondition implements IChannelProp
 	public function toArray(): array
 	{
 		return array_merge(parent::toArray(), [
+			'type'     => 'channel-property',
 			'device'   => $this->getDevice(),
 			'channel'  => $this->getChannel(),
 			'property' => $this->getProperty(),

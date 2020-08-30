@@ -82,6 +82,7 @@ class EmailNotification extends Notification implements IEmailNotification
 	public function toArray(): array
 	{
 		return array_merge(parent::toArray(), [
+			'type'  => 'email',
 			'email' => $this->getEmail(),
 		]);
 	}

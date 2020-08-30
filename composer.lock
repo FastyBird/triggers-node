@@ -1751,12 +1751,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FastyBird/node-auth.git",
-                "reference": "7948e366fc5f2abc04a117a288f6d0d4163bc204"
+                "reference": "255e967ff33c61b404160d1b303ea275d010dcfb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FastyBird/node-auth/zipball/7948e366fc5f2abc04a117a288f6d0d4163bc204",
-                "reference": "7948e366fc5f2abc04a117a288f6d0d4163bc204",
+                "url": "https://api.github.com/repos/FastyBird/node-auth/zipball/255e967ff33c61b404160d1b303ea275d010dcfb",
+                "reference": "255e967ff33c61b404160d1b303ea275d010dcfb",
                 "shasum": ""
             },
             "require": {
@@ -1770,8 +1770,6 @@
                 "lcobucci/jwt": "^3.3",
                 "nette/bootstrap": "^3.0",
                 "nette/di": "^3.0",
-                "nette/http": "^3.0",
-                "nette/security": "^3.0",
                 "nette/utils": "^3.0",
                 "php": ">=7.3.0",
                 "ramsey/uuid": "^3.5 || ^4.0 ",
@@ -1825,7 +1823,7 @@
                 "library",
                 "libs"
             ],
-            "time": "2020-08-15T20:32:48+00:00"
+            "time": "2020-08-30T10:22:45+00:00"
         },
         {
             "name": "fastybird/node-bootstrap",
@@ -2130,12 +2128,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FastyBird/node-metadata.git",
-                "reference": "5e5d3079b437bfd51917e663ef18ac3f958b25da"
+                "reference": "0433a5448dd86a8ae3f17b197d6c673f553fb2b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FastyBird/node-metadata/zipball/5e5d3079b437bfd51917e663ef18ac3f958b25da",
-                "reference": "5e5d3079b437bfd51917e663ef18ac3f958b25da",
+                "url": "https://api.github.com/repos/FastyBird/node-metadata/zipball/0433a5448dd86a8ae3f17b197d6c673f553fb2b8",
+                "reference": "0433a5448dd86a8ae3f17b197d6c673f553fb2b8",
                 "shasum": ""
             },
             "require": {
@@ -2188,7 +2186,7 @@
                 "metadata",
                 "node"
             ],
-            "time": "2020-08-24T19:15:08+00:00"
+            "time": "2020-08-30T11:55:08+00:00"
         },
         {
             "name": "fastybird/node-web-server",
@@ -4258,70 +4256,6 @@
                 "nette"
             ],
             "time": "2019-10-31T20:52:19+00:00"
-        },
-        {
-            "name": "nette/security",
-            "version": "v3.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/nette/security.git",
-                "reference": "f18cf84a87c241d74d87b484a694cefe18c17061"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/nette/security/zipball/f18cf84a87c241d74d87b484a694cefe18c17061",
-                "reference": "f18cf84a87c241d74d87b484a694cefe18c17061",
-                "shasum": ""
-            },
-            "require": {
-                "nette/utils": "^2.4 || ^3.0",
-                "php": ">=7.1"
-            },
-            "conflict": {
-                "nette/di": "<3.0-stable"
-            },
-            "require-dev": {
-                "nette/di": "^3.0.0",
-                "nette/http": "^3.0.0",
-                "nette/tester": "^2.0",
-                "tracy/tracy": "^2.4"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.0-dev"
-                }
-            },
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause",
-                "GPL-2.0",
-                "GPL-3.0"
-            ],
-            "authors": [
-                {
-                    "name": "David Grudl",
-                    "homepage": "https://davidgrudl.com"
-                },
-                {
-                    "name": "Nette Community",
-                    "homepage": "https://nette.org/contributors"
-                }
-            ],
-            "description": "🔑 Nette Security: provides authentication, authorization and a role-based access control management via ACL (Access Control List)",
-            "homepage": "https://nette.org",
-            "keywords": [
-                "Authentication",
-                "acl",
-                "authorization",
-                "nette"
-            ],
-            "time": "2019-10-16T11:23:11+00:00"
         },
         {
             "name": "nette/utils",
@@ -8702,30 +8636,30 @@
         },
         {
             "name": "phpstan/extension-installer",
-            "version": "1.0.4",
+            "version": "1.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/extension-installer.git",
-                "reference": "2e041def501d661b806f50000c8a4dccbd4907b4"
+                "reference": "5c2da3846819f951385cb6a25d3277051481c48a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/extension-installer/zipball/2e041def501d661b806f50000c8a4dccbd4907b4",
-                "reference": "2e041def501d661b806f50000c8a4dccbd4907b4",
+                "url": "https://api.github.com/repos/phpstan/extension-installer/zipball/5c2da3846819f951385cb6a25d3277051481c48a",
+                "reference": "5c2da3846819f951385cb6a25d3277051481c48a",
                 "shasum": ""
             },
             "require": {
                 "composer-plugin-api": "^1.1 || ^2.0",
-                "php": "^7.1",
+                "php": "^7.1 || ^8.0",
                 "phpstan/phpstan": ">=0.11.6"
             },
             "require-dev": {
                 "composer/composer": "^1.8",
                 "consistence/coding-standard": "^3.8",
-                "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
                 "ergebnis/composer-normalize": "^2.0.2",
-                "jakub-onderka/php-parallel-lint": "^1.0",
                 "phing/phing": "^2.16",
+                "php-parallel-lint/php-parallel-lint": "^1.2.0",
                 "phpstan/phpstan-strict-rules": "^0.11",
                 "slevomat/coding-standard": "^5.0.4"
             },
@@ -8743,7 +8677,7 @@
                 "MIT"
             ],
             "description": "Composer plugin for automatic installation of PHPStan extensions",
-            "time": "2020-03-31T16:00:42+00:00"
+            "time": "2020-08-30T12:06:42+00:00"
         },
         {
             "name": "phpstan/phpdoc-parser",

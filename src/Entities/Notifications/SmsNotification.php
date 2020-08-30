@@ -83,6 +83,7 @@ class SmsNotification extends Notification implements ISmsNotification
 	public function toArray(): array
 	{
 		return array_merge(parent::toArray(), [
+			'type'  => 'sms',
 			'phone' => $this->getPhone()->getInternationalNumber(),
 		]);
 	}
