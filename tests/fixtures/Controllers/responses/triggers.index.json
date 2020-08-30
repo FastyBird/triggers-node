@@ -8,7 +8,7 @@
         "enabled" : true,
         "name" : "28bc0d38-2f7c-4a71-aa74-27b102f8df4c",
         "operand" : "3",
-        "operator" : "eq"
+        "operator" : "eq",
         "property" : "button"
       },
       "id" : "1c580923-28dd-4b28-8517-bf37f0173b93",
@@ -44,7 +44,7 @@
         "enabled" : true,
         "name" : "7c055b2b-60c3-4017-93db-e9478d8aa662",
         "operand" : "1",
-        "operator" : "eq"
+        "operator" : "eq",
         "property" : "button"
       },
       "id" : "402aabb9-b5a8-4f28-aad4-c7ec245831b2",
