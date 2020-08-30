@@ -37,6 +37,7 @@ final class ChannelPropertyActionHydrator extends ActionHydrator
 		'channel',
 		'property',
 		'value',
+		'enabled',
 	];
 
 	/**

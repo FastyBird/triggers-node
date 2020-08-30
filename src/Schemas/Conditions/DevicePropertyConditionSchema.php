@@ -56,7 +56,7 @@ final class DevicePropertyConditionSchema extends ConditionSchema
 	 * @param Entities\Conditions\IDevicePropertyCondition $condition
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
-	 * @return iterable<string, mixed>
+	 * @return iterable<string, string|bool>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */

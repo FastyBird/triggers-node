@@ -54,7 +54,7 @@ abstract class ActionSchema extends NodeJsonApiSchemas\JsonApiSchema
 	 * @param Entities\Actions\IAction $action
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
-	 * @return iterable<string, mixed>
+	 * @return iterable<string, bool>
 	 *
 	 * @phpstan-param T $action
 	 *
@@ -62,7 +62,9 @@ abstract class ActionSchema extends NodeJsonApiSchemas\JsonApiSchema
 	 */
 	public function getAttributes($action, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
-		return [];
+		return [
+			'enabled' => $action->isEnabled(),
+		];
 	}
 
 	/**

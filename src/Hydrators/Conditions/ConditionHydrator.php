@@ -18,6 +18,7 @@ namespace FastyBird\TriggersNode\Hydrators\Conditions;
 use FastyBird\NodeJsonApi\Hydrators as NodeJsonApiHydrators;
 use FastyBird\TriggersNode\Hydrators;
 use FastyBird\TriggersNode\Schemas;
+use IPub\JsonAPIDocument;
 
 /**
  * Condition entity hydrator
@@ -40,5 +41,15 @@ abstract class ConditionHydrator extends NodeJsonApiHydrators\Hydrator
 
 	/** @var string */
 	protected $translationDomain = 'node.conditions';
+
+	/**
+	 * @param JsonAPIDocument\Objects\IStandardObject<mixed> $attributes
+	 *
+	 * @return bool
+	 */
+	protected function hydrateEnabledAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): bool
+	{
+		return (bool) $attributes->get('enabled');
+	}
 
 }

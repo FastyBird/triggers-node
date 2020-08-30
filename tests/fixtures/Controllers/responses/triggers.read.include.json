@@ -3,8 +3,7 @@
     "attributes" : {
       "comment" : null,
       "enabled" : true,
-      "name" : "Good Night's Sleep",
-      "params" : []
+      "name" : "Good Night's Sleep"
     },
     "id" : "c64ba1c4-0eda-4cab-87a0-4d634f7b67f4",
     "links" : {
@@ -66,7 +65,8 @@
         "channel" : "channel-four",
         "device" : "device-one",
         "property" : "switch",
-        "value" : "on"
+        "value" : "on",
+        "enabled" : true
       },
       "id" : "4aa84028-d8b7-4128-95b2-295763634aa4",
       "links" : {
@@ -91,7 +91,8 @@
         "channel" : "channel-six",
         "device" : "device-two",
         "property" : "light",
-        "value" : "on"
+        "value" : "on",
+        "enabled" : true
       },
       "id" : "827d61f7-5dcf-4cab-9662-f386f6fb0bce",
       "links" : {
@@ -116,7 +117,8 @@
         "channel" : "channel-three",
         "device" : "device-three",
         "property" : "switch",
-        "value" : "on"
+        "value" : "on",
+        "enabled" : true
       },
       "id" : "d062ce8b-9543-4b9b-b6ca-51907ec0246a",
       "links" : {
@@ -138,7 +140,8 @@
     },
     {
       "attributes" : {
-        "email" : "john.doe@fastybird.com"
+        "email" : "john.doe@fastybird.com",
+        "enabled" : true
       },
       "id" : "05f28df9-5f19-4923-b3f8-b9090116dadc",
       "links" : {
@@ -160,7 +163,8 @@
     },
     {
       "attributes" : {
-        "phone" : "+420 778 776 776"
+        "phone" : "+420 778 776 776",
+        "enabled" : true
       },
       "id" : "4fe1019c-f49e-4cbf-83e6-20b394e76317",
       "links" : {

@@ -2,7 +2,8 @@
   "data" : [
     {
       "attributes" : {
-        "phone" : "+420 778 776 776"
+        "phone" : "+420 778 776 776",
+        "enabled" : true
       },
       "id" : "4fe1019c-f49e-4cbf-83e6-20b394e76317",
       "links" : {

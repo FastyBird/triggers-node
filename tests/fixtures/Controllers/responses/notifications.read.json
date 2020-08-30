@@ -1,7 +1,8 @@
 {
   "data" : {
     "attributes" : {
-      "email" : "john.doe@fastybird.com"
+      "email" : "john.doe@fastybird.com",
+      "enabled" : true
     },
     "id" : "05f28df9-5f19-4923-b3f8-b9090116dadc",
     "links" : {

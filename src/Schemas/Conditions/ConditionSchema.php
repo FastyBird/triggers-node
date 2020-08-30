@@ -54,7 +54,7 @@ abstract class ConditionSchema extends NodeJsonApiSchemas\JsonApiSchema
 	 * @param Entities\Conditions\ICondition $condition
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
-	 * @return iterable<string, mixed>
+	 * @return iterable<string, bool>
 	 *
 	 * @phpstan-param T $condition
 	 *
@@ -62,7 +62,9 @@ abstract class ConditionSchema extends NodeJsonApiSchemas\JsonApiSchema
 	 */
 	public function getAttributes($condition, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
-		return [];
+		return [
+			'enabled' => $condition->isEnabled(),
+		];
 	}
 
 

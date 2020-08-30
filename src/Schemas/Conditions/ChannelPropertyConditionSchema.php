@@ -56,7 +56,7 @@ final class ChannelPropertyConditionSchema extends ConditionSchema
 	 * @param Entities\Conditions\IChannelPropertyCondition $condition
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
-	 * @return iterable<string, mixed>
+	 * @return iterable<string, string|bool>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */

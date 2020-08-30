@@ -37,6 +37,7 @@ final class SmsNotificationHydrator extends NotificationHydrator
 	/** @var string[] */
 	protected $attributes = [
 		'phone',
+		'enabled',
 	];
 
 	/** @var Phone\Phone */

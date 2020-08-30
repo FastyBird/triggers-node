@@ -37,6 +37,7 @@ final class DevicePropertyConditionHydrator extends PropertyConditionHydrator
 		'property',
 		'operator',
 		'operand',
+		'enabled',
 	];
 
 	/**

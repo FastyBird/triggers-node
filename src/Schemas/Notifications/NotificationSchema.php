@@ -54,7 +54,7 @@ abstract class NotificationSchema extends NodeJsonApiSchemas\JsonApiSchema
 	 * @param Entities\Notifications\INotification $notification
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
-	 * @return iterable<string, mixed>
+	 * @return iterable<string, bool>
 	 *
 	 * @phpstan-param T $notification
 	 *
@@ -62,7 +62,9 @@ abstract class NotificationSchema extends NodeJsonApiSchemas\JsonApiSchema
 	 */
 	public function getAttributes($notification, JsonApi\Contracts\Schema\ContextInterface $context): iterable
 	{
-		return [];
+		return [
+			'enabled' => $notification->isEnabled(),
+		];
 	}
 
 	/**

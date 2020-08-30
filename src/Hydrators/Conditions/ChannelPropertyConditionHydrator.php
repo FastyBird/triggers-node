@@ -38,6 +38,7 @@ final class ChannelPropertyConditionHydrator extends PropertyConditionHydrator
 		'property',
 		'operator',
 		'operand',
+		'enabled',
 	];
 
 	/**

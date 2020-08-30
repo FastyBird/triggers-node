@@ -3,8 +3,7 @@
     "attributes" : {
       "comment" : null,
       "enabled" : true,
-      "name" : "This is manual trigger",
-      "params" : []
+      "name" : "This is manual trigger"
     },
     "id" : "bbbf5caa-b30e-4558-b83a-699617958cea",
     "links" : {

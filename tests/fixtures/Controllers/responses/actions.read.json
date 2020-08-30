@@ -4,7 +4,8 @@
       "channel" : "channel-four",
       "device" : "device-one",
       "property" : "switch",
-      "value" : "on"
+      "value" : "on",
+      "enabled" : true
     },
     "id" : "4aa84028-d8b7-4128-95b2-295763634aa4",
     "links" : {

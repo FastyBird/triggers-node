@@ -56,7 +56,7 @@ final class SmsNotificationSchema extends NotificationSchema
 	 * @param Entities\Notifications\ISmsNotification $notification
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
-	 * @return iterable<string, mixed>
+	 * @return iterable<string, string|bool|null>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */

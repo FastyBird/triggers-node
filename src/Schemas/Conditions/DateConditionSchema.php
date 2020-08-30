@@ -57,7 +57,7 @@ final class DateConditionSchema extends ConditionSchema
 	 * @param Entities\Conditions\IDateCondition $condition
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
-	 * @return iterable<string, mixed>
+	 * @return iterable<string, string|bool>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */

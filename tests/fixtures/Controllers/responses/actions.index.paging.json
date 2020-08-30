@@ -5,7 +5,8 @@
         "channel" : "channel-six",
         "device" : "device-two",
         "property" : "light",
-        "value" : "on"
+        "value" : "on",
+        "enabled" : true
       },
       "id" : "827d61f7-5dcf-4cab-9662-f386f6fb0bce",
       "links" : {

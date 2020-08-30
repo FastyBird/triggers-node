@@ -1,7 +1,8 @@
 {
   "data" : {
     "attributes" : {
-      "phone" : "+420 777 888 999"
+      "phone" : "+420 777 888 999",
+      "enabled" : true
     },
     "id" : "ef011ee6-82b9-4324-aeaf-33241d81b721",
     "links" : {

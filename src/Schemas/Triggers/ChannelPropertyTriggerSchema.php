@@ -56,7 +56,7 @@ final class ChannelPropertyTriggerSchema extends TriggerSchema
 	 * @param Entities\Triggers\IChannelPropertyTrigger $trigger
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
-	 * @return iterable<string, mixed>
+	 * @return iterable<string, string|bool|null>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */

@@ -2128,12 +2128,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FastyBird/node-metadata.git",
-                "reference": "0433a5448dd86a8ae3f17b197d6c673f553fb2b8"
+                "reference": "5c8315d98afa64167ee55a158294ec66c54419cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FastyBird/node-metadata/zipball/0433a5448dd86a8ae3f17b197d6c673f553fb2b8",
-                "reference": "0433a5448dd86a8ae3f17b197d6c673f553fb2b8",
+                "url": "https://api.github.com/repos/FastyBird/node-metadata/zipball/5c8315d98afa64167ee55a158294ec66c54419cc",
+                "reference": "5c8315d98afa64167ee55a158294ec66c54419cc",
                 "shasum": ""
             },
             "require": {
@@ -2186,7 +2186,7 @@
                 "metadata",
                 "node"
             ],
-            "time": "2020-08-30T11:55:08+00:00"
+            "time": "2020-08-30T17:29:59+00:00"
         },
         {
             "name": "fastybird/node-web-server",

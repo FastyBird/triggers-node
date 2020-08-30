@@ -53,7 +53,7 @@ abstract class TriggerSchema extends NodeJsonApiSchemas\JsonApiSchema
 	 * @param Entities\Triggers\ITrigger $trigger
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
-	 * @return iterable<string, mixed>
+	 * @return iterable<string, string|bool|null>
 	 *
 	 * @phpstan-param T $trigger
 	 *
@@ -65,8 +65,6 @@ abstract class TriggerSchema extends NodeJsonApiSchemas\JsonApiSchema
 			'name'    => $trigger->getName(),
 			'comment' => $trigger->getComment(),
 			'enabled' => $trigger->isEnabled(),
-
-			'params' => (array) $trigger->getParams(),
 		];
 	}
 

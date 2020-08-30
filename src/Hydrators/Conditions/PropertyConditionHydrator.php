@@ -37,6 +37,7 @@ abstract class PropertyConditionHydrator extends ConditionHydrator
 		'property',
 		'operator',
 		'operand',
+		'enabled',
 	];
 
 	/**

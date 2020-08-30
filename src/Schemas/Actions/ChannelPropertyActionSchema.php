@@ -56,7 +56,7 @@ final class ChannelPropertyActionSchema extends ActionSchema
 	 * @param Entities\Actions\IChannelPropertyAction $action
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
-	 * @return iterable<string, mixed>
+	 * @return iterable<string, string|bool>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */

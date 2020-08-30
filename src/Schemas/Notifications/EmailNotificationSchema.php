@@ -54,7 +54,7 @@ final class EmailNotificationSchema extends NotificationSchema
 	 * @param Entities\Notifications\IEmailNotification $notification
 	 * @param JsonApi\Contracts\Schema\ContextInterface $context
 	 *
-	 * @return iterable<string, mixed>
+	 * @return iterable<string, string|bool>
 	 *
 	 * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
 	 */

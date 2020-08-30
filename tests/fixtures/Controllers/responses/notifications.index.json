@@ -2,7 +2,8 @@
   "data" : [
     {
       "attributes" : {
-        "email" : "john.doe@fastybird.com"
+        "email" : "john.doe@fastybird.com",
+        "enabled" : true
       },
       "id" : "05f28df9-5f19-4923-b3f8-b9090116dadc",
       "links" : {
@@ -24,7 +25,8 @@
     },
     {
       "attributes" : {
-        "phone" : "+420 778 776 776"
+        "phone" : "+420 778 776 776",
+        "enabled" : true
       },
       "id" : "4fe1019c-f49e-4cbf-83e6-20b394e76317",
       "links" : {

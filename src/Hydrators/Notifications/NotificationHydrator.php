@@ -17,6 +17,7 @@ namespace FastyBird\TriggersNode\Hydrators\Notifications;
 
 use FastyBird\NodeJsonApi\Hydrators as NodeJsonApiHydrators;
 use FastyBird\TriggersNode\Schemas;
+use IPub\JsonAPIDocument;
 
 /**
  * Notification entity hydrator
@@ -39,5 +40,15 @@ abstract class NotificationHydrator extends NodeJsonApiHydrators\Hydrator
 
 	/** @var string */
 	protected $translationDomain = 'node.notifications';
+
+	/**
+	 * @param JsonAPIDocument\Objects\IStandardObject<mixed> $attributes
+	 *
+	 * @return bool
+	 */
+	protected function hydrateEnabledAttribute(JsonAPIDocument\Objects\IStandardObject $attributes): bool
+	{
+		return (bool) $attributes->get('enabled');
+	}
 
 }

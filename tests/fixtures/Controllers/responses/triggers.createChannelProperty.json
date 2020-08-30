@@ -8,7 +8,6 @@
       "name" : "This is channel trigger",
       "operand" : "2",
       "operator" : "eq",
-      "params" : [],
       "property" : "property-identifier"
     },
     "id" : "bbbf5caa-b30e-4558-b83a-699617958cea",
