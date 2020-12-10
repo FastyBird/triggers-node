@@ -2,7 +2,7 @@
 # Service DI configuration
 #
 # @license		More in license.md
-# @copyright	https://fastybird.com
+# @copyright	https://www.fastybird.com
 # @author		Adam Kadlec <adam.kadlec@fastybird.com>
 # @package		FastyBird:TriggersNode!
 # @subpackage	config
@@ -30,36 +30,38 @@ parameters:
 #########################
 
 extensions:
-	contributteTranslation		: Contributte\Translation\DI\TranslationExtension
-	nettrineAnnotations			: Nettrine\Annotations\DI\AnnotationsExtension
-	nettrineCache				: Nettrine\Cache\DI\CacheExtension
-	nettrineDbal				: Nettrine\DBAL\DI\DbalExtension
-	nettrineOrm					: Nettrine\ORM\DI\OrmExtension
-	nettrineOrmAnnotations		: Nettrine\ORM\DI\OrmAnnotationsExtension
-	nettrineOrmConsole			: Nettrine\ORM\DI\OrmConsoleExtension
-	nettrineOrmCache			: Nettrine\ORM\DI\OrmCacheExtension
-	ipubPhone					: IPub\Phone\DI\PhoneExtension
-	ipubDoctrineConsistence		: IPub\DoctrineConsistence\DI\DoctrineConsistenceExtension
-	ipubDoctrineCrud			: IPub\DoctrineCrud\DI\DoctrineCrudExtension
-	ipubDoctrinePhone			: IPub\DoctrinePhone\DI\DoctrinePhoneExtension
-	ipubDoctrineTimestampable	: IPub\DoctrineTimestampable\DI\DoctrineTimestampableExtension
-	fbDateTimeFactory			: FastyBird\DateTimeFactory\DI\DateTimeFactoryExtension
-	nodeAuth					: FastyBird\NodeAuth\DI\NodeAuthExtension
-	nodeDatabase				: FastyBird\NodeDatabase\DI\NodeDatabaseExtension
-	nodeExchange				: FastyBird\NodeExchange\DI\NodeExchangeExtension
-	nodeJsonApi					: FastyBird\NodeJsonApi\DI\NodeJsonApiExtension
-	nodeMetadata				: FastyBird\NodeMetadata\DI\NodeMetadataExtension
-	nodeWebServer				: FastyBird\NodeWebServer\DI\NodeWebServerExtension
+	contributteTranslation				: Contributte\Translation\DI\TranslationExtension
+	nettrineAnnotations					: Nettrine\Annotations\DI\AnnotationsExtension
+	nettrineCache						: Nettrine\Cache\DI\CacheExtension
+	nettrineDbal						: Nettrine\DBAL\DI\DbalExtension
+	nettrineOrm							: Nettrine\ORM\DI\OrmExtension
+	nettrineOrmAnnotations				: Nettrine\ORM\DI\OrmAnnotationsExtension
+	nettrineOrmConsole					: Nettrine\ORM\DI\OrmConsoleExtension
+	nettrineOrmCache					: Nettrine\ORM\DI\OrmCacheExtension
+	fbDateTimeFactory					: FastyBird\DateTimeFactory\DI\DateTimeFactoryExtension
+	fbSimpleAuth						: FastyBird\SimpleAuth\DI\SimpleAuthExtension
+	fbDatabase							: FastyBird\Database\DI\DatabaseExtension
+	fbJsonApi							: FastyBird\JsonApi\DI\JsonApiExtension
+	fbModulesMetadata					: FastyBird\ModulesMetadata\DI\ModulesMetadataExtension
+	fbWebServer							: FastyBird\WebServer\DI\WebServerExtension
+	fbTriggersModule					: FastyBird\TriggersModule\DI\TriggersModuleExtension
+	fbRabbitMqPlugin					: FastyBird\RabbitMqPlugin\DI\RabbitMqPluginExtension
+	ipubPhone							: IPub\Phone\DI\PhoneExtension
+	ipubDoctrinePhone					: IPub\DoctrinePhone\DI\DoctrinePhoneExtension
+	ipubDoctrineConsistence				: IPub\DoctrineConsistence\DI\DoctrineConsistenceExtension
+	ipubDoctrineCrud					: IPub\DoctrineCrud\DI\DoctrineCrudExtension
+	ipubDoctrineTimestampable			: IPub\DoctrineTimestampable\DI\DoctrineTimestampableExtension
+	ipubDoctrineDynamicDiscriminatorMap	: IPub\DoctrineDynamicDiscriminatorMap\DI\DoctrineDynamicDiscriminatorMapExtension
 
 ##################################
 # Nette extensions configuration #
 ##################################
 
-# Node authentication
-#####################
-nodeAuth:
+# Simple authentication
+#######################
+fbSimpleAuth:
 	token:
-		issuer: %origin%
+		issuer: %security.issuer%
 		signature: %security.signature%
 	enable:
 		middleware: true
@@ -68,9 +70,9 @@ nodeAuth:
 	services:
 		identity: true
 
-# Node data exchange
+# RabbitMQ exchange
 ####################
-nodeExchange:
+fbRabbitMqPlugin:
 	origin: %origin%
 	rabbitMQ:
 		connection:
@@ -84,9 +86,9 @@ nodeExchange:
 		routing:
 			keys: %rabbitmq.routing%
 
-# Node web server
+# Web server
 #################
-nodeWebServer:
+fbWebServer:
 	server:
 		address: %server.address%
 		port: %server.port%
@@ -98,8 +100,6 @@ contributteTranslation:
 		default: en_US
 		fallback: [en_US, en]
 	localeResolvers: []
-	dirs:
-		- %appDir%/src/Translations
 
 # Doctrine DBAL
 ###############
@@ -133,11 +133,11 @@ nettrineAnnotations:
 	ignore:
 		- writable
 		- validator
-		- required
 		- module
 		- author
 		- subpackage
 		- package
+		- phpcsSuppress
 
 # Doctrine ORM
 ##############
@@ -146,12 +146,7 @@ nettrineOrm:
 		proxyDir	: %tempDir%/cache/doctrine.proxies
 
 nettrineOrmAnnotations:
-	namespaces:
-		- FastyBird\TriggersNode\Entities
-		- FastyBird\NodeAuth\Entities
-	paths:
-		- %appDir%/src/Entities
-		- %appDir%/vendor/fastybird/node-auth/src/Entities
+	mapping: []
 
 #############################
 # Node services definitions #
@@ -162,17 +157,11 @@ decorator:
 		setup:
 			- '$onBeforeServerStart[]' = @FastyBird\TriggersNode\Events\ServerBeforeStartHandler
 
-services:
-	# Http router
-	#############
-
-	- {factory: FastyBird\TriggersNode\Middleware\AccessMiddleware, tags: [middleware: {priority: 50}]}
-
-	-
-		factory: FastyBird\TriggersNode\Router\Router
+	FastyBird\RabbitMqPlugin\Exchange:
 		setup:
-			- registerRoutes
+			- '$onAfterConsumeMessage[]' = @FastyBird\TriggersNode\Events\AfterConsumeHandler
 
+services:
 	# Console commands
 	##################
 
@@ -194,90 +183,9 @@ services:
 
 	- {factory: FastyBird\TriggersNode\Events\ServerBeforeStartHandler}
 
+	- {factory: FastyBird\TriggersNode\Events\AfterConsumeHandler}
+
 	# Events subscribers
 	####################
 
-	- {factory: FastyBird\TriggersNode\Subscribers\ActionEntitySubscriber}
-
-	- {factory: FastyBird\TriggersNode\Subscribers\NotificationEntitySubscriber}
-
-	- {factory: FastyBird\TriggersNode\Subscribers\ConditionEntitySubscriber}
-
 	- {factory: FastyBird\TriggersNode\Subscribers\EntitiesSubscriber}
-
-	# Database repositories
-	#######################
-
-	- {factory: FastyBird\TriggersNode\Models\Triggers\TriggerRepository}
-
-	- {factory: FastyBird\TriggersNode\Models\Actions\ActionRepository}
-
-	- {factory: FastyBird\TriggersNode\Models\Notifications\NotificationRepository}
-
-	- {factory: FastyBird\TriggersNode\Models\Conditions\ConditionRepository}
-
-	# Database managers
-	###################
-
-	- {factory: FastyBird\TriggersNode\Models\Triggers\TriggersManager(@ipubDoctrineCrud.crud::create(FastyBird\TriggersNode\Entities\Triggers\Trigger))}
-
-	- {factory: FastyBird\TriggersNode\Models\Actions\ActionsManager(@ipubDoctrineCrud.crud::create(FastyBird\TriggersNode\Entities\Actions\Action))}
-
-	- {factory: FastyBird\TriggersNode\Models\Notifications\NotificationsManager(@ipubDoctrineCrud.crud::create(FastyBird\TriggersNode\Entities\Notifications\Notification))}
-
-	- {factory: FastyBird\TriggersNode\Models\Conditions\ConditionsManager(@ipubDoctrineCrud.crud::create(FastyBird\TriggersNode\Entities\Conditions\Condition))}
-
-	# API controllers
-	#################
-
-	- {factory: FastyBird\TriggersNode\Controllers\TriggersV1Controller, tags: [nette.inject]}
-
-	- {factory: FastyBird\TriggersNode\Controllers\ActionsV1Controller, tags: [nette.inject]}
-
-	- {factory: FastyBird\TriggersNode\Controllers\NotificationsV1Controller, tags: [nette.inject]}
-
-	- {factory: FastyBird\TriggersNode\Controllers\ConditionsV1Controller, tags: [nette.inject]}
-
-	# API schemas
-	#############
-
-	- {factory: FastyBird\TriggersNode\Schemas\Triggers\AutomaticTriggerSchema}
-
-	- {factory: FastyBird\TriggersNode\Schemas\Triggers\ManualTriggerSchema}
-
-	- {factory: FastyBird\TriggersNode\Schemas\Triggers\ChannelPropertyTriggerSchema}
-
-	- {factory: FastyBird\TriggersNode\Schemas\Actions\ChannelPropertyActionSchema}
-
-	- {factory: FastyBird\TriggersNode\Schemas\Notifications\SmsNotificationSchema}
-
-	- {factory: FastyBird\TriggersNode\Schemas\Notifications\EmailNotificationSchema}
-
-	- {factory: FastyBird\TriggersNode\Schemas\Conditions\DevicePropertyConditionSchema}
-
-	- {factory: FastyBird\TriggersNode\Schemas\Conditions\ChannelPropertyConditionSchema}
-
-	- {factory: FastyBird\TriggersNode\Schemas\Conditions\TimeConditionSchema}
-
-	- {factory: FastyBird\TriggersNode\Schemas\Conditions\DateConditionSchema}
-
-	# API hydrators
-	###############
-
-	- {factory: FastyBird\TriggersNode\Hydrators\Triggers\AutomaticTriggerHydrator}
-
-	- {factory: FastyBird\TriggersNode\Hydrators\Triggers\ManualTriggerHydrator}
-
-	- {factory: FastyBird\TriggersNode\Hydrators\Triggers\ChannelPropertyTriggerHydrator}
-
-	- {factory: FastyBird\TriggersNode\Hydrators\Actions\ChannelPropertyActionHydrator}
-
-	- {factory: FastyBird\TriggersNode\Hydrators\Notifications\SmsNotificationHydrator}
-
-	- {factory: FastyBird\TriggersNode\Hydrators\Notifications\EmailNotificationHydrator}
-
-	- {factory: FastyBird\TriggersNode\Hydrators\Conditions\DevicePropertyConditionHydrator}
-
-	- {factory: FastyBird\TriggersNode\Hydrators\Conditions\ChannelPropertyConditionHydrator}
-
-	- {factory: FastyBird\TriggersNode\Hydrators\Conditions\TimeConditionHydrator}

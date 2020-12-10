@@ -1,9 +1,0 @@
-{
-  "data" : {
-    "id" : "ef011ee6-82b9-4324-aeaf-33241d81b721",
-    "type" : "triggers-node/notification-email",
-    "attributes" : {
-      "email" : "john.doe@fastybird.ovh"
-    }
-  }
-}

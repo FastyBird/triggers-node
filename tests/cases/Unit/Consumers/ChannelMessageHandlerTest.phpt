@@ -2,11 +2,12 @@
 
 namespace Tests\Cases;
 
-use FastyBird\NodeExchange\Publishers as NodeExchangePublishers;
+use FastyBird\RabbitMqPlugin\Publishers as RabbitMqPluginPublishers;
+use FastyBird\TriggersModule\Entities as TriggersModuleEntities;
+use FastyBird\TriggersModule\Models as TriggersModuleModels;
+use FastyBird\TriggersModule\Queries as TriggersModuleQueries;
+use FastyBird\TriggersNode;
 use FastyBird\TriggersNode\Consumers;
-use FastyBird\TriggersNode\Entities;
-use FastyBird\TriggersNode\Models;
-use FastyBird\TriggersNode\Queries;
 use Mockery;
 use Nette\Utils;
 use Tester\Assert;
@@ -30,24 +31,24 @@ final class ChannelMessageHandlerTest extends DbTestCase
 	 */
 	public function testProcessMessageDelete(string $routingKey, Utils\ArrayHash $message, int $publishCallCount, array $fixture): void
 	{
-		$triggersRepository = $this->getContainer()->getByType(Models\Triggers\TriggerRepository::class);
-		$actionRepository = $this->getContainer()->getByType(Models\Actions\ActionRepository::class);
+		$triggersRepository = $this->getContainer()->getByType(TriggersModuleModels\Triggers\TriggerRepository::class);
+		$actionRepository = $this->getContainer()->getByType(TriggersModuleModels\Actions\ActionRepository::class);
 
-		$findQuery = new Queries\FindChannelPropertyTriggersQuery();
+		$findQuery = new TriggersModuleQueries\FindChannelPropertyTriggersQuery();
 		$findQuery->forChannel('device-one', 'channel-one');
 
-		$found = $triggersRepository->findAllBy($findQuery, Entities\Triggers\ChannelPropertyTrigger::class);
+		$found = $triggersRepository->findAllBy($findQuery, TriggersModuleEntities\Triggers\ChannelPropertyTrigger::class);
 
 		Assert::count(1, $found);
 
-		$findQuery = new Queries\FindActionsQuery();
+		$findQuery = new TriggersModuleQueries\FindActionsQuery();
 		$findQuery->forChannel('device-one', 'channel-one');
 
-		$found = $actionRepository->findAllBy($findQuery, Entities\Actions\ChannelPropertyAction::class);
+		$found = $actionRepository->findAllBy($findQuery, TriggersModuleEntities\Actions\ChannelPropertyAction::class);
 
 		Assert::count(1, $found);
 
-		$rabbitPublisher = Mockery::mock(NodeExchangePublishers\RabbitMqPublisher::class);
+		$rabbitPublisher = Mockery::mock(RabbitMqPluginPublishers\RabbitMqPublisher::class);
 		$rabbitPublisher
 			->shouldReceive('publish')
 			->withArgs(function (string $routingKey, array $data) use ($fixture): bool {
@@ -70,25 +71,25 @@ final class ChannelMessageHandlerTest extends DbTestCase
 			->times($publishCallCount);
 
 		$this->mockContainerService(
-			NodeExchangePublishers\IRabbitMqPublisher::class,
+			RabbitMqPluginPublishers\IRabbitMqPublisher::class,
 			$rabbitPublisher
 		);
 
 		$handler = $this->getContainer()->getByType(Consumers\ChannelMessageHandler::class);
 
-		$handler->process($routingKey, $message);
+		$handler->process($routingKey, TriggersNode\Constants::NODE_DEVICES_ORIGIN, Utils\Json::encode($message));
 
-		$findQuery = new Queries\FindChannelPropertyTriggersQuery();
+		$findQuery = new TriggersModuleQueries\FindChannelPropertyTriggersQuery();
 		$findQuery->forChannel('device-one', 'channel-one');
 
-		$found = $triggersRepository->findAllBy($findQuery, Entities\Triggers\ChannelPropertyTrigger::class);
+		$found = $triggersRepository->findAllBy($findQuery, TriggersModuleEntities\Triggers\ChannelPropertyTrigger::class);
 
 		Assert::count(0, $found);
 
-		$findQuery = new Queries\FindActionsQuery();
+		$findQuery = new TriggersModuleQueries\FindActionsQuery();
 		$findQuery->forChannel('device-one', 'channel-one');
 
-		$found = $actionRepository->findAllBy($findQuery, Entities\Actions\ChannelPropertyAction::class);
+		$found = $actionRepository->findAllBy($findQuery, TriggersModuleEntities\Actions\ChannelPropertyAction::class);
 
 		Assert::count(0, $found);
 	}

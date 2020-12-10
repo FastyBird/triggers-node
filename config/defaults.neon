@@ -24,4 +24,5 @@ parameters:
 		port: 8000
 
 	security:
+		issuer: com.fastybird.auth-node
 		signature: 'g3xHbkELpMD9LRqW4WmJkHL7kz2bdNYAQJyEuFVzR3k='

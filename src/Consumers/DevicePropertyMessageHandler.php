@@ -4,7 +4,7 @@
  * DevicePropertyMessageHandler.php
  *
  * @license        More in license.md
- * @copyright      https://fastybird.com
+ * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:TriggersNode!
  * @subpackage     Consumers
@@ -15,18 +15,19 @@
 
 namespace FastyBird\TriggersNode\Consumers;
 
-use FastyBird\NodeExchange\Consumers as NodeExchangeConsumers;
-use FastyBird\NodeExchange\Publishers as NodeExchangePublishers;
-use FastyBird\NodeMetadata;
-use FastyBird\NodeMetadata\Loaders as NodeMetadataLoaders;
+use FastyBird\ModulesMetadata;
+use FastyBird\ModulesMetadata\Loaders as ModulesMetadataLoaders;
+use FastyBird\ModulesMetadata\Schemas as ModulesMetadataSchemas;
+use FastyBird\RabbitMqPlugin\Consumers as RabbitMqPluginConsumers;
+use FastyBird\RabbitMqPlugin\Publishers as RabbitMqPluginPublishers;
+use FastyBird\TriggersModule\Entities as TriggersModuleEntities;
+use FastyBird\TriggersModule\Models as TriggersModuleModels;
+use FastyBird\TriggersModule\Queries as TriggersModuleQueries;
+use FastyBird\TriggersModule\Types as TriggersModuleTypes;
 use FastyBird\TriggersNode;
-use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Exceptions;
-use FastyBird\TriggersNode\Models;
-use FastyBird\TriggersNode\Queries;
-use FastyBird\TriggersNode\Types;
-use Nette\Utils;
 use Psr\Log;
+use Throwable;
 
 /**
  * Device property command messages consumer
@@ -36,37 +37,42 @@ use Psr\Log;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class DevicePropertyMessageHandler implements NodeExchangeConsumers\IMessageHandler
+final class DevicePropertyMessageHandler implements RabbitMqPluginConsumers\IMessageHandler
 {
 
 	use TPropertyDataMessageHandler;
 
-	/** @var NodeExchangePublishers\IRabbitMqPublisher */
+	/** @var RabbitMqPluginPublishers\IRabbitMqPublisher */
 	protected $rabbitMqPublisher;
 
 	/** @var Log\LoggerInterface */
 	protected $logger;
 
-	/** @var Models\Conditions\IConditionRepository */
+	/** @var TriggersModuleModels\Conditions\IConditionRepository */
 	private $conditionRepository;
 
-	/** @var Models\Conditions\IConditionsManager */
+	/** @var TriggersModuleModels\Conditions\IConditionsManager */
 	private $conditionsManager;
 
-	/** @var NodeMetadataLoaders\ISchemaLoader */
+	/** @var ModulesMetadataLoaders\ISchemaLoader */
 	private $schemaLoader;
 
+	/** @var ModulesMetadataSchemas\IValidator */
+	private $validator;
+
 	public function __construct(
-		Models\Conditions\IConditionRepository $conditionRepository,
-		Models\Conditions\IConditionsManager $conditionsManager,
-		NodeMetadataLoaders\ISchemaLoader $schemaLoader,
-		NodeExchangePublishers\IRabbitMqPublisher $rabbitMqPublisher,
+		TriggersModuleModels\Conditions\IConditionRepository $conditionRepository,
+		TriggersModuleModels\Conditions\IConditionsManager $conditionsManager,
+		ModulesMetadataLoaders\ISchemaLoader $schemaLoader,
+		ModulesMetadataSchemas\IValidator $validator,
+		RabbitMqPluginPublishers\IRabbitMqPublisher $rabbitMqPublisher,
 		Log\LoggerInterface $logger
 	) {
 		$this->conditionRepository = $conditionRepository;
 		$this->conditionsManager = $conditionsManager;
 
 		$this->schemaLoader = $schemaLoader;
+		$this->validator = $validator;
 		$this->rabbitMqPublisher = $rabbitMqPublisher;
 		$this->logger = $logger;
 	}
@@ -76,8 +82,29 @@ final class DevicePropertyMessageHandler implements NodeExchangeConsumers\IMessa
 	 */
 	public function process(
 		string $routingKey,
-		Utils\ArrayHash $message
+		string $origin,
+		string $payload
 	): bool {
+		$schema = $this->getSchema($routingKey, $origin);
+
+		if ($schema === null) {
+			return true;
+		}
+
+		try {
+			$message = $this->validator->validate($payload, $schema);
+
+		} catch (Throwable $ex) {
+			$this->logger->error('[FB:NODE:CONSUMER] ' . $ex->getMessage(), [
+				'exception' => [
+					'message' => $ex->getMessage(),
+					'code'    => $ex->getCode(),
+				],
+			]);
+
+			return true;
+		}
+
 		if ($routingKey === TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_DELETED_ENTITY_ROUTING_KEY) {
 			$this->clearProperties(
 				$message->offsetGet('device'),
@@ -116,7 +143,7 @@ final class DevicePropertyMessageHandler implements NodeExchangeConsumers\IMessa
 			switch ($routingKey) {
 				case TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_DELETED_ENTITY_ROUTING_KEY:
 				case TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_UPDATED_ENTITY_ROUTING_KEY:
-					return $this->schemaLoader->load(NodeMetadata\Constants::RESOURCES_FOLDER . '/schemas/devices-node/entity.device.property.json');
+					return $this->schemaLoader->load(ModulesMetadata\Constants::RESOURCES_FOLDER . '/schemas/devices-module/entity.device.property.json');
 			}
 		}
 
@@ -131,11 +158,10 @@ final class DevicePropertyMessageHandler implements NodeExchangeConsumers\IMessa
 	 */
 	private function clearProperties(string $device, string $property): void
 	{
-		/** @var Queries\FindConditionsQuery<Entities\Conditions\DevicePropertyCondition> $findQuery */
-		$findQuery = new Queries\FindConditionsQuery();
+		$findQuery = new TriggersModuleQueries\FindConditionsQuery();
 		$findQuery->forDeviceProperty($device, $property);
 
-		$conditions = $this->conditionRepository->findAllBy($findQuery, Entities\Conditions\DevicePropertyCondition::class);
+		$conditions = $this->conditionRepository->findAllBy($findQuery, TriggersModuleEntities\Conditions\DevicePropertyCondition::class);
 
 		foreach ($conditions as $condition) {
 			$this->conditionsManager->delete($condition);
@@ -168,15 +194,15 @@ final class DevicePropertyMessageHandler implements NodeExchangeConsumers\IMessa
 			return;
 		}
 
-		$findQuery = new Queries\FindConditionsQuery();
+		$findQuery = new TriggersModuleQueries\FindConditionsQuery();
 		$findQuery->forDeviceProperty($device, $property);
 
-		$conditions = $this->conditionRepository->findAllBy($findQuery, Entities\Conditions\DevicePropertyCondition::class);
+		$conditions = $this->conditionRepository->findAllBy($findQuery, TriggersModuleEntities\Conditions\DevicePropertyCondition::class);
 
-		/** @var Entities\Conditions\DevicePropertyCondition $condition */
+		/** @var TriggersModuleEntities\Conditions\DevicePropertyCondition $condition */
 		foreach ($conditions as $condition) {
 			if (
-				$condition->getOperator()->equalsValue(Types\ConditionOperatorType::STATE_VALUE_EQUAL)
+				$condition->getOperator()->equalsValue(TriggersModuleTypes\ConditionOperatorType::STATE_VALUE_EQUAL)
 				&& $condition->getOperand() === $value
 			) {
 				$this->processCondition($condition);

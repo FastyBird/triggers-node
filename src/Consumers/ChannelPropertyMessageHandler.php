@@ -4,7 +4,7 @@
  * ChannelPropertyMessageHandler.php
  *
  * @license        More in license.md
- * @copyright      https://fastybird.com
+ * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:TriggersNode!
  * @subpackage     Consumers
@@ -15,18 +15,19 @@
 
 namespace FastyBird\TriggersNode\Consumers;
 
-use FastyBird\NodeExchange\Consumers as NodeExchangeConsumers;
-use FastyBird\NodeExchange\Publishers as NodeExchangePublishers;
-use FastyBird\NodeMetadata;
-use FastyBird\NodeMetadata\Loaders as NodeMetadataLoaders;
+use FastyBird\ModulesMetadata;
+use FastyBird\ModulesMetadata\Loaders as ModulesMetadataLoaders;
+use FastyBird\ModulesMetadata\Schemas as ModulesMetadataSchemas;
+use FastyBird\RabbitMqPlugin\Consumers as RabbitMqPluginConsumers;
+use FastyBird\RabbitMqPlugin\Publishers as RabbitMqPluginPublishers;
+use FastyBird\TriggersModule\Entities as TriggersModuleEntities;
+use FastyBird\TriggersModule\Models as TriggersModuleModels;
+use FastyBird\TriggersModule\Queries as TriggersModuleQueries;
+use FastyBird\TriggersModule\Types as TriggersModuleTypes;
 use FastyBird\TriggersNode;
-use FastyBird\TriggersNode\Entities;
 use FastyBird\TriggersNode\Exceptions;
-use FastyBird\TriggersNode\Models;
-use FastyBird\TriggersNode\Queries;
-use FastyBird\TriggersNode\Types;
-use Nette\Utils;
 use Psr\Log;
+use Throwable;
 
 /**
  * Channel property command messages consumer
@@ -36,47 +37,51 @@ use Psr\Log;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  */
-final class ChannelPropertyMessageHandler implements NodeExchangeConsumers\IMessageHandler
+final class ChannelPropertyMessageHandler implements RabbitMqPluginConsumers\IMessageHandler
 {
 
 	use TPropertyDataMessageHandler;
 
-	/** @var NodeExchangePublishers\IRabbitMqPublisher */
+	/** @var RabbitMqPluginPublishers\IRabbitMqPublisher */
 	protected $rabbitMqPublisher;
 
 	/** @var Log\LoggerInterface */
 	protected $logger;
 
-	/** @var Models\Triggers\ITriggerRepository */
+	/** @var TriggersModuleModels\Triggers\ITriggerRepository */
 	private $triggerRepository;
 
-	/** @var Models\Triggers\ITriggersManager */
+	/** @var TriggersModuleModels\Triggers\ITriggersManager */
 	private $triggersManager;
 
-	/** @var Models\Actions\IActionRepository */
+	/** @var TriggersModuleModels\Actions\IActionRepository */
 	private $actionRepository;
 
-	/** @var Models\Actions\IActionsManager */
+	/** @var TriggersModuleModels\Actions\IActionsManager */
 	private $actionsManager;
 
-	/** @var Models\Conditions\IConditionRepository */
+	/** @var TriggersModuleModels\Conditions\IConditionRepository */
 	private $conditionRepository;
 
-	/** @var Models\Conditions\IConditionsManager */
+	/** @var TriggersModuleModels\Conditions\IConditionsManager */
 	private $conditionsManager;
 
-	/** @var NodeMetadataLoaders\ISchemaLoader */
+	/** @var ModulesMetadataLoaders\ISchemaLoader */
 	private $schemaLoader;
 
+	/** @var ModulesMetadataSchemas\IValidator */
+	private $validator;
+
 	public function __construct(
-		Models\Triggers\ITriggerRepository $triggerRepository,
-		Models\Triggers\ITriggersManager $triggersManager,
-		Models\Actions\IActionRepository $actionRepository,
-		Models\Actions\IActionsManager $actionsManager,
-		Models\Conditions\IConditionRepository $conditionRepository,
-		Models\Conditions\IConditionsManager $conditionsManager,
-		NodeMetadataLoaders\ISchemaLoader $schemaLoader,
-		NodeExchangePublishers\IRabbitMqPublisher $rabbitMqPublisher,
+		TriggersModuleModels\Triggers\ITriggerRepository $triggerRepository,
+		TriggersModuleModels\Triggers\ITriggersManager $triggersManager,
+		TriggersModuleModels\Actions\IActionRepository $actionRepository,
+		TriggersModuleModels\Actions\IActionsManager $actionsManager,
+		TriggersModuleModels\Conditions\IConditionRepository $conditionRepository,
+		TriggersModuleModels\Conditions\IConditionsManager $conditionsManager,
+		ModulesMetadataLoaders\ISchemaLoader $schemaLoader,
+		ModulesMetadataSchemas\IValidator $validator,
+		RabbitMqPluginPublishers\IRabbitMqPublisher $rabbitMqPublisher,
 		Log\LoggerInterface $logger
 	) {
 		$this->triggerRepository = $triggerRepository;
@@ -87,6 +92,7 @@ final class ChannelPropertyMessageHandler implements NodeExchangeConsumers\IMess
 		$this->conditionsManager = $conditionsManager;
 
 		$this->schemaLoader = $schemaLoader;
+		$this->validator = $validator;
 		$this->rabbitMqPublisher = $rabbitMqPublisher;
 		$this->logger = $logger;
 	}
@@ -96,8 +102,29 @@ final class ChannelPropertyMessageHandler implements NodeExchangeConsumers\IMess
 	 */
 	public function process(
 		string $routingKey,
-		Utils\ArrayHash $message
+		string $origin,
+		string $payload
 	): bool {
+		$schema = $this->getSchema($routingKey, $origin);
+
+		if ($schema === null) {
+			return true;
+		}
+
+		try {
+			$message = $this->validator->validate($payload, $schema);
+
+		} catch (Throwable $ex) {
+			$this->logger->error('[FB:NODE:CONSUMER] ' . $ex->getMessage(), [
+				'exception' => [
+					'message' => $ex->getMessage(),
+					'code'    => $ex->getCode(),
+				],
+			]);
+
+			return true;
+		}
+
 		if ($routingKey === TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_DELETED_ENTITY_ROUTING_KEY) {
 			$this->clearProperties(
 				$message->offsetGet('device'),
@@ -138,7 +165,7 @@ final class ChannelPropertyMessageHandler implements NodeExchangeConsumers\IMess
 			switch ($routingKey) {
 				case TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_DELETED_ENTITY_ROUTING_KEY:
 				case TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_UPDATED_ENTITY_ROUTING_KEY:
-					return $this->schemaLoader->load(NodeMetadata\Constants::RESOURCES_FOLDER . '/schemas/devices-node/entity.channel.property.json');
+					return $this->schemaLoader->load(ModulesMetadata\Constants::RESOURCES_FOLDER . '/schemas/devices-module/entity.channel.property.json');
 			}
 		}
 
@@ -154,30 +181,28 @@ final class ChannelPropertyMessageHandler implements NodeExchangeConsumers\IMess
 	 */
 	private function clearProperties(string $device, string $channel, string $property): void
 	{
-		$findQuery = new Queries\FindChannelPropertyTriggersQuery();
+		$findQuery = new TriggersModuleQueries\FindChannelPropertyTriggersQuery();
 		$findQuery->forProperty($device, $channel, $property);
 
-		$triggers = $this->triggerRepository->findAllBy($findQuery, Entities\Triggers\ChannelPropertyTrigger::class);
+		$triggers = $this->triggerRepository->findAllBy($findQuery, TriggersModuleEntities\Triggers\ChannelPropertyTrigger::class);
 
 		foreach ($triggers as $trigger) {
 			$this->triggersManager->delete($trigger);
 		}
 
-		/** @var Queries\FindActionsQuery<Entities\Actions\ChannelPropertyAction> $findQuery */
-		$findQuery = new Queries\FindActionsQuery();
+		$findQuery = new TriggersModuleQueries\FindActionsQuery();
 		$findQuery->forChannelProperty($device, $channel, $property);
 
-		$actions = $this->actionRepository->findAllBy($findQuery, Entities\Actions\ChannelPropertyAction::class);
+		$actions = $this->actionRepository->findAllBy($findQuery, TriggersModuleEntities\Actions\ChannelPropertyAction::class);
 
 		foreach ($actions as $action) {
 			$this->actionsManager->delete($action);
 		}
 
-		/** @var Queries\FindConditionsQuery<Entities\Conditions\ChannelPropertyCondition> $findQuery */
-		$findQuery = new Queries\FindConditionsQuery();
+		$findQuery = new TriggersModuleQueries\FindConditionsQuery();
 		$findQuery->forChannelProperty($device, $channel, $property);
 
-		$conditions = $this->conditionRepository->findAllBy($findQuery, Entities\Conditions\ChannelPropertyCondition::class);
+		$conditions = $this->conditionRepository->findAllBy($findQuery, TriggersModuleEntities\Conditions\ChannelPropertyCondition::class);
 
 		foreach ($conditions as $condition) {
 			$this->conditionsManager->delete($condition);
@@ -212,30 +237,30 @@ final class ChannelPropertyMessageHandler implements NodeExchangeConsumers\IMess
 			return;
 		}
 
-		$findQuery = new Queries\FindConditionsQuery();
+		$findQuery = new TriggersModuleQueries\FindConditionsQuery();
 		$findQuery->forChannelProperty($device, $channel, $property);
 
-		$conditions = $this->conditionRepository->findAllBy($findQuery, Entities\Conditions\ChannelPropertyCondition::class);
+		$conditions = $this->conditionRepository->findAllBy($findQuery, TriggersModuleEntities\Conditions\ChannelPropertyCondition::class);
 
-		/** @var Entities\Conditions\ChannelPropertyCondition $condition */
+		/** @var TriggersModuleEntities\Conditions\ChannelPropertyCondition $condition */
 		foreach ($conditions as $condition) {
 			if (
-				$condition->getOperator()->equalsValue(Types\ConditionOperatorType::STATE_VALUE_EQUAL)
+				$condition->getOperator()->equalsValue(TriggersModuleTypes\ConditionOperatorType::STATE_VALUE_EQUAL)
 				&& $condition->getOperand() === (string) $value
 			) {
 				$this->processCondition($condition);
 			}
 		}
 
-		$findQuery = new Queries\FindChannelPropertyTriggersQuery();
+		$findQuery = new TriggersModuleQueries\FindChannelPropertyTriggersQuery();
 		$findQuery->forProperty($device, $channel, $property);
 
-		$triggers = $this->triggerRepository->findAllBy($findQuery, Entities\Triggers\ChannelPropertyTrigger::class);
+		$triggers = $this->triggerRepository->findAllBy($findQuery, TriggersModuleEntities\Triggers\ChannelPropertyTrigger::class);
 
-		/** @var Entities\Triggers\ChannelPropertyTrigger $trigger */
+		/** @var TriggersModuleEntities\Triggers\ChannelPropertyTrigger $trigger */
 		foreach ($triggers as $trigger) {
 			if (
-				$trigger->getOperator()->equalsValue(Types\ConditionOperatorType::STATE_VALUE_EQUAL)
+				$trigger->getOperator()->equalsValue(TriggersModuleTypes\ConditionOperatorType::STATE_VALUE_EQUAL)
 				&& $trigger->getOperand() === (string) $value
 			) {
 				$this->processTrigger($trigger);

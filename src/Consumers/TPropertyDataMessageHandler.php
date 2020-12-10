@@ -4,7 +4,7 @@
  * TPropertyDataMessageHandler.php
  *
  * @license        More in license.md
- * @copyright      https://fastybird.com
+ * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:TriggersNode!
  * @subpackage     Consumers
@@ -15,9 +15,10 @@
 
 namespace FastyBird\TriggersNode\Consumers;
 
-use FastyBird\NodeExchange\Publishers as NodeExchangePublishers;
+use FastyBird\RabbitMqPlugin\Publishers as RabbitMqPluginPublishers;
+use FastyBird\TriggersModule;
+use FastyBird\TriggersModule\Entities as TriggersModuleEntities;
 use FastyBird\TriggersNode;
-use FastyBird\TriggersNode\Entities;
 use Psr\Log;
 
 /**
@@ -28,19 +29,19 @@ use Psr\Log;
  *
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  *
- * @property-read NodeExchangePublishers\IRabbitMqPublisher $rabbitMqPublisher
+ * @property-read RabbitMqPluginPublishers\IRabbitMqPublisher $rabbitMqPublisher
  * @property-read Log\LoggerInterface $logger
  */
 trait TPropertyDataMessageHandler
 {
 
 	/**
-	 * @param Entities\Conditions\ICondition $condition
+	 * @param TriggersModuleEntities\Conditions\ICondition $condition
 	 *
 	 * @return void
 	 */
 	protected function processCondition(
-		Entities\Conditions\ICondition $condition
+		TriggersModuleEntities\Conditions\ICondition $condition
 	): void {
 		$trigger = $condition->getTrigger();
 
@@ -52,7 +53,7 @@ trait TPropertyDataMessageHandler
 			if (!$triggerCondition->getId()->equals($condition->getId())) {
 				// Check if all conditions are passed
 
-				if ($triggerCondition instanceof Entities\Conditions\IChannelPropertyCondition) {
+				if ($triggerCondition instanceof TriggersModuleEntities\Conditions\IChannelPropertyCondition) {
 					$value = $this->fetchChannelPropertyValue(
 						$triggerCondition->getDevice(),
 						$triggerCondition->getChannel(),
@@ -65,7 +66,7 @@ trait TPropertyDataMessageHandler
 						return;
 					}
 
-				} elseif ($triggerCondition instanceof Entities\Conditions\IDevicePropertyCondition) {
+				} elseif ($triggerCondition instanceof TriggersModuleEntities\Conditions\IDevicePropertyCondition) {
 					$value = $this->fetchDevicePropertyValue(
 						$triggerCondition->getDevice(),
 						$triggerCondition->getProperty()
@@ -84,15 +85,15 @@ trait TPropertyDataMessageHandler
 	}
 
 	/**
-	 * @param Entities\Triggers\ITrigger $trigger
+	 * @param TriggersModuleEntities\Triggers\ITrigger $trigger
 	 *
 	 * @return void
 	 */
 	private function processTrigger(
-		Entities\Triggers\ITrigger $trigger
+		TriggersModuleEntities\Triggers\ITrigger $trigger
 	): void {
 		foreach ($trigger->getActions() as $action) {
-			if ($action instanceof Entities\Actions\ChannelPropertyAction) {
+			if ($action instanceof TriggersModuleEntities\Actions\ChannelPropertyAction) {
 				$this->rabbitMqPublisher->publish(
 					TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTIES_DATA_ROUTING_KEY,
 					[
@@ -117,18 +118,18 @@ trait TPropertyDataMessageHandler
 	protected function formatValue($value, ?string $datatype)
 	{
 		switch ($datatype) {
-			case TriggersNode\Constants::DATA_TYPE_INTEGER:
+			case TriggersModule\Constants::DATA_TYPE_INTEGER:
 				return (int) $value;
 
-			case TriggersNode\Constants::DATA_TYPE_FLOAT:
+			case TriggersModule\Constants::DATA_TYPE_FLOAT:
 				return (float) $value;
 
-			case TriggersNode\Constants::DATA_TYPE_BOOLEAN:
+			case TriggersModule\Constants::DATA_TYPE_BOOLEAN:
 				return (bool) $value;
 
-			case TriggersNode\Constants::DATA_TYPE_STRING:
-			case TriggersNode\Constants::DATA_TYPE_ENUM:
-			case TriggersNode\Constants::DATA_TYPE_COLOR:
+			case TriggersModule\Constants::DATA_TYPE_STRING:
+			case TriggersModule\Constants::DATA_TYPE_ENUM:
+			case TriggersModule\Constants::DATA_TYPE_COLOR:
 			default:
 				return $value;
 		}

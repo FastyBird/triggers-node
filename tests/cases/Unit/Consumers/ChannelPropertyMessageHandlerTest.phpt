@@ -2,12 +2,12 @@
 
 namespace Tests\Cases;
 
-use FastyBird\NodeExchange\Publishers as NodeExchangePublishers;
+use FastyBird\RabbitMqPlugin\Publishers as RabbitMqPluginPublishers;
+use FastyBird\TriggersModule\Entities as TriggersModuleEntities;
+use FastyBird\TriggersModule\Models as TriggersModuleModels;
+use FastyBird\TriggersModule\Queries as TriggersModuleQueries;
 use FastyBird\TriggersNode;
 use FastyBird\TriggersNode\Consumers;
-use FastyBird\TriggersNode\Entities;
-use FastyBird\TriggersNode\Models;
-use FastyBird\TriggersNode\Queries;
 use Mockery;
 use Nette\Utils;
 use Tester\Assert;
@@ -39,16 +39,16 @@ final class ChannelPropertyMessageHandlerTest extends DbTestCase
 		int $totalTriggersBefore,
 		int $totalTriggersAfter
 	): void {
-		$triggersRepository = $this->getContainer()->getByType(Models\Triggers\TriggerRepository::class);
+		$triggersRepository = $this->getContainer()->getByType(TriggersModuleModels\Triggers\TriggerRepository::class);
 
-		$findQuery = new Queries\FindChannelPropertyTriggersQuery();
+		$findQuery = new TriggersModuleQueries\FindChannelPropertyTriggersQuery();
 		$findQuery->forProperty('device-one', 'channel-one', 'button');
 
-		$found = $triggersRepository->findAllBy($findQuery, Entities\Triggers\ChannelPropertyTrigger::class);
+		$found = $triggersRepository->findAllBy($findQuery, TriggersModuleEntities\Triggers\ChannelPropertyTrigger::class);
 
 		Assert::count($totalTriggersBefore, $found);
 
-		$rabbitPublisher = Mockery::mock(NodeExchangePublishers\RabbitMqPublisher::class);
+		$rabbitPublisher = Mockery::mock(RabbitMqPluginPublishers\RabbitMqPublisher::class);
 		$rabbitPublisher
 			->shouldReceive('publish')
 			->withArgs(function (string $routingKey, array $data) use ($fixture): bool {
@@ -71,19 +71,19 @@ final class ChannelPropertyMessageHandlerTest extends DbTestCase
 			->times($publishCallCount);
 
 		$this->mockContainerService(
-			NodeExchangePublishers\IRabbitMqPublisher::class,
+			RabbitMqPluginPublishers\IRabbitMqPublisher::class,
 			$rabbitPublisher
 		);
 
 		/** @var Consumers\ChannelPropertyMessageHandler $handler */
 		$handler = $this->getContainer()->getByType(Consumers\ChannelPropertyMessageHandler::class);
 
-		$handler->process($routingKey, $message);
+		$handler->process($routingKey, TriggersNode\Constants::NODE_DEVICES_ORIGIN, Utils\Json::encode($message));
 
-		$findQuery = new Queries\FindChannelPropertyTriggersQuery();
+		$findQuery = new TriggersModuleQueries\FindChannelPropertyTriggersQuery();
 		$findQuery->forProperty('device-one', 'channel-one', 'button');
 
-		$found = $triggersRepository->findAllBy($findQuery, Entities\Triggers\ChannelPropertyTrigger::class);
+		$found = $triggersRepository->findAllBy($findQuery, TriggersModuleEntities\Triggers\ChannelPropertyTrigger::class);
 
 		Assert::count($totalTriggersAfter, $found);
 	}
@@ -110,16 +110,16 @@ final class ChannelPropertyMessageHandlerTest extends DbTestCase
 		int $totalActionsBefore,
 		int $totalActionsAfter
 	): void {
-		$actionRepository = $this->getContainer()->getByType(Models\Actions\ActionRepository::class);
+		$actionRepository = $this->getContainer()->getByType(TriggersModuleModels\Actions\ActionRepository::class);
 
-		$findQuery = new Queries\FindActionsQuery();
+		$findQuery = new TriggersModuleQueries\FindActionsQuery();
 		$findQuery->forChannelProperty('device-one', 'channel-four', 'switch');
 
-		$found = $actionRepository->findAllBy($findQuery, Entities\Actions\ChannelPropertyAction::class);
+		$found = $actionRepository->findAllBy($findQuery, TriggersModuleEntities\Actions\ChannelPropertyAction::class);
 
 		Assert::count($totalActionsBefore, $found);
 
-		$rabbitPublisher = Mockery::mock(NodeExchangePublishers\RabbitMqPublisher::class);
+		$rabbitPublisher = Mockery::mock(RabbitMqPluginPublishers\RabbitMqPublisher::class);
 		$rabbitPublisher
 			->shouldReceive('publish')
 			->withArgs(function (string $routingKey, array $data) use ($fixture): bool {
@@ -142,19 +142,19 @@ final class ChannelPropertyMessageHandlerTest extends DbTestCase
 			->times($publishCallCount);
 
 		$this->mockContainerService(
-			NodeExchangePublishers\IRabbitMqPublisher::class,
+			RabbitMqPluginPublishers\IRabbitMqPublisher::class,
 			$rabbitPublisher
 		);
 
 		/** @var Consumers\ChannelPropertyMessageHandler $handler */
 		$handler = $this->getContainer()->getByType(Consumers\ChannelPropertyMessageHandler::class);
 
-		$handler->process($routingKey, $message);
+		$handler->process($routingKey, TriggersNode\Constants::NODE_DEVICES_ORIGIN, Utils\Json::encode($message));
 
-		$findQuery = new Queries\FindActionsQuery();
+		$findQuery = new TriggersModuleQueries\FindActionsQuery();
 		$findQuery->forChannelProperty('device-one', 'channel-four', 'switch');
 
-		$found = $actionRepository->findAllBy($findQuery, Entities\Actions\ChannelPropertyAction::class);
+		$found = $actionRepository->findAllBy($findQuery, TriggersModuleEntities\Actions\ChannelPropertyAction::class);
 
 		Assert::count($totalActionsAfter, $found);
 	}
@@ -163,6 +163,7 @@ final class ChannelPropertyMessageHandlerTest extends DbTestCase
 	{
 		$routingKey = TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_UPDATED_ENTITY_ROUTING_KEY;
 		$message = Utils\ArrayHash::from([
+			'id'       => 'fe2badf6-2e85-4ef6-9009-fe247d473069',
 			'device'   => 'device-one',
 			'channel'  => 'channel-one',
 			'property' => 'button',
@@ -170,9 +171,10 @@ final class ChannelPropertyMessageHandlerTest extends DbTestCase
 			'pending'  => false,
 			'datatype' => null,
 			'format'   => null,
+			'owner'    => '89ce7161-12dd-427e-9a35-92bc4390d98d',
 		]);
 
-		$rabbitPublisher = Mockery::mock(NodeExchangePublishers\RabbitMqPublisher::class);
+		$rabbitPublisher = Mockery::mock(RabbitMqPluginPublishers\RabbitMqPublisher::class);
 		$rabbitPublisher
 			->shouldReceive('publish')
 			->withArgs(function (string $routingKey, array $data): bool {
@@ -191,13 +193,13 @@ final class ChannelPropertyMessageHandlerTest extends DbTestCase
 			});
 
 		$this->mockContainerService(
-			NodeExchangePublishers\IRabbitMqPublisher::class,
+			RabbitMqPluginPublishers\IRabbitMqPublisher::class,
 			$rabbitPublisher
 		);
 
 		$handler = $this->getContainer()->getByType(Consumers\ChannelPropertyMessageHandler::class);
 
-		$handler->process($routingKey, $message);
+		$handler->process($routingKey, TriggersNode\Constants::NODE_DEVICES_ORIGIN, Utils\Json::encode($message));
 	}
 
 }

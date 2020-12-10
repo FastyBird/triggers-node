@@ -4,7 +4,7 @@
  * EntitiesSubscriber.php
  *
  * @license        More in license.md
- * @copyright      https://fastybird.com
+ * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:TriggersNode!
  * @subpackage     Subscribers
@@ -18,8 +18,8 @@ namespace FastyBird\TriggersNode\Subscribers;
 use Doctrine\Common;
 use Doctrine\ORM;
 use Doctrine\Persistence;
-use FastyBird\NodeDatabase\Entities as NodeDatabaseEntities;
-use FastyBird\NodeExchange\Publishers as NodeExchangePublishers;
+use FastyBird\Database\Entities as DatabaseEntities;
+use FastyBird\RabbitMqPlugin\Publishers as RabbitMqPluginPublishers;
 use FastyBird\TriggersNode;
 use IPub\DoctrineCrud;
 use Nette;
@@ -41,14 +41,14 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 
 	use Nette\SmartObject;
 
-	/** @var NodeExchangePublishers\IRabbitMqPublisher */
+	/** @var RabbitMqPluginPublishers\IRabbitMqPublisher */
 	private $publisher;
 
 	/** @var ORM\EntityManagerInterface */
 	private $entityManager;
 
 	public function __construct(
-		NodeExchangePublishers\IRabbitMqPublisher $publisher,
+		RabbitMqPluginPublishers\IRabbitMqPublisher $publisher,
 		ORM\EntityManagerInterface $entityManager
 	) {
 		$this->publisher = $publisher;
@@ -80,7 +80,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		$entity = $eventArgs->getObject();
 
 		// Check for valid entity
-		if (!$entity instanceof NodeDatabaseEntities\IEntity) {
+		if (!$entity instanceof DatabaseEntities\IEntity) {
 			return;
 		}
 
@@ -109,7 +109,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 
 		// Check for valid entity
 		if (
-			!$entity instanceof NodeDatabaseEntities\IEntity
+			!$entity instanceof DatabaseEntities\IEntity
 			|| $uow->isScheduledForDelete($entity)
 		) {
 			return;
@@ -140,7 +140,7 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 			$processedEntities[] = $hash;
 
 			// Check for valid entity
-			if (!$entity instanceof NodeDatabaseEntities\IEntity) {
+			if (!$entity instanceof DatabaseEntities\IEntity) {
 				continue;
 			}
 
@@ -186,12 +186,12 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	}
 
 	/**
-	 * @param NodeDatabaseEntities\IEntity $entity
+	 * @param DatabaseEntities\IEntity $entity
 	 * @param string $action
 	 *
 	 * @return void
 	 */
-	private function processEntityAction(NodeDatabaseEntities\IEntity $entity, string $action): void
+	private function processEntityAction(DatabaseEntities\IEntity $entity, string $action): void
 	{
 		foreach (TriggersNode\Constants::RABBIT_MQ_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
 			if (
@@ -208,12 +208,12 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	}
 
 	/**
-	 * @param NodeDatabaseEntities\IEntity $entity
+	 * @param DatabaseEntities\IEntity $entity
 	 * @param string $class
 	 *
 	 * @return bool
 	 */
-	private function validateEntity(NodeDatabaseEntities\IEntity $entity, string $class): bool
+	private function validateEntity(DatabaseEntities\IEntity $entity, string $class): bool
 	{
 		$result = false;
 

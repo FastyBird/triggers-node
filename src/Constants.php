@@ -4,7 +4,7 @@
  * Constants.php
  *
  * @license        More in license.md
- * @copyright      https://fastybird.com
+ * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:TriggersNode!
  * @subpackage     common
@@ -15,7 +15,7 @@
 
 namespace FastyBird\TriggersNode;
 
-use FastyBird\TriggersNode\Entities as TriggersNodeEntities;
+use FastyBird\TriggersModule\Entities as TriggersModuleEntities;
 
 /**
  * Service constants
@@ -29,21 +29,13 @@ final class Constants
 {
 
 	/**
-	 * Node routing
-	 */
-
-	public const ROUTE_NAME_TRIGGERS = 'triggers';
-	public const ROUTE_NAME_TRIGGER = 'trigger';
-	public const ROUTE_NAME_TRIGGER_RELATIONSHIP = 'trigger.relationship';
-
-	/**
 	 * Message bus routing keys mapping
 	 */
 	public const RABBIT_MQ_ENTITIES_ROUTING_KEYS_MAPPING = [
-		TriggersNodeEntities\Triggers\Trigger::class           => 'fb.bus.node.entity.[ACTION].trigger',
-		TriggersNodeEntities\Actions\Action::class             => 'fb.bus.node.entity.[ACTION].trigger.action',
-		TriggersNodeEntities\Notifications\Notification::class => 'fb.bus.node.entity.[ACTION].trigger.notification',
-		TriggersNodeEntities\Conditions\Condition::class       => 'fb.bus.node.entity.[ACTION].trigger.condition',
+		TriggersModuleEntities\Triggers\Trigger::class           => 'fb.bus.node.entity.[ACTION].trigger',
+		TriggersModuleEntities\Actions\Action::class             => 'fb.bus.node.entity.[ACTION].trigger.action',
+		TriggersModuleEntities\Notifications\Notification::class => 'fb.bus.node.entity.[ACTION].trigger.notification',
+		TriggersModuleEntities\Conditions\Condition::class       => 'fb.bus.node.entity.[ACTION].trigger.condition',
 	];
 
 	public const RABBIT_MQ_ENTITIES_ROUTING_KEY_ACTION_REPLACE_STRING = '[ACTION]';
@@ -73,15 +65,5 @@ final class Constants
 	 */
 
 	public const NODE_DEVICES_ORIGIN = 'com.fastybird.devices-node';
-
-	/**
-	 * Data types
-	 */
-	public const DATA_TYPE_INTEGER = 'integer';
-	public const DATA_TYPE_FLOAT = 'float';
-	public const DATA_TYPE_BOOLEAN = 'boolean';
-	public const DATA_TYPE_STRING = 'string';
-	public const DATA_TYPE_ENUM = 'enum';
-	public const DATA_TYPE_COLOR = 'color';
 
 }

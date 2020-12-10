@@ -4,7 +4,7 @@
  * ServerBeforeStartHandler.php
  *
  * @license        More in license.md
- * @copyright      https://fastybird.com
+ * @copyright      https://www.fastybird.com
  * @author         Adam Kadlec <adam.kadlec@fastybird.com>
  * @package        FastyBird:TriggersNode!
  * @subpackage     Events
@@ -15,7 +15,7 @@
 
 namespace FastyBird\TriggersNode\Events;
 
-use FastyBird\NodeExchange;
+use FastyBird\RabbitMqPlugin;
 use Nette;
 use Throwable;
 
@@ -32,11 +32,11 @@ class ServerBeforeStartHandler
 
 	use Nette\SmartObject;
 
-	/** @var NodeExchange\Exchange */
+	/** @var RabbitMqPlugin\Exchange */
 	private $exchange;
 
 	public function __construct(
-		NodeExchange\Exchange $exchange
+		RabbitMqPlugin\Exchange $exchange
 	) {
 		$this->exchange = $exchange;
 	}

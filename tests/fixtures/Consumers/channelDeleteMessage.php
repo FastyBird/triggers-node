@@ -7,9 +7,12 @@ return [
 	'messageWithDeletedChannel' => [
 		TriggersNode\Constants::RABBIT_MQ_CHANNELS_DELETED_ENTITY_ROUTING_KEY,
 		Utils\ArrayHash::from([
-			'device'  => 'device-one',
-			'channel' => 'channel-one',
-			'name'    => 'Channel one',
+			'id'         => 'fe2badf6-2e85-4ef6-9009-fe247d473069',
+			'identifier' => 'device-one',
+			'device'     => 'device-one',
+			'channel'    => 'channel-one',
+			'name'       => 'Channel one',
+			'owner'      => '89ce7161-12dd-427e-9a35-92bc4390d98d',
 		]),
 		3,
 		[

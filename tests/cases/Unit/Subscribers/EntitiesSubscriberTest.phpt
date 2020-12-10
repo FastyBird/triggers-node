@@ -3,10 +3,10 @@
 namespace Tests\Cases;
 
 use Doctrine\ORM;
-use FastyBird\NodeExchange\Publishers as NodeExchangePublishers;
-use FastyBird\TriggersNode\Entities;
+use FastyBird\RabbitMqPlugin\Publishers as RabbitMqPluginPublishers;
+use FastyBird\TriggersModule\Entities as TriggersModuleEntities;
+use FastyBird\TriggersModule\Types as TriggersModuleTypes;
 use FastyBird\TriggersNode\Subscribers;
-use FastyBird\TriggersNode\Types;
 use Mockery;
 use Ninjify\Nunjuck\TestCase\BaseMockeryTestCase;
 use stdClass;
@@ -22,7 +22,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 	public function testSubscriberEvents(): void
 	{
-		$publisher = Mockery::mock(NodeExchangePublishers\IRabbitMqPublisher::class);
+		$publisher = Mockery::mock(RabbitMqPluginPublishers\IRabbitMqPublisher::class);
 		$entityManager = Mockery::mock(ORM\EntityManagerInterface::class);
 
 		$subscriber = new Subscribers\EntitiesSubscriber(
@@ -35,7 +35,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 	public function testPublishCreatedEntity(): void
 	{
-		$publisher = Mockery::mock(NodeExchangePublishers\IRabbitMqPublisher::class);
+		$publisher = Mockery::mock(RabbitMqPluginPublishers\IRabbitMqPublisher::class);
 		$publisher
 			->shouldReceive('publish')
 			->withArgs(function (string $key, array $data): bool {
@@ -66,11 +66,11 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			$entityManager
 		);
 
-		$entity = new Entities\Triggers\ChannelPropertyTrigger(
+		$entity = new TriggersModuleEntities\Triggers\ChannelPropertyTrigger(
 			'device-name',
 			'channel-name',
 			'property-name',
-			Types\ConditionOperatorType::get(Types\ConditionOperatorType::STATE_VALUE_EQUAL),
+			TriggersModuleTypes\ConditionOperatorType::get(TriggersModuleTypes\ConditionOperatorType::STATE_VALUE_EQUAL),
 			'10',
 			'Trigger name'
 		);
@@ -87,7 +87,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 	public function testPublishUpdatedEntity(): void
 	{
-		$publisher = Mockery::mock(NodeExchangePublishers\IRabbitMqPublisher::class);
+		$publisher = Mockery::mock(RabbitMqPluginPublishers\IRabbitMqPublisher::class);
 		$publisher
 			->shouldReceive('publish')
 			->withArgs(function (string $key, array $data): bool {
@@ -118,11 +118,11 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			$entityManager
 		);
 
-		$entity = new Entities\Triggers\ChannelPropertyTrigger(
+		$entity = new TriggersModuleEntities\Triggers\ChannelPropertyTrigger(
 			'device-name',
 			'channel-name',
 			'property-name',
-			Types\ConditionOperatorType::get(Types\ConditionOperatorType::STATE_VALUE_EQUAL),
+			TriggersModuleTypes\ConditionOperatorType::get(TriggersModuleTypes\ConditionOperatorType::STATE_VALUE_EQUAL),
 			'10',
 			'Trigger name'
 		);
@@ -138,7 +138,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 
 	public function testPublishDeletedEntity(): void
 	{
-		$publisher = Mockery::mock(NodeExchangePublishers\IRabbitMqPublisher::class);
+		$publisher = Mockery::mock(RabbitMqPluginPublishers\IRabbitMqPublisher::class);
 		$publisher
 			->shouldReceive('publish')
 			->withArgs(function (string $key, array $data): bool {
@@ -162,11 +162,11 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			})
 			->times(1);
 
-		$entity = new Entities\Triggers\ChannelPropertyTrigger(
+		$entity = new TriggersModuleEntities\Triggers\ChannelPropertyTrigger(
 			'device-name',
 			'channel-name',
 			'property-name',
-			Types\ConditionOperatorType::get(Types\ConditionOperatorType::STATE_VALUE_EQUAL),
+			TriggersModuleTypes\ConditionOperatorType::get(TriggersModuleTypes\ConditionOperatorType::STATE_VALUE_EQUAL),
 			'10',
 			'Trigger name'
 		);
@@ -222,7 +222,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$entityManager = Mockery::mock(ORM\EntityManagerInterface::class);
 		$entityManager
 			->shouldReceive('getClassMetadata')
-			->withArgs([Entities\Triggers\Trigger::class])
+			->withArgs([TriggersModuleEntities\Triggers\Trigger::class])
 			->andReturn($metadata);
 
 		if ($withUow) {
