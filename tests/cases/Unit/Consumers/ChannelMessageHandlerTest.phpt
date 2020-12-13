@@ -29,8 +29,12 @@ final class ChannelMessageHandlerTest extends DbTestCase
 	 *
 	 * @dataProvider ./../../../fixtures/Consumers/channelDeleteMessage.php
 	 */
-	public function testProcessMessageDelete(string $routingKey, Utils\ArrayHash $message, int $publishCallCount, array $fixture): void
-	{
+	public function testProcessMessageDelete(
+		string $routingKey,
+		Utils\ArrayHash $message,
+		int $publishCallCount,
+		array $fixture
+	): void {
 		$triggersRepository = $this->getContainer()->getByType(TriggersModuleModels\Triggers\TriggerRepository::class);
 		$actionRepository = $this->getContainer()->getByType(TriggersModuleModels\Actions\ActionRepository::class);
 

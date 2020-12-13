@@ -88,6 +88,49 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	}
 
 	/**
+	 * @param DatabaseEntities\IEntity $entity
+	 * @param string $action
+	 *
+	 * @return void
+	 */
+	private function processEntityAction(DatabaseEntities\IEntity $entity, string $action): void
+	{
+		foreach (TriggersNode\Constants::RABBIT_MQ_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
+			if (
+				$this->validateEntity($entity, $class)
+				&& method_exists($entity, 'toArray')
+			) {
+				$routingKey = str_replace(TriggersNode\Constants::RABBIT_MQ_ENTITIES_ROUTING_KEY_ACTION_REPLACE_STRING, $action, $routingKey);
+
+				$this->publisher->publish($routingKey, $entity->toArray());
+
+				return;
+			}
+		}
+	}
+
+	/**
+	 * @param DatabaseEntities\IEntity $entity
+	 * @param string $class
+	 *
+	 * @return bool
+	 */
+	private function validateEntity(DatabaseEntities\IEntity $entity, string $class): bool
+	{
+		$result = false;
+
+		if (get_class($entity) === $class) {
+			$result = true;
+		}
+
+		if (is_subclass_of($entity, $class)) {
+			$result = true;
+		}
+
+		return $result;
+	}
+
+	/**
 	 * @param ORM\Event\LifecycleEventArgs $eventArgs
 	 *
 	 * @return void
@@ -183,49 +226,6 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 		}
 
 		return substr($class, $pos + Persistence\Proxy::MARKER_LENGTH + 2);
-	}
-
-	/**
-	 * @param DatabaseEntities\IEntity $entity
-	 * @param string $action
-	 *
-	 * @return void
-	 */
-	private function processEntityAction(DatabaseEntities\IEntity $entity, string $action): void
-	{
-		foreach (TriggersNode\Constants::RABBIT_MQ_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
-			if (
-				$this->validateEntity($entity, $class)
-				&& method_exists($entity, 'toArray')
-			) {
-				$routingKey = str_replace(TriggersNode\Constants::RABBIT_MQ_ENTITIES_ROUTING_KEY_ACTION_REPLACE_STRING, $action, $routingKey);
-
-				$this->publisher->publish($routingKey, $entity->toArray());
-
-				return;
-			}
-		}
-	}
-
-	/**
-	 * @param DatabaseEntities\IEntity $entity
-	 * @param string $class
-	 *
-	 * @return bool
-	 */
-	private function validateEntity(DatabaseEntities\IEntity $entity, string $class): bool
-	{
-		$result = false;
-
-		if (get_class($entity) === $class) {
-			$result = true;
-		}
-
-		if (is_subclass_of($entity, $class)) {
-			$result = true;
-		}
-
-		return $result;
 	}
 
 }

@@ -85,6 +85,53 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		$subscriber->postPersist($eventArgs);
 	}
 
+	/**
+	 * @param bool $withUow
+	 *
+	 * @return ORM\EntityManagerInterface
+	 */
+	private function getEntityManager(bool $withUow = false): ORM\EntityManagerInterface
+	{
+		$metadata = new stdClass();
+		$metadata->fieldMappings = [
+			[
+				'fieldName' => 'name',
+			],
+			[
+				'fieldName' => 'comment',
+			],
+			[
+				'fieldName' => 'enabled',
+			],
+		];
+
+		$entityManager = Mockery::mock(ORM\EntityManagerInterface::class);
+		$entityManager
+			->shouldReceive('getClassMetadata')
+			->withArgs([TriggersModuleEntities\Triggers\Trigger::class])
+			->andReturn($metadata);
+
+		if ($withUow) {
+			$uow = Mockery::mock(ORM\UnitOfWork::class);
+			$uow
+				->shouldReceive('getEntityChangeSet')
+				->andReturn(['name'])
+				->times(1)
+				->getMock()
+				->shouldReceive('isScheduledForDelete')
+				->andReturn(false)
+				->getMock();
+
+			$entityManager
+				->shouldReceive('getUnitOfWork')
+				->withNoArgs()
+				->andReturn($uow)
+				->times(1);
+		}
+
+		return $entityManager;
+	}
+
 	public function testPublishUpdatedEntity(): void
 	{
 		$publisher = Mockery::mock(RabbitMqPluginPublishers\IRabbitMqPublisher::class);
@@ -197,53 +244,6 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 		);
 
 		$subscriber->onFlush();
-	}
-
-	/**
-	 * @param bool $withUow
-	 *
-	 * @return ORM\EntityManagerInterface
-	 */
-	private function getEntityManager(bool $withUow = false): ORM\EntityManagerInterface
-	{
-		$metadata = new stdClass();
-		$metadata->fieldMappings = [
-			[
-				'fieldName' => 'name',
-			],
-			[
-				'fieldName' => 'comment',
-			],
-			[
-				'fieldName' => 'enabled',
-			],
-		];
-
-		$entityManager = Mockery::mock(ORM\EntityManagerInterface::class);
-		$entityManager
-			->shouldReceive('getClassMetadata')
-			->withArgs([TriggersModuleEntities\Triggers\Trigger::class])
-			->andReturn($metadata);
-
-		if ($withUow) {
-			$uow = Mockery::mock(ORM\UnitOfWork::class);
-			$uow
-				->shouldReceive('getEntityChangeSet')
-				->andReturn(['name'])
-				->times(1)
-				->getMock()
-				->shouldReceive('isScheduledForDelete')
-				->andReturn(false)
-				->getMock();
-
-			$entityManager
-				->shouldReceive('getUnitOfWork')
-				->withNoArgs()
-				->andReturn($uow)
-				->times(1);
-		}
-
-		return $entityManager;
 	}
 
 }

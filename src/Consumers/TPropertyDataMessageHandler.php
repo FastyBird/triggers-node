@@ -85,6 +85,36 @@ trait TPropertyDataMessageHandler
 	}
 
 	/**
+	 * @param string $device
+	 * @param string $channel
+	 * @param string $property
+	 *
+	 * @return mixed|null
+	 */
+	private function fetchChannelPropertyValue(
+		string $device,
+		string $channel,
+		string $property
+	) {
+		// TODO: fetch stored value from store
+		return null;
+	}
+
+	/**
+	 * @param string $device
+	 * @param string $property
+	 *
+	 * @return mixed|null
+	 */
+	private function fetchDevicePropertyValue(
+		string $device,
+		string $property
+	) {
+		// TODO: fetch stored value from store
+		return null;
+	}
+
+	/**
 	 * @param TriggersModuleEntities\Triggers\ITrigger $trigger
 	 *
 	 * @return void
@@ -133,36 +163,6 @@ trait TPropertyDataMessageHandler
 			default:
 				return $value;
 		}
-	}
-
-	/**
-	 * @param string $device
-	 * @param string $property
-	 *
-	 * @return mixed|null
-	 */
-	private function fetchDevicePropertyValue(
-		string $device,
-		string $property
-	) {
-		// TODO: fetch stored value from store
-		return null;
-	}
-
-	/**
-	 * @param string $device
-	 * @param string $channel
-	 * @param string $property
-	 *
-	 * @return mixed|null
-	 */
-	private function fetchChannelPropertyValue(
-		string $device,
-		string $channel,
-		string $property
-	) {
-		// TODO: fetch stored value from store
-		return null;
 	}
 
 }
