@@ -64,6 +64,6 @@ final class Constants
 	 * Microservices origins
 	 */
 
-	public const NODE_DEVICES_ORIGIN = 'com.fastybird.devices-node';
+	public const NODE_DEVICES_ORIGIN = 'com.fastybird.devices-module';
 
 }

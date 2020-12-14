@@ -15,7 +15,7 @@
 ##############################
 
 parameters:
-	origin: com.fastybird.triggers-node
+	origin: com.fastybird.triggers-module
 
 	rabbitmq:
 		queueName: fb.triggers.node.exchange
