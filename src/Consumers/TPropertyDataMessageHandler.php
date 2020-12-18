@@ -15,10 +15,10 @@
 
 namespace FastyBird\TriggersNode\Consumers;
 
+use FastyBird\ModulesMetadata;
 use FastyBird\RabbitMqPlugin\Publishers as RabbitMqPluginPublishers;
 use FastyBird\TriggersModule;
 use FastyBird\TriggersModule\Entities as TriggersModuleEntities;
-use FastyBird\TriggersNode;
 use Psr\Log;
 
 /**
@@ -125,7 +125,7 @@ trait TPropertyDataMessageHandler
 		foreach ($trigger->getActions() as $action) {
 			if ($action instanceof TriggersModuleEntities\Actions\ChannelPropertyAction) {
 				$this->rabbitMqPublisher->publish(
-					TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTIES_DATA_ROUTING_KEY,
+					ModulesMetadata\Constants::MESSAGE_BUS_CHANNELS_PROPERTIES_DATA_ROUTING_KEY,
 					[
 						'device'   => $action->getDevice(),
 						'channel'  => $action->getChannel(),

@@ -2,11 +2,11 @@
 
 namespace Tests\Cases;
 
+use FastyBird\ModulesMetadata;
 use FastyBird\RabbitMqPlugin\Publishers as RabbitMqPluginPublishers;
 use FastyBird\TriggersModule\Entities as TriggersModuleEntities;
 use FastyBird\TriggersModule\Models as TriggersModuleModels;
 use FastyBird\TriggersModule\Queries as TriggersModuleQueries;
-use FastyBird\TriggersNode;
 use FastyBird\TriggersNode\Consumers;
 use Mockery;
 use Nette\Utils;
@@ -78,7 +78,7 @@ final class ChannelPropertyMessageHandlerTest extends DbTestCase
 		/** @var Consumers\ChannelPropertyMessageHandler $handler */
 		$handler = $this->getContainer()->getByType(Consumers\ChannelPropertyMessageHandler::class);
 
-		$handler->process($routingKey, TriggersNode\Constants::NODE_DEVICES_ORIGIN, Utils\Json::encode($message));
+		$handler->process($routingKey, ModulesMetadata\Constants::MODULE_DEVICES_ORIGIN, Utils\Json::encode($message));
 
 		$findQuery = new TriggersModuleQueries\FindChannelPropertyTriggersQuery();
 		$findQuery->forProperty('device-one', 'channel-one', 'button');
@@ -149,7 +149,7 @@ final class ChannelPropertyMessageHandlerTest extends DbTestCase
 		/** @var Consumers\ChannelPropertyMessageHandler $handler */
 		$handler = $this->getContainer()->getByType(Consumers\ChannelPropertyMessageHandler::class);
 
-		$handler->process($routingKey, TriggersNode\Constants::NODE_DEVICES_ORIGIN, Utils\Json::encode($message));
+		$handler->process($routingKey, ModulesMetadata\Constants::MODULE_DEVICES_ORIGIN, Utils\Json::encode($message));
 
 		$findQuery = new TriggersModuleQueries\FindActionsQuery();
 		$findQuery->forChannelProperty('device-one', 'channel-four', 'switch');
@@ -161,7 +161,7 @@ final class ChannelPropertyMessageHandlerTest extends DbTestCase
 
 	public function testProcessMessageFireAction(): void
 	{
-		$routingKey = TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTY_UPDATED_ENTITY_ROUTING_KEY;
+		$routingKey = ModulesMetadata\Constants::MESSAGE_BUS_CHANNELS_PROPERTY_UPDATED_ENTITY_ROUTING_KEY;
 		$message = Utils\ArrayHash::from([
 			'id'       => 'fe2badf6-2e85-4ef6-9009-fe247d473069',
 			'device'   => 'device-one',
@@ -178,7 +178,7 @@ final class ChannelPropertyMessageHandlerTest extends DbTestCase
 		$rabbitPublisher
 			->shouldReceive('publish')
 			->withArgs(function (string $routingKey, array $data): bool {
-				Assert::same(TriggersNode\Constants::RABBIT_MQ_CHANNELS_PROPERTIES_DATA_ROUTING_KEY, $routingKey);
+				Assert::same(ModulesMetadata\Constants::MESSAGE_BUS_CHANNELS_PROPERTIES_DATA_ROUTING_KEY, $routingKey);
 				Assert::same(
 					[
 						'device'   => 'device-two',
@@ -199,7 +199,7 @@ final class ChannelPropertyMessageHandlerTest extends DbTestCase
 
 		$handler = $this->getContainer()->getByType(Consumers\ChannelPropertyMessageHandler::class);
 
-		$handler->process($routingKey, TriggersNode\Constants::NODE_DEVICES_ORIGIN, Utils\Json::encode($message));
+		$handler->process($routingKey, ModulesMetadata\Constants::MODULE_DEVICES_ORIGIN, Utils\Json::encode($message));
 	}
 
 }

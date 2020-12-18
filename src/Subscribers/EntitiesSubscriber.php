@@ -95,17 +95,40 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	 */
 	private function processEntityAction(DatabaseEntities\IEntity $entity, string $action): void
 	{
-		foreach (TriggersNode\Constants::RABBIT_MQ_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
-			if (
-				$this->validateEntity($entity, $class)
-				&& method_exists($entity, 'toArray')
-			) {
-				$routingKey = str_replace(TriggersNode\Constants::RABBIT_MQ_ENTITIES_ROUTING_KEY_ACTION_REPLACE_STRING, $action, $routingKey);
+		if (!method_exists($entity, 'toArray')) {
+			return;
+		}
 
-				$this->publisher->publish($routingKey, $entity->toArray());
+		$publishRoutingKey = null;
 
-				return;
-			}
+		switch ($action) {
+			case self::ACTION_CREATED:
+				foreach (TriggersNode\Constants::MESSAGE_BUS_CREATED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
+					if ($this->validateEntity($entity, $class)) {
+						$publishRoutingKey = $routingKey;
+					}
+				}
+				break;
+
+			case self::ACTION_UPDATED:
+				foreach (TriggersNode\Constants::MESSAGE_BUS_UPDATED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
+					if ($this->validateEntity($entity, $class)) {
+						$publishRoutingKey = $routingKey;
+					}
+				}
+				break;
+
+			case self::ACTION_DELETED:
+				foreach (TriggersNode\Constants::MESSAGE_BUS_DELETED_ENTITIES_ROUTING_KEYS_MAPPING as $class => $routingKey) {
+					if ($this->validateEntity($entity, $class)) {
+						$publishRoutingKey = $routingKey;
+					}
+				}
+				break;
+		}
+
+		if ($publishRoutingKey !== null) {
+			$this->publisher->publish($publishRoutingKey, $entity->toArray());
 		}
 	}
 

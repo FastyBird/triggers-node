@@ -2,11 +2,11 @@
 
 namespace Tests\Cases;
 
+use FastyBird\ModulesMetadata;
 use FastyBird\RabbitMqPlugin\Publishers as RabbitMqPluginPublishers;
 use FastyBird\TriggersModule\Entities as TriggersModuleEntities;
 use FastyBird\TriggersModule\Models as TriggersModuleModels;
 use FastyBird\TriggersModule\Queries as TriggersModuleQueries;
-use FastyBird\TriggersNode;
 use FastyBird\TriggersNode\Consumers;
 use Mockery;
 use Nette\Utils;
@@ -81,7 +81,7 @@ final class ChannelMessageHandlerTest extends DbTestCase
 
 		$handler = $this->getContainer()->getByType(Consumers\ChannelMessageHandler::class);
 
-		$handler->process($routingKey, TriggersNode\Constants::NODE_DEVICES_ORIGIN, Utils\Json::encode($message));
+		$handler->process($routingKey, ModulesMetadata\Constants::MODULE_DEVICES_ORIGIN, Utils\Json::encode($message));
 
 		$findQuery = new TriggersModuleQueries\FindChannelPropertyTriggersQuery();
 		$findQuery->forChannel('device-one', 'channel-one');

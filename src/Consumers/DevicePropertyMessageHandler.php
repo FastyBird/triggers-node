@@ -24,7 +24,6 @@ use FastyBird\TriggersModule\Entities as TriggersModuleEntities;
 use FastyBird\TriggersModule\Models as TriggersModuleModels;
 use FastyBird\TriggersModule\Queries as TriggersModuleQueries;
 use FastyBird\TriggersModule\Types as TriggersModuleTypes;
-use FastyBird\TriggersNode;
 use FastyBird\TriggersNode\Exceptions;
 use Psr\Log;
 use Throwable;
@@ -105,13 +104,13 @@ final class DevicePropertyMessageHandler implements RabbitMqPluginConsumers\IMes
 			return true;
 		}
 
-		if ($routingKey === TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_DELETED_ENTITY_ROUTING_KEY) {
+		if ($routingKey === ModulesMetadata\Constants::MESSAGE_BUS_DEVICES_PROPERTY_DELETED_ENTITY_ROUTING_KEY) {
 			$this->clearProperties(
 				$message->offsetGet('device'),
 				$message->offsetGet('property')
 			);
 
-		} elseif ($routingKey === TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_UPDATED_ENTITY_ROUTING_KEY) {
+		} elseif ($routingKey === ModulesMetadata\Constants::MESSAGE_BUS_DEVICES_PROPERTY_UPDATED_ENTITY_ROUTING_KEY) {
 			// Only not pending messages will be processed
 			if (
 				$message->offsetExists('pending')
@@ -139,10 +138,10 @@ final class DevicePropertyMessageHandler implements RabbitMqPluginConsumers\IMes
 	 */
 	public function getSchema(string $routingKey, string $origin): ?string
 	{
-		if ($origin === TriggersNode\Constants::NODE_DEVICES_ORIGIN) {
+		if ($origin === ModulesMetadata\Constants::MODULE_DEVICES_ORIGIN) {
 			switch ($routingKey) {
-				case TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_DELETED_ENTITY_ROUTING_KEY:
-				case TriggersNode\Constants::RABBIT_MQ_DEVICES_PROPERTY_UPDATED_ENTITY_ROUTING_KEY:
+				case ModulesMetadata\Constants::MESSAGE_BUS_DEVICES_PROPERTY_DELETED_ENTITY_ROUTING_KEY:
+				case ModulesMetadata\Constants::MESSAGE_BUS_DEVICES_PROPERTY_UPDATED_ENTITY_ROUTING_KEY:
 					return $this->schemaLoader->load(ModulesMetadata\Constants::RESOURCES_FOLDER . '/schemas/devices-module/entity.device.property.json');
 			}
 		}

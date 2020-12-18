@@ -20,10 +20,10 @@ parameters:
 	rabbitmq:
 		queueName: fb.triggers.node.exchange
 		routing:
-			- fb.bus.node.entity.deleted.channel	# Channel entities
-			- fb.bus.node.entity.*.channel.property	# Channel property entities
-			- fb.bus.node.entity.deleted.device		# Device entities
-			- fb.bus.node.entity.*.device.property 	# Device property entities
+			- fb.bus.entity.deleted.channel		# Channel entities
+			- fb.bus.entity.*.channel.property	# Channel property entities
+			- fb.bus.entity.deleted.device		# Device entities
+			- fb.bus.entity.*.device.property 	# Device property entities
 
 #########################
 # Used Nette extensions #

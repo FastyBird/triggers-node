@@ -1,11 +1,11 @@
 <?php declare(strict_types = 1);
 
-use FastyBird\TriggersNode;
+use FastyBird\ModulesMetadata;
 use Nette\Utils;
 
 return [
 	'messageWithDeletedChannel' => [
-		TriggersNode\Constants::RABBIT_MQ_CHANNELS_DELETED_ENTITY_ROUTING_KEY,
+		ModulesMetadata\Constants::MESSAGE_BUS_CHANNELS_DELETED_ENTITY_ROUTING_KEY,
 		Utils\ArrayHash::from([
 			'id'         => 'fe2badf6-2e85-4ef6-9009-fe247d473069',
 			'identifier' => 'device-one',
@@ -16,7 +16,7 @@ return [
 		]),
 		3,
 		[
-			'fb.bus.node.entity.deleted.trigger'        => [
+			'fb.bus.entity.deleted.trigger'        => [
 				'id'       => '1c580923-28dd-4b28-8517-bf37f0173b93',
 				'name'     => '28bc0d38-2f7c-4a71-aa74-27b102f8df4c',
 				'comment'  => '996213a4-d959-4f6c-b77c-f248ce8f8d84',
@@ -29,7 +29,7 @@ return [
 				'operand'  => '3',
 				'operator' => 'eq',
 			],
-			'fb.bus.node.entity.deleted.trigger.action' => [
+			'fb.bus.entity.deleted.trigger.action' => [
 				'primaryKey'                           => 'id',
 				'5c47a7c0-99d5-4dfa-b289-edb8afe4d198' => [
 					'id'       => '5c47a7c0-99d5-4dfa-b289-edb8afe4d198',

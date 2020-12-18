@@ -41,7 +41,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			->withArgs(function (string $key, array $data): bool {
 				unset($data['id']);
 
-				Assert::same('fb.bus.node.entity.created.trigger', $key);
+				Assert::same('fb.bus.entity.created.trigger', $key);
 				Assert::equal([
 					'name'     => 'Trigger name',
 					'comment'  => null,
@@ -140,7 +140,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			->withArgs(function (string $key, array $data): bool {
 				unset($data['id']);
 
-				Assert::same('fb.bus.node.entity.updated.trigger', $key);
+				Assert::same('fb.bus.entity.updated.trigger', $key);
 				Assert::equal([
 					'name'     => 'Trigger name',
 					'comment'  => null,
@@ -191,7 +191,7 @@ final class EntitiesSubscriberTest extends BaseMockeryTestCase
 			->withArgs(function (string $key, array $data): bool {
 				unset($data['id']);
 
-				Assert::same('fb.bus.node.entity.deleted.trigger', $key);
+				Assert::same('fb.bus.entity.deleted.trigger', $key);
 				Assert::equal([
 					'name'     => 'Trigger name',
 					'comment'  => null,

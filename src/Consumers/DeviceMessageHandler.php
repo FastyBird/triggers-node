@@ -22,7 +22,6 @@ use FastyBird\RabbitMqPlugin\Consumers as RabbitMqPluginConsumers;
 use FastyBird\TriggersModule\Entities as TriggersModuleEntities;
 use FastyBird\TriggersModule\Models as TriggersModuleModels;
 use FastyBird\TriggersModule\Queries as TriggersModuleQueries;
-use FastyBird\TriggersNode;
 use FastyBird\TriggersNode\Exceptions;
 use Psr\Log;
 use Throwable;
@@ -116,7 +115,7 @@ final class DeviceMessageHandler implements RabbitMqPluginConsumers\IMessageHand
 			return true;
 		}
 
-		if ($routingKey === TriggersNode\Constants::RABBIT_MQ_DEVICES_DELETED_ENTITY_ROUTING_KEY) {
+		if ($routingKey === ModulesMetadata\Constants::MESSAGE_BUS_DEVICES_DELETED_ENTITY_ROUTING_KEY) {
 			$this->clearDevices(
 				$message->offsetGet('device')
 			);
@@ -133,9 +132,9 @@ final class DeviceMessageHandler implements RabbitMqPluginConsumers\IMessageHand
 	 */
 	public function getSchema(string $routingKey, string $origin): ?string
 	{
-		if ($origin === TriggersNode\Constants::NODE_DEVICES_ORIGIN) {
+		if ($origin === ModulesMetadata\Constants::MODULE_DEVICES_ORIGIN) {
 			switch ($routingKey) {
-				case TriggersNode\Constants::RABBIT_MQ_DEVICES_DELETED_ENTITY_ROUTING_KEY:
+				case ModulesMetadata\Constants::MESSAGE_BUS_DEVICES_DELETED_ENTITY_ROUTING_KEY:
 					return $this->schemaLoader->load(ModulesMetadata\Constants::RESOURCES_FOLDER . '/schemas/devices-module/entity.device.json');
 			}
 		}
