@@ -43,22 +43,22 @@ final class DevicePropertyMessageHandler implements RabbitMqPluginConsumers\IMes
 	use TPropertyDataMessageHandler;
 
 	/** @var RabbitMqPluginPublishers\IRabbitMqPublisher */
-	protected $rabbitMqPublisher;
-
-	/** @var Log\LoggerInterface */
-	protected $logger;
+	protected RabbitMqPluginPublishers\IRabbitMqPublisher $rabbitMqPublisher;
 
 	/** @var TriggersModuleModels\Conditions\IConditionRepository */
-	private $conditionRepository;
+	private TriggersModuleModels\Conditions\IConditionRepository $conditionRepository;
 
 	/** @var TriggersModuleModels\Conditions\IConditionsManager */
-	private $conditionsManager;
+	private TriggersModuleModels\Conditions\IConditionsManager $conditionsManager;
 
 	/** @var ModulesMetadataLoaders\ISchemaLoader */
-	private $schemaLoader;
+	private ModulesMetadataLoaders\ISchemaLoader $schemaLoader;
 
 	/** @var ModulesMetadataSchemas\IValidator */
-	private $validator;
+	private ModulesMetadataSchemas\IValidator $validator;
+
+	/** @var Log\LoggerInterface */
+	protected Log\LoggerInterface $logger;
 
 	public function __construct(
 		TriggersModuleModels\Conditions\IConditionRepository $conditionRepository,

@@ -39,31 +39,31 @@ final class DeviceMessageHandler implements RabbitMqPluginConsumers\IMessageHand
 {
 
 	/** @var TriggersModuleModels\Triggers\ITriggerRepository */
-	private $triggerRepository;
+	private TriggersModuleModels\Triggers\ITriggerRepository $triggerRepository;
 
 	/** @var TriggersModuleModels\Triggers\ITriggersManager */
-	private $triggersManager;
+	private TriggersModuleModels\Triggers\ITriggersManager $triggersManager;
 
 	/** @var TriggersModuleModels\Actions\IActionRepository */
-	private $actionRepository;
+	private TriggersModuleModels\Actions\IActionRepository $actionRepository;
 
 	/** @var TriggersModuleModels\Actions\IActionsManager */
-	private $actionsManager;
+	private TriggersModuleModels\Actions\IActionsManager $actionsManager;
 
 	/** @var TriggersModuleModels\Conditions\IConditionRepository */
-	private $conditionRepository;
+	private TriggersModuleModels\Conditions\IConditionRepository $conditionRepository;
 
 	/** @var TriggersModuleModels\Conditions\IConditionsManager */
-	private $conditionsManager;
+	private TriggersModuleModels\Conditions\IConditionsManager $conditionsManager;
 
 	/** @var ModulesMetadataLoaders\ISchemaLoader */
-	private $schemaLoader;
+	private ModulesMetadataLoaders\ISchemaLoader $schemaLoader;
 
 	/** @var ModulesMetadataSchemas\IValidator */
-	private $validator;
+	private ModulesMetadataSchemas\IValidator $validator;
 
 	/** @var Log\LoggerInterface */
-	private $logger;
+	private Log\LoggerInterface $logger;
 
 	public function __construct(
 		TriggersModuleModels\Triggers\ITriggerRepository $triggerRepository,

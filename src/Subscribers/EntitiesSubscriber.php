@@ -42,10 +42,10 @@ final class EntitiesSubscriber implements Common\EventSubscriber
 	use Nette\SmartObject;
 
 	/** @var RabbitMqPluginPublishers\IRabbitMqPublisher */
-	private $publisher;
+	private RabbitMqPluginPublishers\IRabbitMqPublisher $publisher;
 
 	/** @var ORM\EntityManagerInterface */
-	private $entityManager;
+	private ORM\EntityManagerInterface $entityManager;
 
 	public function __construct(
 		RabbitMqPluginPublishers\IRabbitMqPublisher $publisher,

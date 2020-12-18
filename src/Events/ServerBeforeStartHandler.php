@@ -33,7 +33,7 @@ class ServerBeforeStartHandler
 	use Nette\SmartObject;
 
 	/** @var RabbitMqPlugin\Exchange */
-	private $exchange;
+	private RabbitMqPlugin\Exchange $exchange;
 
 	public function __construct(
 		RabbitMqPlugin\Exchange $exchange
