@@ -4,7 +4,6 @@ namespace Tests\Cases;
 
 use FastyBird\Bootstrap\Boot;
 use FastyBird\TriggersNode\Commands;
-use FastyBird\TriggersNode\Events;
 use Ninjify\Nunjuck\TestCase\BaseTestCase;
 use Tester\Assert;
 
@@ -28,9 +27,6 @@ final class ServicesTest extends BaseTestCase
 		$container = $configurator->createContainer();
 
 		Assert::notNull($container->getByType(Commands\InitializeCommand::class));
-
-		Assert::notNull($container->getByType(Events\AfterConsumeHandler::class));
-		Assert::notNull($container->getByType(Events\ServerBeforeStartHandler::class));
 	}
 
 }
