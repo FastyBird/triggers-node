@@ -17,20 +17,13 @@
 parameters:
 	origin: com.fastybird.triggers-module
 
-	rabbitmq:
-		queueName: fb.triggers.node.exchange
-		routing:
-			- fb.bus.entity.deleted.channel		# Channel entities
-			- fb.bus.entity.*.channel.property	# Channel property entities
-			- fb.bus.entity.deleted.device		# Device entities
-			- fb.bus.entity.*.device.property 	# Device property entities
-
 #########################
 # Used Nette extensions #
 #########################
 
 extensions:
 	contributteTranslation				: Contributte\Translation\DI\TranslationExtension
+	contributeEvents					: Contributte\EventDispatcher\DI\EventDispatcherExtension
 	nettrineAnnotations					: Nettrine\Annotations\DI\AnnotationsExtension
 	nettrineCache						: Nettrine\Cache\DI\CacheExtension
 	nettrineDbal						: Nettrine\DBAL\DI\DbalExtension
@@ -39,6 +32,7 @@ extensions:
 	nettrineOrmConsole					: Nettrine\ORM\DI\OrmConsoleExtension
 	nettrineOrmCache					: Nettrine\ORM\DI\OrmCacheExtension
 	fbDateTimeFactory					: FastyBird\DateTimeFactory\DI\DateTimeFactoryExtension
+	fbApplicationExchange				: FastyBird\ApplicationExchange\DI\ApplicationExchangeExtension
 	fbSimpleAuth						: FastyBird\SimpleAuth\DI\SimpleAuthExtension
 	fbDatabase							: FastyBird\Database\DI\DatabaseExtension
 	fbJsonApi							: FastyBird\JsonApi\DI\JsonApiExtension
@@ -81,10 +75,6 @@ fbRabbitMqPlugin:
 			vhost: %exchange.vhost%
 			username: %exchange.username%
 			password: %exchange.password%
-		queue:
-			name: %rabbitmq.queueName%
-		routing:
-			keys: %rabbitmq.routing%
 
 # Web server
 #################
@@ -167,25 +157,9 @@ services:
 
 	- {factory: FastyBird\TriggersNode\Commands\InitializeCommand}
 
-	# Message bus messages handlers
-	###############################
-
-	- {factory: FastyBird\TriggersNode\Consumers\ChannelMessageHandler}
-
-	- {factory: FastyBird\TriggersNode\Consumers\ChannelPropertyMessageHandler}
-
-	- {factory: FastyBird\TriggersNode\Consumers\DeviceMessageHandler}
-
-	- {factory: FastyBird\TriggersNode\Consumers\DevicePropertyMessageHandler}
-
 	# Node events
 	#############
 
 	- {factory: FastyBird\TriggersNode\Events\ServerBeforeStartHandler}
 
 	- {factory: FastyBird\TriggersNode\Events\AfterConsumeHandler}
-
-	# Events subscribers
-	####################
-
-	- {factory: FastyBird\TriggersNode\Subscribers\EntitiesSubscriber}
